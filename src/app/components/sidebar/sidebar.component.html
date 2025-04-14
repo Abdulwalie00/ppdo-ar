@@ -29,7 +29,7 @@
         <div *ngIf="item.children">
           <button
             (click)="toggleMenu(item)"
-            class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-blue-700 transition-colors"
+            class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-blue-700  transition-colors"
           >
             <div class="flex items-center">
               <fa-icon [icon]="item.icon" class="mr-3"></fa-icon>
@@ -49,8 +49,8 @@
             <li *ngFor="let child of item.children">
               <a
                 [routerLink]="child.link"
-                routerLinkActive="bg-blue-700"
-                class="flex items-center p-2 rounded-lg hover:bg-blue-700 transition-colors"
+                routerLinkActive="bg-blue-700 text-white"
+                class="flex items-center p-2 rounded-lg hover:bg-blue-700 hover:text-white transition-colors"
               >
                 <fa-icon [icon]="child.icon" class="mr-3 text-sm"></fa-icon>
                 <span>{{ child.title }}</span>
