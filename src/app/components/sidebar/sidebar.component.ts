@@ -43,19 +43,20 @@ export class SidebarComponent {
       isExpanded: false,
       children: [
         {
-          title: 'PTCAO', link: '/reports',
+          title: 'PTCAO', link: '/pgo/ptcao',
           icon: faCircle
         },
-        { title: 'PDD', icon: faCircle, link: '/reports/performance' },
-        { title: 'ICTO', icon: faCircle, link: '/reports/performance' },
-        { title: 'RYDO', icon: faCircle, link: '/reports' },
-        { title: 'PWO', icon: faCircle, link: '/reports/performance' },
-        { title: 'PLPP', icon: faCircle, link: '/reports/performance' },
-        { title: 'PTLDC', icon: faCircle, link: '/reports' },
-        { title: 'LEDIPO', icon: faCircle, link: '/reports/performance' },
-        { title: 'GAD', icon: faCircle, link: '/reports/performance' },
+        { title: 'PDD', icon: faCircle, link: '/pgo/pdd' },
+        { title: 'ICTO', icon: faCircle, link: '/pgo/icto' },
+        { title: 'RYDO', icon: faCircle, link: '/pgo/rydo' },
+        { title: 'PWO', icon: faCircle, link: '/pgo/pwo' },
+        { title: 'PLPP', icon: faCircle, link: '/pgo/plpp' },
+        { title: 'PTLDC', icon: faCircle, link: '/pgo/ptldc' },
+        { title: 'LEDIPO', icon: faCircle, link: '/pgo/ledipo' },
+        { title: 'GAD', icon: faCircle, link: '/pgo/gad' },
       ]
     },
+
     {
       title: 'OPVG',
       icon: faUsers,
