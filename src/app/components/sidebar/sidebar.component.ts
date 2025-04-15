@@ -57,7 +57,7 @@ export class SidebarComponent {
       ]
     },
     {
-      title: 'OPVV',
+      title: 'OPVG',
       icon: faUsers,
       link: '/users'
     },
@@ -77,7 +77,21 @@ export class SidebarComponent {
         { title: 'PVO', icon: faDatabase, link: '/data/archives' }
       ]
     },
-
+    {
+      title: 'Administrative Support',
+      icon: faDatabase,
+      isExpanded: false,
+      children: [
+        { title: 'PPDO', icon: faFileAlt, link: '/data/records' },
+        { title: 'PHRMO', icon: faDatabase, link: '/data/archives' },
+        { title: 'PGSO', icon: faFileAlt, link: '/data/records' },
+        { title: 'PTO', icon: faDatabase, link: '/data/archives' },
+        { title: 'PACCO', icon: faFileAlt, link: '/data/records' },
+        { title: 'PBO', icon: faDatabase, link: '/data/archives' },
+        { title: 'PLSO', icon: faFileAlt, link: '/data/records' },
+        { title: 'PSF', icon: faDatabase, link: '/data/archives' },
+      ]
+    },
     {
       title: 'Settings',
       icon: faCog,
