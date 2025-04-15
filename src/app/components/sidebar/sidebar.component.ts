@@ -57,19 +57,27 @@ export class SidebarComponent {
       ]
     },
     {
-      title: 'Data Management',
-      icon: faDatabase,
-      isExpanded: false,
-      children: [
-        { title: 'Records', icon: faFileAlt, link: '/data/records' },
-        { title: 'Archives', icon: faDatabase, link: '/data/archives' }
-      ]
-    },
-    {
-      title: 'User Management',
+      title: 'OPVV',
       icon: faUsers,
       link: '/users'
     },
+    {
+      title: 'Implementing',
+      icon: faDatabase,
+      isExpanded: false,
+      children: [
+        { title: 'PEO', icon: faFileAlt, link: '/data/records' },
+        { title: 'PIO', icon: faDatabase, link: '/data/archives' },
+        { title: 'PCO', icon: faFileAlt, link: '/data/records' },
+        { title: 'OPAG', icon: faDatabase, link: '/data/archives' },
+        { title: 'PENRO', icon: faFileAlt, link: '/data/records' },
+        { title: 'PSWDO', icon: faDatabase, link: '/data/archives' },
+        { title: 'PDRRMO', icon: faFileAlt, link: '/data/records' },
+        { title: 'PHO', icon: faDatabase, link: '/data/archives' },
+        { title: 'PVO', icon: faDatabase, link: '/data/archives' }
+      ]
+    },
+
     {
       title: 'Settings',
       icon: faCog,
