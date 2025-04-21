@@ -11,6 +11,14 @@ import {PlppComponent} from './pages/pgo/plpp/plpp.component';
 import {PtldcComponent} from './pages/pgo/ptldc/ptldc.component';
 import {LedipoComponent} from './pages/pgo/ledipo/ledipo.component';
 import {GadComponent} from './pages/pgo/gad/gad.component';
+import {PeoComponent} from './pages/implementing/peo/peo.component';
+import {PioComponent} from './pages/implementing/pio/pio.component';
+import {PcoComponent} from './pages/implementing/pco/pco.component';
+import {OpagComponent} from './pages/implementing/opag/opag.component';
+import {PenroComponent} from './pages/implementing/penro/penro.component';
+import {PswdoComponent} from './pages/implementing/pswdo/pswdo.component';
+import {PhoComponent} from './pages/implementing/pho/pho.component';
+import {PvoComponent} from './pages/implementing/pvo/pvo.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -27,6 +35,15 @@ export const routes: Routes = [
   { path: 'pgo/ledipo', component: LedipoComponent },
   { path: 'pgo/gad', component: GadComponent },
 
+  //Implementing Routes
+  { path: 'implementing/peo', component: PeoComponent },
+  { path: 'implementing/pio', component: PioComponent },
+  { path: 'implementing/pco', component: PcoComponent },
+  { path: 'implementing/opag', component: OpagComponent },
+  { path: 'implementing/penro', component: PenroComponent },
+  { path: 'implementing/pswdo', component: PswdoComponent },
+  { path: 'implementing/pho', component: PhoComponent },
+  { path: 'implementing/pvo', component: PvoComponent },
   //Other Routes
 
   { path: 'reports', component: ReportsComponent },

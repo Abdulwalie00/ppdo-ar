@@ -46,6 +46,7 @@ export class SidebarComponent {
           title: 'PTCAO', link: '/pgo/ptcao',
           icon: faCircle
         },
+        //PGO Pages
         { title: 'PDD', icon: faCircle, link: '/pgo/pdd' },
         { title: 'ICTO', icon: faCircle, link: '/pgo/icto' },
         { title: 'RYDO', icon: faCircle, link: '/pgo/rydo' },
@@ -54,6 +55,7 @@ export class SidebarComponent {
         { title: 'PTLDC', icon: faCircle, link: '/pgo/ptldc' },
         { title: 'LEDIPO', icon: faCircle, link: '/pgo/ledipo' },
         { title: 'GAD', icon: faCircle, link: '/pgo/gad' },
+
       ]
     },
 
@@ -67,15 +69,14 @@ export class SidebarComponent {
       icon: faDatabase,
       isExpanded: false,
       children: [
-        { title: 'PEO', icon: faFileAlt, link: '/data/records' },
-        { title: 'PIO', icon: faDatabase, link: '/data/archives' },
-        { title: 'PCO', icon: faFileAlt, link: '/data/records' },
-        { title: 'OPAG', icon: faDatabase, link: '/data/archives' },
-        { title: 'PENRO', icon: faFileAlt, link: '/data/records' },
-        { title: 'PSWDO', icon: faDatabase, link: '/data/archives' },
-        { title: 'PDRRMO', icon: faFileAlt, link: '/data/records' },
-        { title: 'PHO', icon: faDatabase, link: '/data/archives' },
-        { title: 'PVO', icon: faDatabase, link: '/data/archives' }
+        { title: 'PEO', icon: faCircle, link: '/implementing/peo' },
+        { title: 'PIO', icon: faCircle, link: '/implementing/pio' },
+        { title: 'PCO', icon: faCircle, link: '/implementing/pco' },
+        { title: 'OPAG', icon: faCircle, link: '/implementing/opag' },
+        { title: 'PENRO', icon: faCircle, link: '/implementing/penro' },
+        { title: 'PSWDO', icon: faCircle, link: '/implementing/pswdo' },
+        { title: 'PHO', icon: faCircle, link: '/implementing/pho' },
+        { title: 'PVO', icon: faCircle, link: '/implementing/pvo' },
       ]
     },
     {
