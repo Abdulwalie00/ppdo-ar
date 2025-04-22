@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {EventManagementComponent} from '../../event-management/event-management.component';
+import {EventService} from '../../../services/event.service';
 
 @Component({
   selector: 'app-ptcao',
@@ -9,6 +10,11 @@ import {EventManagementComponent} from '../../event-management/event-management.
   templateUrl: './ptcao.component.html',
   styleUrl: './ptcao.component.css'
 })
-export class PtcaoComponent {
+export class PtcaoComponent implements OnInit {
 
+  constructor(private eventService: EventService) {}
+
+  ngOnInit() {
+    this.eventService.setFilterDivision('PTCAO');
+  }
 }

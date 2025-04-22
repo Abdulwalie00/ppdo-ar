@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import {Component, inject, Input, SimpleChanges} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,9 +13,12 @@ import {ImageDialogComponent} from '../../components/shared/image-dialog/image-d
   templateUrl: './event-management.component.html',
   styleUrls: ['./event-management.component.css']
 })
-export class EventManagementComponent {
+export class EventManagementComponent  {
   private eventService = inject(EventService);
   private dialog = inject(MatDialog);
+
+  @Input() hideFilter = false;
+  @Input() filterDivision?: Division | 'All';
 
   events = this.eventService.getEvents();
   divisions = this.eventService.getDivisions();
@@ -42,6 +45,12 @@ export class EventManagementComponent {
     this.eventService.filterDivision$.subscribe(() => {
       this.events = this.eventService.getEvents();
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['filterDivision']) {
+      this.eventService.setFilterDivision(this.filterDivision || 'All');
+    }
   }
 
   selectEvent(event: Event): void {
