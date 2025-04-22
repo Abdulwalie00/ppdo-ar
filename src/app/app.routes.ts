@@ -19,6 +19,7 @@ import {PenroComponent} from './pages/implementing/penro/penro.component';
 import {PswdoComponent} from './pages/implementing/pswdo/pswdo.component';
 import {PhoComponent} from './pages/implementing/pho/pho.component';
 import {PvoComponent} from './pages/implementing/pvo/pvo.component';
+import {EventManagementComponent} from './pages/event-management/event-management.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -48,6 +49,7 @@ export const routes: Routes = [
 
   { path: 'reports', component: ReportsComponent },
   { path: 'settings', component: SettingsComponent },
+  { path: 'events', component: EventManagementComponent },
 
 
 
