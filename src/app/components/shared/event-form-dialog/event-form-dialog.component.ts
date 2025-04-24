@@ -209,8 +209,5 @@ export class EventFormComponent {
     });
   }
 
-  onCancel() {
-    this.cancel.emit();
-  }
 
 }
