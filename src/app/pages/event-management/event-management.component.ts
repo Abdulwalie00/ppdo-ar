@@ -5,17 +5,19 @@ import { MatDialog } from '@angular/material/dialog';
 import {Division, Event} from '../../models/event.model';
 import {EventService} from '../../services/event.service';
 import {ImageDialogComponent} from '../../components/shared/image-dialog/image-dialog.component';
+import {EventFormComponent} from '../../components/shared/event-form-dialog/event-form-dialog.component';
 
 @Component({
   selector: 'app-event-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EventFormComponent],
   templateUrl: './event-management.component.html',
   styleUrls: ['./event-management.component.css']
 })
 export class EventManagementComponent  {
   private eventService = inject(EventService);
   private dialog = inject(MatDialog);
+  isEditMode = false;
 
   @Input() hideFilter = false;
   @Input() filterDivision?: Division | 'All';
@@ -27,7 +29,10 @@ export class EventManagementComponent  {
   selectedDivision: Division | 'All' = 'All';
 
   // Form fields
-  newEvent: Omit<Event, 'id' | 'images'> & { images: string } = {
+  newEvent: Omit<Event, 'id' | 'images' | 'dateCompletion'> & {
+    images: string;
+    dateCompletion?: string;  // Changed from Date to string for form input
+  } = {
     title: '',
     description: '',
     location: '',
@@ -38,8 +43,20 @@ export class EventManagementComponent  {
     division: 'PTCAO',
     status: 'Planned'
   };
-
   statusOptions: Event['status'][] = ['Planned', 'Ongoing', 'Completed', 'Cancelled'];
+
+
+  formData = {
+    title: '',
+    description: '',
+    location: '',
+    dateCompletion: undefined,
+    budget: undefined,
+    fundSource: '',
+    images: '',
+    division: 'PTCAO',
+    status: 'Planned' as const
+  };
 
   constructor() {
     this.eventService.filterDivision$.subscribe(() => {
@@ -76,6 +93,79 @@ export class EventManagementComponent  {
     this.eventService.addEvent(eventToAdd);
     this.resetForm();
     this.showEventForm = false;
+    this.isEditMode = false;
+  }
+
+  editEvent(): void {
+    if (!this.selectedEvent) return;
+
+    const images = this.newEvent.images ?
+      this.newEvent.images.split(',').map(url => url.trim()).filter(url => url) : [];
+
+    const updatedEvent: Event = {
+      ...this.selectedEvent,
+      title: this.newEvent.title,
+      description: this.newEvent.description,
+      location: this.newEvent.location,
+      dateCompletion: this.newEvent.dateCompletion ? new Date(this.newEvent.dateCompletion) : undefined,
+      budget: this.newEvent.budget,
+      fundSource: this.newEvent.fundSource,
+      images,
+      division: this.newEvent.division,
+      status: this.newEvent.status
+    };
+
+    this.eventService.editEvent(updatedEvent);
+    this.resetForm();
+    this.showEventForm = false;
+    this.isEditMode = false;
+    this.selectedEvent = updatedEvent;
+  }
+
+  deleteEvent(event: Event): void {
+    if (confirm(`Are you sure you want to delete "${event.title}"?`)) {
+      this.eventService.deleteEvent(event.id);
+      if (this.selectedEvent && this.selectedEvent.id === event.id) {
+        this.selectedEvent = null;
+      }
+    }
+  }
+
+  showEditEventForm(event: Event): void {
+    this.selectedEvent = event;
+    this.isEditMode = true;
+    this.showEventForm = true;
+
+    // Populate form with event data
+    this.newEvent = {
+      title: event.title,
+      description: event.description,
+      location: event.location,
+      dateCompletion: event.dateCompletion ?
+        event.dateCompletion.toISOString().substring(0, 10) : // Convert Date to YYYY-MM-DD format
+        undefined,
+      budget: event.budget,
+      fundSource: event.fundSource,
+      images: event.images.join(', '),
+      division: event.division,
+      status: event.status
+    };
+
+
+  }
+
+  handleFormSubmit(event: { eventData: Omit<Event, 'id'>; isEditMode: boolean }) {
+    if (event.isEditMode && this.selectedEvent) {
+      const updatedEvent: Event = {
+        ...this.selectedEvent,
+        ...event.eventData
+      };
+      this.eventService.editEvent(updatedEvent);
+      this.selectedEvent = updatedEvent;
+    } else {
+      this.eventService.addEvent(event.eventData);
+    }
+    this.showEventForm = false;
   }
 
   resetForm(): void {
@@ -101,10 +191,13 @@ export class EventManagementComponent  {
   backToList(): void {
     this.selectedEvent = null;
     this.showEventForm = false;
+    this.isEditMode = false;
   }
 
   filterByDivision(division: Division | 'All'): void {
     this.selectedDivision = division;
     this.eventService.setFilterDivision(division);
   }
+
+
 }

@@ -1,291 +1,164 @@
-<div class="flex h-screen bg-gray-100">
-  <!-- Left Sidebar -->
-  <div class="w-1/3 bg-white shadow-lg p-4 overflow-y-auto">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-2xl font-bold text-gray-800">Events</h2>
-      <button
-        *ngIf="!showEventForm"
-        (click)="showAddEventForm()"
-        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Add Event
-      </button>
-    </div>
-
-    <!-- Division Filter -->
-<!--    <div *ngIf="!showEventForm" class="mb-4">-->
-<!--      <label class="my-2 block text-sm font-medium text-gray-700 mb-1">Filter by Division</label>-->
-<!--      <select-->
-<!--        [(ngModel)]="selectedDivision"-->
-<!--        (change)="filterByDivision(selectedDivision)"-->
-<!--        class=" my-2 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"-->
-<!--      >-->
-<!--        <option value="All">All Divisions</option>-->
-<!--        <option  *ngFor="let division of divisions" [value]="division">-->
-<!--          {{ division }}-->
-<!--        </option>-->
-<!--      </select>-->
-<!--    </div>-->
-
-    <!-- Event List -->
-    <div *ngIf="!selectedEvent && !showEventForm" class="space-y-2">
-      <div
-        *ngFor="let event of events"
-        (click)="selectEvent(event)"
-        class="p-3 border rounded cursor-pointer hover:bg-gray-50 transition"
-      >
-        <div class="flex justify-between items-start">
-          <h3 class="font-semibold">{{ event.title }}</h3>
-          <span class="text-xs px-2 py-1 rounded-full"
-                [ngClass]="{
-                  'bg-blue-100 text-blue-800': event.status === 'Planned',
-                  'bg-yellow-100 text-yellow-800': event.status === 'Ongoing',
-                  'bg-green-100 text-green-800': event.status === 'Completed',
-                  'bg-red-100 text-red-800': event.status === 'Cancelled'
-                }">
-            {{ event.status }}
-          </span>
-        </div>
-        <div *ngIf="event.dateCompletion" class="text-sm text-gray-500">
-          {{ event.dateCompletion | date }}
-        </div>
-        <span class="text-xs font-medium px-2 py-1 bg-gray-100 rounded">
-          {{ event.division }}
-        </span>
+  <div class="flex h-screen bg-gray-100">
+    <!-- Left Sidebar -->
+    <div class="w-1/3 bg-white shadow-lg p-4 overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold text-gray-800">Events</h2>
+        <button
+          *ngIf="!showEventForm"
+          (click)="showAddEventForm()"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Add Event
+        </button>
       </div>
-    </div>
 
-    <!-- Event Details -->
-    <div *ngIf="selectedEvent" class="space-y-4">
-      <button
-        (click)="backToList()"
-        class="flex items-center text-blue-500 hover:text-blue-700 mb-4"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-        </svg>
-        Back to list
-      </button>
-
-      <div class="space-y-2">
-        <div class="flex justify-between items-start">
-          <h3 class="text-xl font-bold">{{ selectedEvent.title }}</h3>
-          <span class="text-xs px-2 py-1 rounded-full"
-                [ngClass]="{
-                  'bg-blue-100 text-blue-800': selectedEvent.status === 'Planned',
-                  'bg-yellow-100 text-yellow-800': selectedEvent.status === 'Ongoing',
-                  'bg-green-100 text-green-800': selectedEvent.status === 'Completed',
-                  'bg-red-100 text-red-800': selectedEvent.status === 'Cancelled'
-                }">
-            {{ selectedEvent.status }}
-          </span>
-        </div>
-
-        <span class="text-sm font-medium px-2 py-1 bg-gray-100 rounded inline-block mb-2">
-          {{ selectedEvent.division }}
-        </span>
-
-        <p class="text-gray-700">{{ selectedEvent.description }}</p>
-
-        <div class="grid grid-cols-2 gap-4 mt-4">
-          <div>
-            <h4 class="font-semibold">Location</h4>
-            <p>{{ selectedEvent.location }}</p>
-          </div>
-          <div *ngIf="selectedEvent.dateCompletion">
-            <h4 class="font-semibold">Completion Date</h4>
-            <p>{{ selectedEvent.dateCompletion | date }}</p>
-          </div>
-          <div *ngIf="selectedEvent.budget">
-            <h4 class="font-semibold">Budget</h4>
-            <p>{{ selectedEvent.budget | currency }}</p>
-          </div>
-          <div>
-            <h4 class="font-semibold">Fund Source</h4>
-            <p>{{ selectedEvent.fundSource }}</p>
-          </div>
-        </div>
-
-        <div class="mt-4" *ngIf="selectedEvent.images.length > 0">
-          <h4 class="font-semibold mb-2">Images</h4>
-          <div class="grid grid-cols-3 gap-2">
-            <img
-              *ngFor="let image of selectedEvent.images"
-              [src]="image"
-              (click)="openImageDialog(image)"
-              class="cursor-pointer h-24 w-full object-cover rounded"
-              alt="Event image"
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Add Event Form -->
-    <div *ngIf="showEventForm" class="space-y-4">
-      <button
-        (click)="backToList()"
-        class="flex items-center text-blue-500 hover:text-blue-700 mb-4"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-        </svg>
-        Back to list
-      </button>
-
-      <h3 class="text-xl font-bold">Add New Event</h3>
-
-      <form (ngSubmit)="addEvent()" class="space-y-4">
-        <!-- Basic Information -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Title*</label>
-            <input
-              type="text"
-              [(ngModel)]="newEvent.title"
-              name="title"
-              required
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Division*</label>
-            <select
-              [(ngModel)]="newEvent.division"
-              name="division"
-              required
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option *ngFor="let division of divisions" [value]="division">
-                {{ division }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Description*</label>
-          <textarea
-            [(ngModel)]="newEvent.description"
-            name="description"
-            required
-            rows="3"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          ></textarea>
-        </div>
-
-        <!-- Status and Location -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Status*</label>
-            <select
-              [(ngModel)]="newEvent.status"
-              name="status"
-              required
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option *ngFor="let status of statusOptions" [value]="status">
-                {{ status }}
-              </option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Location*</label>
-            <input
-              type="text"
-              [(ngModel)]="newEvent.location"
-              name="location"
-              required
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-          </div>
-        </div>
-
-        <!-- Completion Date -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Completion Date</label>
-          <input
-            type="date"
-            [(ngModel)]="newEvent.dateCompletion"
-            name="dateCompletion"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          >
-          <p class="mt-1 text-sm text-gray-500">Required for Completed events</p>
-        </div>
-
-        <!-- Budget -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Budget</label>
-          <div class="mt-1 relative rounded-md shadow-sm">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span class="text-gray-500 sm:text-sm">$</span>
+      <!-- Event List -->
+      <div *ngIf="!selectedEvent && !showEventForm" class="space-y-2">
+        <div
+          *ngFor="let event of events"
+          class="p-3 border rounded hover:bg-gray-50 transition"
+        >
+          <div class="flex justify-between items-start">
+            <div class="cursor-pointer flex-1" (click)="selectEvent(event)">
+              <h3 class="font-semibold">{{ event.title }}</h3>
             </div>
-            <input
-              type="number"
-              [(ngModel)]="newEvent.budget"
-              name="budget"
-              min="0"
-              step="0.01"
-              class="block w-full pl-7 pr-12 rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            <div class="space-x-2">
+              <button
+                (click)="showEditEventForm(event); $event.stopPropagation()"
+                class="px-2 py-1 bg-yellow-500 text-white text-xs rounded hover:bg-yellow-600"
+              >
+                Edit 2
+              </button>
+              <button
+                (click)="deleteEvent(event); $event.stopPropagation()"
+                class="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+          <div class="cursor-pointer" (click)="selectEvent(event)">
+            <div *ngIf="event.dateCompletion" class="text-sm text-gray-500">
+              {{ event.dateCompletion | date }}
+            </div>
+            <span class="text-xs px-2 py-1 rounded-full"
+                  [ngClass]="{
+                    'bg-blue-100 text-blue-800': event.status === 'Planned',
+                    'bg-yellow-100 text-yellow-800': event.status === 'Ongoing',
+                    'bg-green-100 text-green-800': event.status === 'Completed',
+                    'bg-red-100 text-red-800': event.status === 'Cancelled'
+                  }">
+              {{ event.status }}
+            </span>
+            <span class="text-xs font-medium px-2 py-1 bg-gray-100 rounded ml-1">
+              {{ event.division }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Details -->
+      <div *ngIf="selectedEvent && !showEventForm" class="space-y-4">
+        <div class="flex justify-between items-center">
+          <button
+            (click)="backToList()"
+            class="flex items-center text-blue-500 hover:text-blue-700"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Back to list
+          </button>
+          <div class="space-x-2">
+            <button
+              (click)="showEditEventForm(selectedEvent)"
+              class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
             >
+              Edit
+            </button>
+            <button
+              (click)="deleteEvent(selectedEvent)"
+              class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Delete
+            </button>
           </div>
         </div>
 
-        <!-- Fund Source and Images -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Fund Source*</label>
-          <input
-            type="text"
-            [(ngModel)]="newEvent.fundSource"
-            name="fundSource"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          >
-        </div>
+        <div class="space-y-2">
+          <div class="flex justify-between items-start">
+            <h3 class="text-xl font-bold">{{ selectedEvent.title }}</h3>
+            <span class="text-xs px-2 py-1 rounded-full"
+                  [ngClass]="{
+                    'bg-blue-100 text-blue-800': selectedEvent.status === 'Planned',
+                    'bg-yellow-100 text-yellow-800': selectedEvent.status === 'Ongoing',
+                    'bg-green-100 text-green-800': selectedEvent.status === 'Completed',
+                    'bg-red-100 text-red-800': selectedEvent.status === 'Cancelled'
+                  }">
+              {{ selectedEvent.status }}
+            </span>
+          </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700">
-            Image URLs (comma separated)
-          </label>
-          <textarea
-            [(ngModel)]="newEvent.images"
-            name="images"
-            rows="2"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-          ></textarea>
-          <p class="mt-1 text-sm text-gray-500">Leave blank if no images available</p>
-        </div>
+          <span class="text-sm font-medium px-2 py-1 bg-gray-100 rounded inline-block mb-2">
+            {{ selectedEvent.division }}
+          </span>
 
-        <!-- Form Actions -->
-        <div class="flex justify-end space-x-2 pt-4 border-t">
-          <button
-            type="button"
-            (click)="backToList()"
-            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-          >
-            Save Event
-          </button>
+          <p class="text-gray-700">{{ selectedEvent.description }}</p>
+
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <div>
+              <h4 class="font-semibold">Location</h4>
+              <p>{{ selectedEvent.location }}</p>
+            </div>
+            <div *ngIf="selectedEvent.dateCompletion">
+              <h4 class="font-semibold">Completion Date</h4>
+              <p>{{ selectedEvent.dateCompletion | date }}</p>
+            </div>
+            <div *ngIf="selectedEvent.budget">
+              <h4 class="font-semibold">Budget</h4>
+              <p>{{ selectedEvent.budget | currency }}</p>
+            </div>
+            <div>
+              <h4 class="font-semibold">Fund Source</h4>
+              <p>{{ selectedEvent.fundSource }}</p>
+            </div>
+          </div>
+
+          <div class="mt-4" *ngIf="selectedEvent.images.length > 0">
+            <h4 class="font-semibold mb-2">Images</h4>
+            <div class="grid grid-cols-3 gap-2">
+              <img
+                *ngFor="let image of selectedEvent.images"
+                [src]="image"
+                (click)="openImageDialog(image)"
+                class="cursor-pointer h-24 w-full object-cover rounded"
+                alt="Event image"
+              >
+            </div>
+          </div>
         </div>
-      </form>
+      </div>
+
+      <!-- Add/Edit Event Form -->
+      <app-event-form-dialog
+        *ngIf="showEventForm"
+        [isEditMode]="isEditMode"
+        [eventData]="newEvent"
+        [divisions]="divisions"
+        [statusOptions]="statusOptions"
+        (submitEvent)="handleFormSubmit($event)"
+        (cancel)="backToList()"
+      ></app-event-form-dialog>
+
+    </div>
+
+    <!-- Right Side (Empty for now) -->
+    <div class="flex-1 p-8 bg-gray-50 flex items-center justify-center">
+      <div *ngIf="!selectedEvent && !showEventForm" class="text-center text-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <p class="text-lg">Select an event to view details</p>
+      </div>
     </div>
   </div>
-
-  <!-- Right Side (Empty for now) -->
-  <div class="flex-1 p-8 bg-gray-50 flex items-center justify-center">
-    <div *ngIf="!selectedEvent && !showEventForm" class="text-center text-gray-500">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-      <p class="text-lg">Select an event to view details</p>
-    </div>
-  </div>
-</div>
