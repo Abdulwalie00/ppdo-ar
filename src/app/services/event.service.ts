@@ -156,4 +156,15 @@ export class EventService {
     const id = this.events.length > 0 ? Math.max(...this.events.map(e => e.id)) + 1 : 1;
     this.events.push({ id, ...newEvent });
   }
+
+  editEvent(updatedEvent: Event): void {
+    const index = this.events.findIndex(e => e.id === updatedEvent.id);
+    if (index !== -1) {
+      this.events[index] = updatedEvent;
+    }
+  }
+
+  deleteEvent(eventId: number): void {
+    this.events = this.events.filter(e => e.id !== eventId);
+  }
 }
