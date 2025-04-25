@@ -12,6 +12,7 @@ import {
   faDatabase,
   faUsers, faCircle
 } from '@fortawesome/free-solid-svg-icons';
+import {faChevronLeft} from '@fortawesome/free-solid-svg-icons/faChevronLeft';
 
 interface MenuItem {
   title: string;
@@ -113,4 +114,6 @@ export class SidebarComponent {
   toggleSidebar() {
     this.isCollapsed.set(!this.isCollapsed());
   }
+
+  protected readonly faChevronLeft = faChevronLeft;
 }

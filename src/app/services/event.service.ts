@@ -73,7 +73,7 @@ export class EventService {
       budget: 5000,
       fundSource: 'Operating Budget',
       images: [],
-      division: 'BUDGET',
+      division: 'RYDO',
       status: 'Planned'
     },
     {
@@ -85,7 +85,7 @@ export class EventService {
       budget: 23000,
       fundSource: 'HR Development',
       images: ['https://picsum.photos/600/400?random=5'],
-      division: 'HR',
+      division: 'PTLDC',
       status: 'Completed'
     },
     {
@@ -119,7 +119,7 @@ export class EventService {
       budget: 80000,
       fundSource: 'General Funds',
       images: [],
-      division: 'MAO',
+      division: 'RYDO',
       status: 'Planned'
     }
   ];
@@ -141,7 +141,7 @@ export class EventService {
   }
 
   getDivisions(): Division[] {
-    return ['PTCAO', 'ICTO', 'PDD', 'PLPP', 'GAD', 'LEDIPO', 'PWO', 'MAO', 'BUDGET', 'HR'];
+    return ['PTCAO', 'ICTO', 'PDD', 'PLPP', 'GAD', 'LEDIPO', 'PWO', 'RYDO', 'PTLDC'];
   }
 
   setFilterDivision(division: Division | 'All'): void {

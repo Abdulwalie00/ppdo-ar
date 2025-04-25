@@ -1,6 +1,6 @@
 export type Division =
   'PTCAO' | 'ICTO' | 'PDD' | 'PLPP' | 'GAD' |
-  'LEDIPO' | 'PWO' | 'MAO' | 'BUDGET' | 'HR';
+  'LEDIPO' | 'PWO' | 'RYDO' | 'PTLDC';
 
 export interface Event {
   id: number;
