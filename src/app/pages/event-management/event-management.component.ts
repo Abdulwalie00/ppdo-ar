@@ -76,8 +76,22 @@ export class EventManagementComponent  {
   }
 
   showAddEventForm(): void {
+    // Reset the form data
+    this.newEvent = {
+      title: '',
+      description: '',
+      location: '',
+      dateCompletion: undefined,
+      budget: undefined,
+      fundSource: '',
+      images: '',
+      division: 'PTCAO',
+      status: 'Planned'
+    };
+
     this.selectedEvent = null;
     this.showEventForm = true;
+    this.isEditMode = false;
   }
 
   addEvent(): void {
@@ -141,17 +155,13 @@ export class EventManagementComponent  {
       title: event.title,
       description: event.description,
       location: event.location,
-      dateCompletion: event.dateCompletion ?
-        event.dateCompletion.toISOString().substring(0, 10) : // Convert Date to YYYY-MM-DD format
-        undefined,
+      dateCompletion: event.dateCompletion ? event.dateCompletion.toISOString().split('T')[0] : undefined,
       budget: event.budget,
       fundSource: event.fundSource,
       images: event.images.join(', '),
       division: event.division,
       status: event.status
     };
-
-
   }
 
   handleFormSubmit(event: { eventData: Omit<Event, 'id'>; isEditMode: boolean }) {
