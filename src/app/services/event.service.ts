@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Event, Division } from '../models/event.model';
+import { Event, PGO } from '../models/event.model';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -127,7 +127,7 @@ export class EventService {
   private selectedEventSubject = new BehaviorSubject<Event | null>(null);
   selectedEvent$ = this.selectedEventSubject.asObservable();
 
-  private filterDivisionSubject = new BehaviorSubject<Division | 'All'>('All');
+  private filterDivisionSubject = new BehaviorSubject<PGO | 'All'>('All');
   filterDivision$ = this.filterDivisionSubject.asObservable();
 
   constructor() {}
@@ -140,11 +140,11 @@ export class EventService {
     return this.events.filter(event => event.division === divisionFilter);
   }
 
-  getDivisions(): Division[] {
+  getDivisions(): PGO[] {
     return ['PTCAO', 'ICTO', 'PDD', 'PLPP', 'GAD', 'LEDIPO', 'PWO', 'RYDO', 'PTLDC'];
   }
 
-  setFilterDivision(division: Division | 'All'): void {
+  setFilterDivision(division: PGO | 'All'): void {
     this.filterDivisionSubject.next(division);
   }
 

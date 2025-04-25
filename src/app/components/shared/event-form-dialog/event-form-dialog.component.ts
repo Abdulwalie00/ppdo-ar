@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {Division, Event} from '../../../models/event.model';
+import {PGO, Event} from '../../../models/event.model';
 import {CommonModule} from '@angular/common';
 
 @Component({
@@ -187,7 +187,7 @@ export class EventFormComponent {
     status: 'Planned'
   };
 
-  @Input() divisions: Division[] = [];
+  @Input() divisions: PGO[] = [];
   @Input() statusOptions: Event['status'][] = ['Planned', 'Ongoing', 'Completed', 'Cancelled'];
 
   @Output() submitEvent = new EventEmitter<{

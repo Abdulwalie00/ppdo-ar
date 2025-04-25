@@ -2,7 +2,7 @@ import {Component, inject, Input, SimpleChanges} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import {Division, Event} from '../../models/event.model';
+import {PGO, Event} from '../../models/event.model';
 import {EventService} from '../../services/event.service';
 import {ImageDialogComponent} from '../../components/shared/image-dialog/image-dialog.component';
 import {EventFormComponent} from '../../components/shared/event-form-dialog/event-form-dialog.component';
@@ -20,13 +20,13 @@ export class EventManagementComponent  {
   isEditMode = false;
 
   @Input() hideFilter = false;
-  @Input() filterDivision?: Division | 'All';
+  @Input() filterDivision?: PGO | 'All';
 
   events = this.eventService.getEvents();
   divisions = this.eventService.getDivisions();
   selectedEvent: Event | null = null;
   showEventForm = false;
-  selectedDivision: Division | 'All' = 'All';
+  selectedDivision: PGO | 'All' = 'All';
 
   // Form fields
   newEvent: Omit<Event, 'id' | 'images' | 'dateCompletion'> & {
@@ -204,7 +204,7 @@ export class EventManagementComponent  {
     this.isEditMode = false;
   }
 
-  filterByDivision(division: Division | 'All'): void {
+  filterByDivision(division: PGO | 'All'): void {
     this.selectedDivision = division;
     this.eventService.setFilterDivision(division);
   }

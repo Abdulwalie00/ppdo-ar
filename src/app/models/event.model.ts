@@ -1,4 +1,4 @@
-export type Division =
+export type PGO =
   'PTCAO' | 'ICTO' | 'PDD' | 'PLPP' | 'GAD' |
   'LEDIPO' | 'PWO' | 'RYDO' | 'PTLDC';
 
@@ -11,6 +11,6 @@ export interface Event {
   budget?: number;
   fundSource: string;
   images: string[];
-  division: Division;
+  division: PGO;
   status: 'Planned' | 'Ongoing' | 'Completed' | 'Cancelled';
 }
