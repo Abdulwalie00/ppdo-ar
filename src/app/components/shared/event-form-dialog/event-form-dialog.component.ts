@@ -1,10 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Division, Event} from '../../../models/event.model';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-event-form-dialog',
+  standalone: true,
   imports: [
+    CommonModule,
     FormsModule
   ],
   template: `
