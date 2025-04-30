@@ -1,14 +1,15 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {PGO, Event} from '../../../models/event.model';
-import {CommonModule} from '@angular/common';
+import {PGO, Event as EventModel} from '../../../models/event.model';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-event-form-dialog',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    NgOptimizedImage
   ],
   template: `
     <div class="space-y-4">
@@ -17,7 +18,9 @@ import {CommonModule} from '@angular/common';
         class="flex items-center text-blue-500 hover:text-blue-700 mb-4"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          <path fill-rule="evenodd"
+                d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                clip-rule="evenodd"/>
         </svg>
         Back to list
       </button>
@@ -134,18 +137,15 @@ import {CommonModule} from '@angular/common';
           >
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700">
-            Image URLs (comma separated)
-          </label>
-          <textarea
-            [(ngModel)]="eventData.images"
-            name="images"
-            rows="2"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-          ></textarea>
-          <p class="mt-1 text-sm text-gray-500">Leave blank if no images available</p>
+        <input type="file" (change)="onFileChange($event)" multiple accept="image/*"/>
+
+        <div class="grid grid-cols-3 gap-2 mt-4" *ngIf="newEvent.images.length > 0">
+          <img
+            *ngFor="let image of newEvent.images"
+            ngSrc="{{image}}"
+            class="cursor-pointer h-24 w-full object-cover rounded"
+            alt="Uploaded event image"
+          />
         </div>
 
         <!-- Form Actions -->
@@ -171,8 +171,7 @@ import {CommonModule} from '@angular/common';
 })
 export class EventFormComponent {
   @Input() isEditMode = false;
-
-  @Input() eventData: Omit<Event, 'id' | 'images' | 'dateCompletion'> & {
+  @Input() eventData: Omit<EventModel, 'id' | 'images' | 'dateCompletion'> & {
     images: string;
     dateCompletion?: string;
   } = {
@@ -186,15 +185,39 @@ export class EventFormComponent {
     division: 'PTCAO',
     status: 'Planned'
   };
-
   @Input() divisions: PGO[] = [];
-  @Input() statusOptions: Event['status'][] = ['Planned', 'Ongoing', 'Completed', 'Cancelled'];
-
+  @Input() statusOptions: EventModel['status'][] | undefined;
   @Output() submitEvent = new EventEmitter<{
-    eventData: Omit<Event, 'id'>;
+    eventData: Omit<EventModel, 'id'>;
     isEditMode: boolean;
   }>();
   @Output() cancel = new EventEmitter<void>();
+
+  newEvent = {
+    title: '',
+    description: '',
+    location: '',
+    division: '',
+    status: '',
+    dateCompletion: null,
+    budget: null,
+    fundSource: '',
+    images: [] as string[]
+  };
+
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    for (const file of Array.from(input.files)) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        this.newEvent.images.push(base64);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
   onSubmit() {
     const images = this.eventData.images ?
