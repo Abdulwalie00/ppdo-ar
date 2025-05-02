@@ -20,6 +20,14 @@ import {PswdoComponent} from './pages/implementing/pswdo/pswdo.component';
 import {PhoComponent} from './pages/implementing/pho/pho.component';
 import {PvoComponent} from './pages/implementing/pvo/pvo.component';
 import {EventManagementComponent} from './pages/event-management/event-management.component';
+import {PaccoComponent} from './pages/administrative-support/pacco/pacco.component';
+import {PboComponent} from './pages/administrative-support/pbo/pbo.component';
+import {PgsoComponent} from './pages/administrative-support/pgso/pgso.component';
+import {PhrmoComponent} from './pages/administrative-support/phrmo/phrmo.component';
+import {PlsoComponent} from './pages/administrative-support/plso/plso.component';
+import {PpdoComponent} from './pages/administrative-support/ppdo/ppdo.component';
+import {PsfComponent} from './pages/administrative-support/psf/psf.component';
+import {PtoComponent} from './pages/administrative-support/pto/pto.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -45,6 +53,17 @@ export const routes: Routes = [
   { path: 'implementing/pswdo', component: PswdoComponent },
   { path: 'implementing/pho', component: PhoComponent },
   { path: 'implementing/pvo', component: PvoComponent },
+
+  //Administrator Support Routes
+  { path: 'administration-support/pacco', component: PaccoComponent },
+  { path: 'administration-support/pbo', component: PboComponent },
+  { path: 'administration-support/pgso', component: PgsoComponent },
+  { path: 'administration-support/phrmo', component: PhrmoComponent },
+  { path: 'administration-support/plso', component: PlsoComponent },
+  { path: 'administration-support/ppdo', component: PpdoComponent },
+  { path: 'administration-support/psf', component: PsfComponent },
+  { path: 'administration-support/pto', component: PtoComponent },
+
   //Other Routes
 
   { path: 'reports', component: ReportsComponent },
