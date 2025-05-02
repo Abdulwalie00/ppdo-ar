@@ -85,14 +85,14 @@ export class SidebarComponent {
       icon: faDatabase,
       isExpanded: false,
       children: [
-        { title: 'PPDO', icon: faFileAlt, link: '/data/records' },
-        { title: 'PHRMO', icon: faDatabase, link: '/data/archives' },
-        { title: 'PGSO', icon: faFileAlt, link: '/data/records' },
-        { title: 'PTO', icon: faDatabase, link: '/data/archives' },
-        { title: 'PACCO', icon: faFileAlt, link: '/data/records' },
-        { title: 'PBO', icon: faDatabase, link: '/data/archives' },
-        { title: 'PLSO', icon: faFileAlt, link: '/data/records' },
-        { title: 'PSF', icon: faDatabase, link: '/data/archives' },
+        { title: 'PPDO', icon: faFileAlt, link: '/administration-support/ppdo' },
+        { title: 'PHRMO', icon: faDatabase, link: '/administration-support/phrmo' },
+        { title: 'PGSO', icon: faFileAlt, link: '/administration-support/pgso' },
+        { title: 'PTO', icon: faDatabase, link: '/administration-support/pto' },
+        { title: 'PACCO', icon: faFileAlt, link: '/administration-support/pacco' },
+        { title: 'PBO', icon: faDatabase, link: '/administration-support/pbo' },
+        { title: 'PLSO', icon: faFileAlt, link: '/administration-support/plso' },
+        { title: 'PSF', icon: faDatabase, link: '/administration-support/psf' },
       ]
     },
     {
