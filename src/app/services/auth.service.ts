@@ -5,6 +5,7 @@ export interface User {
   name: string;
   email: string;
   username: string;
+  password: string;
   role: string;
 }
 
@@ -17,18 +18,21 @@ export class AuthService {
       name: 'Alice Santos',
       email: 'alice@example.com',
       username: 'alice',
+      password: 'alice123',
       role: 'Admin',
     },
     {
       name: 'Bob Ramirez',
       email: 'bob@example.com',
       username: 'bob',
+      password: 'bob123',
       role: 'Editor',
     },
     {
       name: 'Charlie Dela Cruz',
       email: 'charlie@example.com',
       username: 'charlie',
+      password: 'charlie123',
       role: 'Viewer',
     },
   ];

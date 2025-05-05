@@ -20,9 +20,12 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  login() {
-    const success = this.authService.login(this.username, this.password);
-    if (success) {
+  login(): void {
+    this.error = ''; // Reset error state before login
+
+    const isAuthenticated = this.authService.login(this.username.trim(), this.password);
+
+    if (isAuthenticated) {
       this.router.navigate(['/dashboard']);
     } else {
       this.error = 'Invalid username or password';
