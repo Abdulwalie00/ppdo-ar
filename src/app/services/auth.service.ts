@@ -12,10 +12,30 @@ export interface User {
   providedIn: 'root',
 })
 export class AuthService {
+  private users: User[] = [
+    {
+      name: 'Alice Santos',
+      email: 'alice@example.com',
+      username: 'alice',
+      role: 'Admin',
+    },
+    {
+      name: 'Bob Ramirez',
+      email: 'bob@example.com',
+      username: 'bob',
+      role: 'Editor',
+    },
+    {
+      name: 'Charlie Dela Cruz',
+      email: 'charlie@example.com',
+      username: 'charlie',
+      role: 'Viewer',
+    },
+  ];
+
   private currentUserSubject = new BehaviorSubject<User | null>(null);
 
   constructor() {
-    // Simulate persisted login (e.g., from localStorage)
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       this.currentUserSubject.next(JSON.parse(storedUser));
@@ -23,19 +43,13 @@ export class AuthService {
   }
 
   login(username: string, password: string): boolean {
-    // 🔐 Simulate a login
-    if (username === 'admin' && password === 'admin') {
-      const user: User = {
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        username: 'admin',
-        role: 'Administrator',
-      };
+    // In a real app, you’d validate password too
+    const user = this.users.find(u => u.username === username);
+    if (user) {
       this.currentUserSubject.next(user);
       localStorage.setItem('user', JSON.stringify(user));
       return true;
     }
-
     return false;
   }
 

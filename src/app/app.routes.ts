@@ -30,6 +30,7 @@ import {PsfComponent} from './pages/administrative-support/psf/psf.component';
 import {PtoComponent} from './pages/administrative-support/pto/pto.component';
 import {LoginComponent} from './components/auth/login/login.component';
 import { MainLayoutComponent } from './components/layout/main-layout/main-layout.component';
+import {ProfileComponent} from './pages/profile/profile.component';
 
 export const routes: Routes = [
   {
@@ -82,6 +83,7 @@ export const routes: Routes = [
       { path: 'reports', component: ReportsComponent },
       { path: 'settings', component: SettingsComponent },
       { path: 'events', component: EventManagementComponent },
+      { path: 'profile', component: ProfileComponent },
     ]
   },
   { path: '**', redirectTo: 'login' }
