@@ -4,16 +4,32 @@
       <h1 class="text-xl font-semibold text-blue-700 font-sans">PPDO-AR</h1>
     </div>
 
-    <div class="flex items-center space-x-4">
-
-      <button class="p-2 rounded-full hover:bg-gray-100 relative">
-        <fa-icon [icon]="faBell" class="text-gray-600"></fa-icon>
-        <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-      </button>
-
-      <div class="flex items-center space-x-2">
+    <div class="relative">
+      <div
+        class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md"
+        (click)="toggleMenu()"
+      >
         <fa-icon [icon]="faUserCircle" class="text-gray-600 text-2xl"></fa-icon>
-        <span class="text-gray-700">Admin</span>
+        <span class="text-gray-700">{{ currentUser?.name || 'User' }}</span>
+      </div>
+
+      <!-- Dropdown Menu -->
+      <div
+        *ngIf="menuOpen"
+        class="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10"
+      >
+        <a
+          routerLink="/profile"
+          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          (click)="closeMenu()"
+        >Profile</a
+        >
+        <button
+          class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          (click)="logout()"
+        >
+          Logout
+        </button>
       </div>
     </div>
   </div>
