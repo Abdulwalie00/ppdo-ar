@@ -1,24 +1,31 @@
 import { Component } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
+import {AuthService} from '../../../services/auth.service';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-login',
   imports: [
-    FormsModule
+    FormsModule,
+    NgIf
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  constructor(private router: Router) {}
-
-  email = '';
+  username = '';
   password = '';
+  error = '';
+
+  constructor(private authService: AuthService, private router: Router) {}
 
   login() {
-    this.router.navigate(['/dashboard']); // redirect after login
-    console.log('Email:', this.email);
-    console.log('Password:', this.password);
+    const success = this.authService.login(this.username, this.password);
+    if (success) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.error = 'Invalid username or password';
+    }
   }
 }
