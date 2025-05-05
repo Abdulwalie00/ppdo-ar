@@ -28,49 +28,62 @@ import {PlsoComponent} from './pages/administrative-support/plso/plso.component'
 import {PpdoComponent} from './pages/administrative-support/ppdo/ppdo.component';
 import {PsfComponent} from './pages/administrative-support/psf/psf.component';
 import {PtoComponent} from './pages/administrative-support/pto/pto.component';
+import {LoginComponent} from './components/auth/login/login.component';
+import { MainLayoutComponent } from './components/layout/main-layout/main-layout.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
+  {
+    path: '',
+    children: [
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
+      { path: 'login', component: LoginComponent }
+    ]
+  },
 
-  //PGO Routes
-  { path: 'pgo/ptcao', component: PtcaoComponent },
-  { path: 'pgo/pdd', component: PddComponent },
-  { path: 'pgo/icto', component: IctoComponent },
-  { path: 'pgo/rydo', component: RydoComponent },
-  { path: 'pgo/pwo', component: PwoComponent },
-  { path: 'pgo/plpp', component: PlppComponent },
-  { path: 'pgo/ptldc', component: PtldcComponent },
-  { path: 'pgo/ledipo', component: LedipoComponent },
-  { path: 'pgo/gad', component: GadComponent },
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'pgo/ptcao', component: PtcaoComponent },
+      //PGO Routes
+      { path: 'pgo/ptcao', component: PtcaoComponent },
+      { path: 'pgo/pdd', component: PddComponent },
+      { path: 'pgo/icto', component: IctoComponent },
+      { path: 'pgo/rydo', component: RydoComponent },
+      { path: 'pgo/pwo', component: PwoComponent },
+      { path: 'pgo/plpp', component: PlppComponent },
+      { path: 'pgo/ptldc', component: PtldcComponent },
+      { path: 'pgo/ledipo', component: LedipoComponent },
+      { path: 'pgo/gad', component: GadComponent },
 
-  //Implementing Routes
-  { path: 'implementing/peo', component: PeoComponent },
-  { path: 'implementing/pio', component: PioComponent },
-  { path: 'implementing/pco', component: PcoComponent },
-  { path: 'implementing/opag', component: OpagComponent },
-  { path: 'implementing/penro', component: PenroComponent },
-  { path: 'implementing/pswdo', component: PswdoComponent },
-  { path: 'implementing/pho', component: PhoComponent },
-  { path: 'implementing/pvo', component: PvoComponent },
+      //Implementing Routes
+      { path: 'implementing/peo', component: PeoComponent },
+      { path: 'implementing/pio', component: PioComponent },
+      { path: 'implementing/pco', component: PcoComponent },
+      { path: 'implementing/opag', component: OpagComponent },
+      { path: 'implementing/penro', component: PenroComponent },
+      { path: 'implementing/pswdo', component: PswdoComponent },
+      { path: 'implementing/pho', component: PhoComponent },
+      { path: 'implementing/pvo', component: PvoComponent },
 
-  //Administrator Support Routes
-  { path: 'administration-support/pacco', component: PaccoComponent },
-  { path: 'administration-support/pbo', component: PboComponent },
-  { path: 'administration-support/pgso', component: PgsoComponent },
-  { path: 'administration-support/phrmo', component: PhrmoComponent },
-  { path: 'administration-support/plso', component: PlsoComponent },
-  { path: 'administration-support/ppdo', component: PpdoComponent },
-  { path: 'administration-support/psf', component: PsfComponent },
-  { path: 'administration-support/pto', component: PtoComponent },
+      //Administrator Support Routes
+      { path: 'administration-support/pacco', component: PaccoComponent },
+      { path: 'administration-support/pbo', component: PboComponent },
+      { path: 'administration-support/pgso', component: PgsoComponent },
+      { path: 'administration-support/phrmo', component: PhrmoComponent },
+      { path: 'administration-support/plso', component: PlsoComponent },
+      { path: 'administration-support/ppdo', component: PpdoComponent },
+      { path: 'administration-support/psf', component: PsfComponent },
+      { path: 'administration-support/pto', component: PtoComponent },
 
-  //Other Routes
+      //Other Routes
 
-  { path: 'reports', component: ReportsComponent },
-  { path: 'settings', component: SettingsComponent },
-  { path: 'events', component: EventManagementComponent },
-
-
-
-  { path: '**', redirectTo: 'dashboard' }
+      { path: 'reports', component: ReportsComponent },
+      { path: 'settings', component: SettingsComponent },
+      { path: 'events', component: EventManagementComponent },
+    ]
+  },
+  { path: '**', redirectTo: 'login' }
 ];
+
