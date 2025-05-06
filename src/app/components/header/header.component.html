@@ -1,10 +1,24 @@
-<header class="bg-white shadow-2xl">
+<header class="bg-white text-gray-900 shadow-md dark:bg-gray-800 dark:text-white">
   <div class="flex items-center justify-between px-4 py-1">
     <div class="flex items-center">
       <h1 class="text-xl font-semibold text-blue-700 font-sans">PPDO-AR</h1>
     </div>
 
+    <!-- Dark Mode Toggle Button -->
+    <button
+      (click)="toggleDarkMode()"
+      class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+      [title]="isDarkMode ? 'Light mode' : 'Dark mode'"
+    >
+      <fa-icon
+        [icon]="isDarkMode ? faSun : faMoon"
+        class="text-gray-600 dark:text-gray-300"
+      ></fa-icon>
+    </button>
+
     <div class="relative">
+
+
       <div
         class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md"
         (click)="toggleMenu()"
@@ -12,6 +26,7 @@
         <fa-icon [icon]="faUserCircle" class="text-gray-600 text-2xl"></fa-icon>
         <span class="text-gray-700">{{ currentUser?.name || 'User' }}</span>
       </div>
+
 
       <!-- Dropdown Menu -->
       <div
@@ -31,6 +46,8 @@
           Logout
         </button>
       </div>
+
+
     </div>
   </div>
 </header>
