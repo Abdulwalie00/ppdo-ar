@@ -10,7 +10,7 @@ import {
   faChevronDown,
   faFileAlt,
   faDatabase,
-  faUsers, faCircle
+  faUsers, faCircle, faCaretRight, faCaretLeft, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import {faChevronLeft} from '@fortawesome/free-solid-svg-icons/faChevronLeft';
 
@@ -116,4 +116,7 @@ export class SidebarComponent {
   }
 
   protected readonly faChevronLeft = faChevronLeft;
+  protected readonly faCaretRight = faCaretRight;
+  protected readonly faCaretLeft = faCaretLeft;
+  protected readonly faCaretDown = faCaretDown;
 }

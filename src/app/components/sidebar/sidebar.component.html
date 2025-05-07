@@ -1,25 +1,35 @@
 <aside
-  [class]="'bg-white text-black transition-all duration-300 ' + (isCollapsed() ? 'w-20' : 'w-64')"
+  [class]="'bg-white text-black transition-all duration-300 ' + (isCollapsed() ? 'w-14' : 'w-64')"
 >
-  <div class="py-1 px-2 flex items-center justify-between border-b border-blue-700">
+  <div
+    class="py-2.5 p-2 justify-center flex items-center border-b border-blue-700"
+  >
     <h1 *ngIf="!isCollapsed()" class="text-xl font-bold">PPDO-AR</h1>
     <h1 *ngIf="isCollapsed()" class="text-xl font-bold">P</h1>
-    <button
-      (click)="toggleSidebar()"
-      class="text-black hover:bg-blue-700 p-2 rounded-lg"
-    >
-      <fa-icon [icon]="isCollapsed() ? faChevronRight : faChevronLeft" class="transform rotate-180"></fa-icon>
-    </button>
   </div>
 
   <nav class="p-1">
+    <div
+      [ngClass]="{
+    'justify-center': isCollapsed(),
+    'justify-end': !isCollapsed()
+  }"
+      class="flex items-center p-0 m-0 gap-0"
+    >
+      <button
+        (click)="toggleSidebar()"
+        class="text-black hover:bg-blue-300 p-1 px-4 rounded-lg"
+      >
+        <fa-icon [icon]="isCollapsed() ? faCaretRight : faCaretLeft" class="transform rotate-180"></fa-icon>
+      </button>
+    </div>
     <ul>
       <li *ngFor="let item of menuItems()" class="mb-1">
         <div *ngIf="!item.children">
           <a
             [routerLink]="item.link"
-            routerLinkActive="bg-blue-700 text-white"
-            class="flex items-center p-3 rounded-lg hover:bg-blue-700 transition-colors"
+            routerLinkActive="bg-blue-500 text-white"
+            class="flex items-center p-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
           >
             <fa-icon [icon]="item.icon" class="mr-3"></fa-icon>
             <span *ngIf="!isCollapsed()">{{ item.title }}</span>
@@ -29,7 +39,7 @@
         <div *ngIf="item.children">
           <button
             (click)="toggleMenu(item)"
-            class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-blue-700  transition-colors"
+            class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-blue-500 hover:text-white  transition-colors"
           >
             <div class="flex items-center">
               <fa-icon [icon]="item.icon" class="mr-3"></fa-icon>
@@ -37,7 +47,7 @@
             </div>
             <fa-icon
               *ngIf="!isCollapsed()"
-              [icon]="item.isExpanded ? faChevronDown : faChevronRight"
+              [icon]="item.isExpanded ? faCaretDown : faCaretRight"
               class="ml-2"
             ></fa-icon>
           </button>
@@ -49,8 +59,8 @@
             <li *ngFor="let child of item.children">
               <a
                 [routerLink]="child.link"
-                routerLinkActive="bg-blue-700 text-white"
-                class="flex items-center p-2 rounded-lg hover:bg-blue-700 hover:text-white transition-colors"
+                routerLinkActive="bg-blue-500 text-white"
+                class="flex items-center p-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
               >
                 <fa-icon [icon]="child.icon" class="mr-3 text-sm"></fa-icon>
                 <span>{{ child.title }}</span>
