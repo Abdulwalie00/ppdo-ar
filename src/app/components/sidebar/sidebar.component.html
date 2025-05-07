@@ -38,8 +38,8 @@
 
         <div *ngIf="item.children">
           <button
-            (click)="toggleMenu(item)"
-            class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-blue-500 hover:text-white  transition-colors"
+            (click)="handleMenuClick(item, $event)"
+            class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
           >
             <div class="flex items-center">
               <fa-icon [icon]="item.icon" class="mr-3"></fa-icon>
@@ -53,14 +53,17 @@
           </button>
 
           <ul
-            *ngIf="item.isExpanded && !isCollapsed()"
-            class="ml-6 mt-1 space-y-1"
+            *ngIf="(item.isExpanded && !isCollapsed()) || (isCollapsed() && item.isExpanded)"
+            class="m-1"
+            [ngClass]="{'absolute left-14 bg-white p-2 rounded-lg shadow-md z-10 w-48': isCollapsed(),'ml-6': !isCollapsed()}"
+            [style.top.px]="isCollapsed() ? currentMenuTopPosition : null"
           >
             <li *ngFor="let child of item.children">
               <a
                 [routerLink]="child.link"
                 routerLinkActive="bg-blue-500 text-white"
                 class="flex items-center p-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
+                (click)="isCollapsed() && (item.isExpanded = false)"
               >
                 <fa-icon [icon]="child.icon" class="mr-3 text-sm"></fa-icon>
                 <span>{{ child.title }}</span>

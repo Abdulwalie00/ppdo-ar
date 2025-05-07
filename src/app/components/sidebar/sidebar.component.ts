@@ -31,7 +31,7 @@ interface MenuItem {
 })
 export class SidebarComponent {
   isCollapsed = signal(false);
-
+  currentMenuTopPosition: number = 1;
   menuItems = signal<MenuItem[]>([
     {
       title: 'Dashboard',
@@ -56,10 +56,8 @@ export class SidebarComponent {
         { title: 'PTLDC', icon: faCircle, link: '/pgo/ptldc' },
         { title: 'LEDIPO', icon: faCircle, link: '/pgo/ledipo' },
         { title: 'GAD', icon: faCircle, link: '/pgo/gad' },
-
       ]
     },
-
     {
       title: 'OPVG',
       icon: faUsers,
@@ -102,8 +100,13 @@ export class SidebarComponent {
     }
   ]);
 
+  // FontAwesome icons
   faChevronRight = faChevronRight;
   faChevronDown = faChevronDown;
+  faChevronLeft = faChevronLeft;
+  faCaretRight = faCaretRight;
+  faCaretLeft = faCaretLeft;
+  faCaretDown = faCaretDown;
 
   toggleMenu(menuItem: MenuItem) {
     if (menuItem.children) {
@@ -111,12 +114,52 @@ export class SidebarComponent {
     }
   }
 
+  // handleMenuClick(item: MenuItem, $event: MouseEvent) {
+  //   if (this.isCollapsed()) {
+  //     // When collapsed, just toggle the expanded state
+  //     item.isExpanded = !item.isExpanded;
+  //
+  //     // Close other expanded menus
+  //     this.menuItems().forEach(menu => {
+  //       if (menu !== item && menu.isExpanded) {
+  //         menu.isExpanded = false;
+  //       }
+  //     });
+  //   } else {
+  //     // When not collapsed, use the existing toggle behavior
+  //     this.toggleMenu(item);
+  //   }
+  // }
+
   toggleSidebar() {
     this.isCollapsed.set(!this.isCollapsed());
+
+    // Close all expanded menus when collapsing the sidebar
+    if (this.isCollapsed()) {
+      this.menuItems().forEach(menu => {
+        if (menu.isExpanded) {
+          menu.isExpanded = false;
+        }
+      });
+    }
   }
 
-  protected readonly faChevronLeft = faChevronLeft;
-  protected readonly faCaretRight = faCaretRight;
-  protected readonly faCaretLeft = faCaretLeft;
-  protected readonly faCaretDown = faCaretDown;
+  handleMenuClick(menuItem: MenuItem, event: MouseEvent) {
+    if (this.isCollapsed()) {
+      menuItem.isExpanded = !menuItem.isExpanded;
+      if (menuItem.isExpanded) {
+        this.calculateTopPosition(event);
+      }
+      event.stopPropagation();
+    } else {
+      this.toggleMenu(menuItem);
+    }
+  }
+
+  calculateTopPosition(event: MouseEvent): void {
+    const clickedButton = event.currentTarget as HTMLElement;
+    const buttonRect = clickedButton.getBoundingClientRect();
+    // Adjust this value if you have a header or other offset
+    this.currentMenuTopPosition = buttonRect.top - 1; // 60 is approximate header height
+  }
 }
