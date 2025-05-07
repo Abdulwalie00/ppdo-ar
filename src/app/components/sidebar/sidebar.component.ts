@@ -12,7 +12,7 @@ import {
   faDatabase,
   faUsers, faCircle, faCaretRight, faCaretLeft, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
-import {faChevronLeft} from '@fortawesome/free-solid-svg-icons/faChevronLeft';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 interface MenuItem {
   title: string;
@@ -27,7 +27,14 @@ interface MenuItem {
   standalone: true,
   imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css']
+  styleUrls: ['./sidebar.component.css'],
+  animations: [
+    trigger('slideDownUp', [
+      state('closed', style({ height: '0px', overflow: 'hidden', opacity: 0 })),
+      state('open', style({ height: '*', overflow: 'hidden', opacity: 1 })),
+      transition('closed <=> open', animate('300ms ease-in-out'))
+    ])
+  ]
 })
 export class SidebarComponent {
   isCollapsed = signal(false);
@@ -103,7 +110,6 @@ export class SidebarComponent {
   // FontAwesome icons
   faChevronRight = faChevronRight;
   faChevronDown = faChevronDown;
-  faChevronLeft = faChevronLeft;
   faCaretRight = faCaretRight;
   faCaretLeft = faCaretLeft;
   faCaretDown = faCaretDown;
@@ -162,4 +168,5 @@ export class SidebarComponent {
     // Adjust this value if you have a header or other offset
     this.currentMenuTopPosition = buttonRect.top - 1; // 60 is approximate header height
   }
+
 }
