@@ -31,6 +31,7 @@ import {PtoComponent} from './pages/administrative-support/pto/pto.component';
 import {LoginComponent} from './components/auth/login/login.component';
 import { MainLayoutComponent } from './components/layout/main-layout/main-layout.component';
 import {ProfileComponent} from './pages/profile/profile.component';
+import {AuthGuard} from './auth.guard';
 
 export const routes: Routes = [
   {
@@ -44,6 +45,7 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    // canActivate: [AuthGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'pgo/ptcao', component: PtcaoComponent },

@@ -35,6 +35,13 @@ export class AuthService {
       password: 'charlie123',
       role: 'Viewer',
     },
+    {
+      name: 'James Bond',
+      email: 'jamesbond@example.com',
+      username: 'admin',
+      password: 'admin123',
+      role: 'Admin',
+    },
   ];
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -42,18 +49,26 @@ export class AuthService {
   constructor() {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      this.currentUserSubject.next(JSON.parse(storedUser));
+      try {
+        const user: User = JSON.parse(storedUser);
+        this.currentUserSubject.next(user);
+      } catch {
+        localStorage.removeItem('user');
+      }
     }
   }
 
   login(username: string, password: string): boolean {
-    // In a real app, you’d validate password too
-    const user = this.users.find(u => u.username === username);
+    const user = this.users.find(
+      u => u.username === username && u.password === password
+    );
+
     if (user) {
       this.currentUserSubject.next(user);
       localStorage.setItem('user', JSON.stringify(user));
       return true;
     }
+
     return false;
   }
 
@@ -71,6 +86,6 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.currentUserSubject.value;
+    return this.currentUserSubject.value !== null;
   }
 }
