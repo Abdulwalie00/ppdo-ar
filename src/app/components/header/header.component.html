@@ -16,18 +16,17 @@
 <!--      ></fa-icon>-->
 <!--    </button>-->
 
-    <div class="relative">
+    <div class="relative flex items-center">
 
+      <span class="pr-4 ml-4 font-semibold text-gray-600 dark:text-gray-300">{{ currentTime }}</span>
 
       <div
         class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md"
         (click)="toggleMenu()"
       >
-        <span class="pr-4 ml-4 font-semibold text-gray-600 dark:text-gray-300">{{ currentTime }}</span>
         <fa-icon [icon]="faUserCircle" class="text-gray-600 text-2xl"></fa-icon>
         <span class="text-gray-700">{{ currentUser?.name || 'User' }}</span>
       </div>
-
 
       <!-- Dropdown Menu -->
       <div
@@ -38,8 +37,9 @@
           routerLink="/profile"
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           (click)="closeMenu()"
-        >Profile</a
         >
+          Profile
+        </a>
         <button
           class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           (click)="logout()"
@@ -48,7 +48,7 @@
         </button>
       </div>
 
-
     </div>
+
   </div>
 </header>
