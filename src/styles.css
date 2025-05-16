@@ -1,8 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
+/* Import Poppins */
+@import '@fontsource/poppins/index.css';
+
+/* Tailwind Base */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Apply Poppins as the default font */
 body {
   font-family: 'Poppins', sans-serif;
 }
