@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, Renderer2, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faHome,
@@ -10,7 +10,11 @@ import {
   faChevronDown,
   faFileAlt,
   faDatabase,
-  faUsers, faCircle, faCaretRight, faCaretLeft, faCaretDown
+  faUsers,
+  faCircle,
+  faCaretRight,
+  faCaretLeft,
+  faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
@@ -36,9 +40,17 @@ interface MenuItem {
     ])
   ]
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
+
   isCollapsed = signal(false);
   currentMenuTopPosition: number = 1;
+  private globalClickUnlistener: (() => void) | undefined = undefined;
+
+
+  constructor(private router: Router, private renderer: Renderer2, private el: ElementRef) {
+    this.collapseSubmenuOnNavigate();
+  }
+
   menuItems = signal<MenuItem[]>([
     {
       title: 'Dashboard',
@@ -114,39 +126,21 @@ export class SidebarComponent {
   faCaretLeft = faCaretLeft;
   faCaretDown = faCaretDown;
 
-  toggleMenu(menuItem: MenuItem) {
-    if (menuItem.children) {
-      menuItem.isExpanded = !menuItem.isExpanded;
+  ngOnInit() {
+    this.globalClickUnlistener = this.renderer.listen('document', 'click', (event: MouseEvent) => {
+      this.handleClickOutside(event);
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.globalClickUnlistener) {
+      this.globalClickUnlistener();
     }
   }
 
-  // handleMenuClick(item: MenuItem, $event: MouseEvent) {
-  //   if (this.isCollapsed()) {
-  //     // When collapsed, just toggle the expanded state
-  //     item.isExpanded = !item.isExpanded;
-  //
-  //     // Close other expanded menus
-  //     this.menuItems().forEach(menu => {
-  //       if (menu !== item && menu.isExpanded) {
-  //         menu.isExpanded = false;
-  //       }
-  //     });
-  //   } else {
-  //     // When not collapsed, use the existing toggle behavior
-  //     this.toggleMenu(item);
-  //   }
-  // }
-
-  toggleSidebar() {
-    this.isCollapsed.set(!this.isCollapsed());
-
-    // Close all expanded menus when collapsing the sidebar
-    if (this.isCollapsed()) {
-      this.menuItems().forEach(menu => {
-        if (menu.isExpanded) {
-          menu.isExpanded = false;
-        }
-      });
+  toggleMenu(menuItem: MenuItem) {
+    if (menuItem.children) {
+      menuItem.isExpanded = !menuItem.isExpanded;
     }
   }
 
@@ -162,11 +156,51 @@ export class SidebarComponent {
     }
   }
 
+
+  toggleSidebar() {
+    this.isCollapsed.set(!this.isCollapsed());
+
+    if (this.isCollapsed()) {
+      this.menuItems().forEach(menu => {
+        menu.isExpanded = false;
+      });
+    }
+  }
+
+  collapseSubmenuOnNavigate() {
+    this.router.events.subscribe(() => {
+      if (this.isCollapsed()) {
+        this.menuItems().forEach(menu => {
+          menu.isExpanded = false;
+        });
+      }
+    });
+  }
+
+
+  handleClickOutside(event: MouseEvent) {
+    const clickedInside = this.el.nativeElement.contains(event.target);
+
+    if (!clickedInside && this.isCollapsed()) {
+      this.menuItems().forEach(menu => {
+        menu.isExpanded = false;
+      });
+    }
+  }
+
+  handleSubmenuClick() {
+    if (this.isCollapsed()) {
+      this.menuItems().forEach(menu => {
+        menu.isExpanded = false;
+      });
+    }
+  }
+
+
   calculateTopPosition(event: MouseEvent): void {
     const clickedButton = event.currentTarget as HTMLElement;
     const buttonRect = clickedButton.getBoundingClientRect();
-    // Adjust this value if you have a header or other offset
-    this.currentMenuTopPosition = buttonRect.top - 1; // 60 is approximate header height
+    this.currentMenuTopPosition = buttonRect.top - 1;
   }
 
 }
