@@ -32,6 +32,7 @@ import {LoginComponent} from './components/auth/login/login.component';
 import { MainLayoutComponent } from './components/layout/main-layout/main-layout.component';
 import {ProfileComponent} from './pages/profile/profile.component';
 import {AuthGuard} from './auth.guard';
+import {NotFoundComponent} from './components/not-found/not-found.component';
 
 export const routes: Routes = [
   {
@@ -88,6 +89,6 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileComponent },
     ]
   },
-  { path: '**', redirectTo: 'login' }
+  { path: '**', component: NotFoundComponent }
 ];
 
