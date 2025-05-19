@@ -1,62 +1,71 @@
-<aside [class]="' text-black transition-all duration-300 ' + (isCollapsed() ? 'w-14' : 'w-68')">
-  <div class="py-2.5 p-2 justify-between flex items-center ">
-    <h1 *ngIf="!isCollapsed()" class="text-xl font-bold">PPDO-AR</h1>
-    <div [ngClass]="{ 'justify-center': isCollapsed(), 'justify-end': !isCollapsed() }" class="flex items-center p-0 m-0 gap-0">
-      <button (click)="toggleSidebar()" class="text-black hover:bg-blue-300 p-0.5 px-4 rounded-lg">
-        <fa-icon [icon]="isCollapsed() ? faCaretRight : faCaretLeft"></fa-icon>
-      </button>
+<div class="flex min-h-screen">
+  <aside [class]="'bg-white text-black transition-all duration-300 ' + (isCollapsed() ? 'w-14' : 'w-68')">
+    <div class="py-2.5 p-2 justify-between flex items-center">
+      <h1 *ngIf="!isCollapsed()" class="text-xl font-bold">PPDO-AR</h1>
+      <div [ngClass]="{ 'justify-center': isCollapsed(), 'justify-end': !isCollapsed() }" class="flex items-center p-0 m-0 gap-0">
+        <button (click)="toggleSidebar()" class="text-black hover:bg-blue-300 p-0.5 px-4 rounded-lg">
+          <fa-icon [icon]="isCollapsed() ? faCaretRight : faCaretLeft"></fa-icon>
+        </button>
+      </div>
     </div>
-  </div>
 
-  <nav class="p-1 relative">
-    <ul>
-      <li *ngFor="let item of menuItems()" class="mb-1 relative text-sm font-medium">
-        <div *ngIf="!item.children">
-          <a [routerLink]="item.link" routerLinkActive="bg-blue-500 text-white"
-             class="flex items-center p-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
-            <fa-icon [icon]="item.icon" class="mr-3"></fa-icon>
-            <span *ngIf="!isCollapsed()">{{ item.title }}</span>
-          </a>
-        </div>
+    <nav class="p-1 relative">
+      <ul>
+        <li *ngFor="let item of menuItems()" class="mb-1 relative text-sm font-medium">
 
-        <div *ngIf="item.children" class="relative">
-          <button (click)="handleMenuClick(item, $event)"
-                  class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
-            <div class="flex items-center">
-              <fa-icon [icon]="item.icon" class="mr-3"></fa-icon>
+          <!-- Menu item WITHOUT children -->
+          <div *ngIf="!item.children">
+            <a [routerLink]="item.link" routerLinkActive="bg-blue-500 text-white"
+               [ngClass]="{ 'justify-center': isCollapsed(), 'justify-start': !isCollapsed() }"
+               class="flex items-center p-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
+              <fa-icon [icon]="item.icon" [ngClass]="{ 'mx-auto': isCollapsed(), 'mr-3': !isCollapsed() }"></fa-icon>
               <span *ngIf="!isCollapsed()">{{ item.title }}</span>
-            </div>
-            <fa-icon *ngIf="!isCollapsed()" [icon]="item.isExpanded ? faCaretDown : faCaretRight" class="ml-2"></fa-icon>
-          </button>
+            </a>
+          </div>
 
-          <!-- Submenu - Only Visible When Not Collapsed with Animation -->
-          <ul
-            *ngIf="!isCollapsed()"
-            [@slideDownUp]="item.isExpanded ? 'open' : 'closed'"
-            class="ml-4 mt-1 space-y-1"
-          >
-            <li *ngFor="let child of item.children">
-              <a (click)="handleSubmenuClick(); $event.stopPropagation()" [routerLink]="child.link" routerLinkActive="bg-blue-500 text-white"
-                 class="flex items-center p-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
-                <fa-icon [icon]="child.icon" class="mr-3 text-sm"></fa-icon>
-                <span>{{ child.title }}</span>
-              </a>
-            </li>
-          </ul>
+          <!-- Menu item WITH children -->
+          <div *ngIf="item.children" class="relative">
+            <button (click)="handleMenuClick(item, $event)"
+                    [ngClass]="{ 'justify-center': isCollapsed(), 'justify-between': !isCollapsed() }"
+                    class="w-full flex items-center p-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
+              <div class="flex items-center" [ngClass]="{ 'justify-center w-full': isCollapsed() }">
+                <fa-icon [icon]="item.icon" [ngClass]="{ 'mx-auto': isCollapsed(), 'mr-3': !isCollapsed() }"></fa-icon>
+                <span *ngIf="!isCollapsed()">{{ item.title }}</span>
+              </div>
+              <fa-icon *ngIf="!isCollapsed()" [icon]="item.isExpanded ? faCaretDown : faCaretRight" class="ml-2"></fa-icon>
+            </button>
 
-          <!-- Submenu - Only Visible When Collapsed (No Animation) -->
-          <ul *ngIf="isCollapsed() && item.isExpanded"
-              class="absolute left-full top-0 w-48 bg-white border border-gray-300 rounded-lg shadow-lg mt-1 z-50">
-            <li *ngFor="let child of item.children">
-              <a [routerLink]="child.link" routerLinkActive="bg-blue-500 text-white"
-                 class="flex items-center p-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
-                <fa-icon [icon]="child.icon" class="mr-3 text-sm"></fa-icon>
-                <span>{{ child.title }}</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </li>
-    </ul>
-  </nav>
-</aside>
+            <!-- Submenu - Only Visible When Not Collapsed with Animation -->
+            <ul
+              *ngIf="!isCollapsed()"
+              [@slideDownUp]="item.isExpanded ? 'open' : 'closed'"
+              class="ml-4 mt-1 space-y-1"
+            >
+              <li *ngFor="let child of item.children">
+                <a (click)="handleSubmenuClick(); $event.stopPropagation()"
+                   [routerLink]="child.link" routerLinkActive="bg-blue-500 text-white"
+                   class="flex items-center p-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
+                  <fa-icon [icon]="child.icon" class="mr-3 text-sm"></fa-icon>
+                  <span>{{ child.title }}</span>
+                </a>
+              </li>
+            </ul>
+
+            <!-- Submenu - Only Visible When Collapsed (No Animation) -->
+            <ul *ngIf="isCollapsed() && item.isExpanded"
+                class="absolute left-full top-0 w-48 bg-white border border-gray-300 rounded-lg shadow-lg mt-1 z-50">
+              <li *ngFor="let child of item.children">
+                <a [routerLink]="child.link" routerLinkActive="bg-blue-500 text-white"
+                   class="flex items-center p-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
+                  <fa-icon [icon]="child.icon" class="mr-3 text-sm"></fa-icon>
+                  <span>{{ child.title }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </li>
+      </ul>
+    </nav>
+  </aside>
+</div>
