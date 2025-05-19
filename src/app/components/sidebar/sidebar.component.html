@@ -1,5 +1,5 @@
-<aside [class]="'bg-white text-black transition-all duration-300 ' + (isCollapsed() ? 'w-14' : 'w-68')">
-  <div class="py-2.5 p-2 justify-between flex items-center border-b border-blue-700">
+<aside [class]="' text-black transition-all duration-300 ' + (isCollapsed() ? 'w-14' : 'w-68')">
+  <div class="py-2.5 p-2 justify-between flex items-center ">
     <h1 *ngIf="!isCollapsed()" class="text-xl font-bold">PPDO-AR</h1>
     <div [ngClass]="{ 'justify-center': isCollapsed(), 'justify-end': !isCollapsed() }" class="flex items-center p-0 m-0 gap-0">
       <button (click)="toggleSidebar()" class="text-black hover:bg-blue-300 p-0.5 px-4 rounded-lg">
@@ -10,7 +10,7 @@
 
   <nav class="p-1 relative">
     <ul>
-      <li *ngFor="let item of menuItems()" class="mb-1 relative">
+      <li *ngFor="let item of menuItems()" class="mb-1 relative text-sm font-medium">
         <div *ngIf="!item.children">
           <a [routerLink]="item.link" routerLinkActive="bg-blue-500 text-white"
              class="flex items-center p-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
