@@ -1,41 +1,48 @@
-<div>
-  <h2 class="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
+<div class=" bg-white rounded-lg shadow p-8">
+  <h1 class="text-3xl font-bold mb-6">Event Dashboard</h1>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div *ngFor="let stat of stats" class="bg-white rounded-lg shadow p-6">
-      <div class="flex items-center">
-        <div [class]="'p-3 rounded-full text-white ' + stat.color">
-          <fa-icon [icon]="stat.icon"></fa-icon>
-        </div>
-        <div class="ml-4">
-          <p class="text-sm font-medium text-gray-500">{{ stat.title }}</p>
-          <p class="text-2xl font-semibold text-gray-800">{{ stat.value }}</p>
-        </div>
-      </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <div class="bg-blue-100 text-blue-800 p-4 rounded shadow">
+      <h2 class="text-xl font-semibold">Total Events</h2>
+      <p class="text-3xl">{{ totalEvents }}</p>
+    </div>
+    <div class="bg-green-100 text-green-800 p-4 rounded shadow">
+      <h2 class="text-xl font-semibold">Completed</h2>
+      <p class="text-3xl">{{ completed }}</p>
+    </div>
+    <div class="bg-yellow-100 text-yellow-800 p-4 rounded shadow">
+      <h2 class="text-xl font-semibold">Ongoing</h2>
+      <p class="text-3xl">{{ ongoing }}</p>
+    </div>
+    <div class="bg-purple-100 text-purple-800 p-4 rounded shadow">
+      <h2 class="text-xl font-semibold">Planned</h2>
+      <p class="text-3xl">{{ planned }}</p>
+    </div>
+    <div class="bg-red-100 text-red-800 p-4 rounded shadow">
+      <h2 class="text-xl font-semibold">Cancelled</h2>
+      <p class="text-3xl">{{ cancelled }}</p>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activities</h3>
-      <div class="space-y-4">
-        <div *ngFor="let i of [1,2,3]" class="flex items-start">
-          <div class="bg-blue-100 p-2 rounded-full mr-3">
-            <fa-icon [icon]="faFileAlt" class="text-blue-500"></fa-icon>
-          </div>
-          <div>
-            <p class="font-medium text-gray-800">New document uploaded</p>
-            <p class="text-sm text-gray-500">2 hours ago</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">Performance Chart</h3>
-      <div class="h-64 bg-gray-100 rounded flex items-center justify-center">
-        <p class="text-gray-500">Chart Placeholder</p>
-      </div>
-    </div>
+  <div class="mt-8">
+    <h2 class="text-2xl font-semibold mb-4">Event List</h2>
+    <table class="min-w-full border-collapse border border-gray-200">
+      <thead>
+      <tr class="bg-gray-100">
+        <th class="border px-4 py-2 text-left">Title</th>
+        <th class="border px-4 py-2 text-left">Division</th>
+        <th class="border px-4 py-2 text-left">Status</th>
+        <th class="border px-4 py-2 text-left">Budget</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let event of events" class="hover:bg-gray-50">
+        <td class="border px-4 py-2">{{ event.title }}</td>
+        <td class="border px-4 py-2">{{ event.division }}</td>
+        <td class="border px-4 py-2">{{ event.status }}</td>
+        <td class="border px-4 py-2">₱{{ event.budget?.toLocaleString() }}</td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </div>

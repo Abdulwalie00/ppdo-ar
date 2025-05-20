@@ -1,30 +1,39 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {
-  faUsers,
-  faFileAlt,
-  faChartLine,
-  faDatabase
-} from '@fortawesome/free-solid-svg-icons';
+import { Component, inject, OnInit } from '@angular/core';
+import { EventService } from '../../services/event.service';
+import { Event } from '../../models/event.model';
+import {NgForOf} from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
-  imports: [CommonModule, FontAwesomeModule],
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  templateUrl:  './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css'],
+  imports: [
+    NgForOf
+  ],
+  standalone: true
 })
-export class DashboardComponent {
-  faUsers = faUsers;
-  faFileAlt = faFileAlt;
-  faChartLine = faChartLine;
-  faDatabase = faDatabase;
+export class DashboardComponent implements OnInit {
+  private eventService = inject(EventService);
+  events: Event[] = [];
 
-  stats = [
-    { title: 'Total Users', value: '1,234', icon: this.faUsers, color: 'bg-blue-500' },
-    { title: 'Documents', value: '4,567', icon: this.faFileAlt, color: 'bg-green-500' },
-    { title: 'Transactions', value: '8,901', icon: this.faChartLine, color: 'bg-yellow-500' },
-    { title: 'Data Records', value: '12,345', icon: this.faDatabase, color: 'bg-red-500' }
-  ];
+  totalEvents = 0;
+  completed = 0;
+  ongoing = 0;
+  planned = 0;
+  cancelled = 0;
+
+  ngOnInit(): void {
+    this.eventService.setFilterDivision('All'); // reset filter
+    this.fetchEventData();
+  }
+
+  fetchEventData(): void {
+    this.events = this.eventService.getEvents();
+
+    this.totalEvents = this.events.length;
+    this.completed = this.events.filter(e => e.status === 'Completed').length;
+    this.ongoing = this.events.filter(e => e.status === 'Ongoing').length;
+    this.planned = this.events.filter(e => e.status === 'Planned').length;
+    this.cancelled = this.events.filter(e => e.status === 'Cancelled').length;
+  }
 }

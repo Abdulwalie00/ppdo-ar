@@ -140,6 +140,7 @@ export class EventService {
     return this.events.filter(event => event.division === divisionFilter);
   }
 
+
   getDivisions(): PGO[] {
     return ['PTCAO', 'ICTO', 'PDD', 'PLPP', 'GAD', 'LEDIPO', 'PWO', 'RYDO', 'PTLDC'];
   }
