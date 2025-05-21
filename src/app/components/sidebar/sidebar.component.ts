@@ -37,7 +37,12 @@ interface MenuItem {
       state('closed', style({ height: '0px', overflow: 'hidden', opacity: 0 })),
       state('open', style({ height: '*', overflow: 'hidden', opacity: 1 })),
       transition('closed <=> open', animate('300ms ease-in-out'))
-    ])
+    ]),
+    trigger('sidebarSlide', [
+      state('expanded', style({ width: '17rem' })), // 68 * 0.25rem = 17rem
+      state('collapsed', style({ width: '3.5rem' })), // 14 * 0.25rem = 3.5rem
+      transition('expanded <=> collapsed', animate('300ms ease-in-out')),
+    ]),
   ]
 })
 export class SidebarComponent implements OnInit, OnDestroy {
