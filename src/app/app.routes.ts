@@ -33,6 +33,7 @@ import { MainLayoutComponent } from './components/layout/main-layout/main-layout
 import {ProfileComponent} from './pages/profile/profile.component';
 import {AuthGuard} from './auth.guard';
 import {NotFoundComponent} from './components/not-found/not-found.component';
+import {ManageAccountsComponent} from './pages/manage-accounts/manage-accounts.component';
 
 export const routes: Routes = [
   {
@@ -87,6 +88,11 @@ export const routes: Routes = [
       { path: 'settings', component: SettingsComponent },
       { path: 'events', component: EventManagementComponent },
       { path: 'profile', component: ProfileComponent },
+
+      {
+        path: 'accounts',
+        component: ManageAccountsComponent,
+      },
     ]
   },
   { path: '**', component: NotFoundComponent }

@@ -118,10 +118,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
       ]
     },
     {
+      title: 'Account Management',
+      icon: faCog,
+      link: '/accounts'
+    },
+    {
       title: 'Settings',
       icon: faCog,
       link: '/settings'
-    }
+    },
   ]);
 
   // FontAwesome icons
