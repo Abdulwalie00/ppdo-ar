@@ -13,7 +13,7 @@ export interface User {
   providedIn: 'root',
 })
 export class AuthService {
-  private users: User[] = [
+  users: User[] = [
     {
       name: 'Alice Santos',
       email: 'alice@example.com',
@@ -87,5 +87,27 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return this.currentUserSubject.value !== null;
+  }
+
+  // ✅ MISSING FUNCTIONS BELOW
+
+  get usersList(): User[] {
+    return this.users;
+  }
+
+  addUser(user: User): void {
+    this.users.push(user);
+  }
+
+  updateUser(index: number, user: User): void {
+    if (index >= 0 && index < this.users.length) {
+      this.users[index] = user;
+    }
+  }
+
+  deleteUser(index: number): void {
+    if (index >= 0 && index < this.users.length) {
+      this.users.splice(index, 1);
+    }
   }
 }
