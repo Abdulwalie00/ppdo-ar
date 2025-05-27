@@ -1,0 +1,82 @@
+<div class="p-6 max-w-xl mx-auto">
+  <h2 class="text-2xl font-bold mb-4">Add User</h2>
+  <form (ngSubmit)="submit()" class="space-y-4">
+    <!-- First Name -->
+    <input
+      [(ngModel)]="user.firstName"
+      name="firstName"
+      placeholder="First Name"
+      class="w-full border rounded px-3 py-2"
+      required
+    />
+
+    <!-- Middle Name -->
+    <input
+      [(ngModel)]="user.middleName"
+      name="middleName"
+      placeholder="Middle Name"
+      class="w-full border rounded px-3 py-2"
+    />
+
+    <!-- Last Name -->
+    <input
+      [(ngModel)]="user.lastName"
+      name="lastName"
+      placeholder="Last Name"
+      class="w-full border rounded px-3 py-2"
+      required
+    />
+
+    <!-- Email -->
+    <input
+      [(ngModel)]="user.email"
+      name="email"
+      type="email"
+      placeholder="Email"
+      class="w-full border rounded px-3 py-2"
+      required
+    />
+
+    <!-- Username -->
+    <input
+      [(ngModel)]="user.username"
+      name="username"
+      placeholder="Username"
+      class="w-full border rounded px-3 py-2"
+      required
+    />
+
+    <!-- Password -->
+    <input
+      [(ngModel)]="user.passwordHash"
+      name="passwordHash"
+      type="password"
+      placeholder="Password"
+      class="w-full border rounded px-3 py-2"
+      required
+    />
+
+    <!-- Role -->
+    <select
+      [(ngModel)]="user.role"
+      name="role"
+      class="w-full border rounded px-3 py-2"
+      required
+    >
+      <option value="Admin">Admin</option>
+      <option value="Editor">Editor</option>
+      <option value="Viewer">Viewer</option>
+      <option value="Manager">Manager</option>
+    </select>
+
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
+      Add User
+    </button>
+  </form>
+
+  <app-confirm-dialog
+    *ngIf="showDialog"
+    [message]="'Are you sure you want to add this user?'"
+    (confirm)="onConfirm($event)"
+  ></app-confirm-dialog>
+</div>

@@ -1,0 +1,39 @@
+<div class="p-6 max-w-xl mx-auto">
+  <h2 class="text-2xl font-bold mb-4">Edit User</h2>
+  <form (ngSubmit)="submit()" class="space-y-4">
+    <!-- First Name -->
+    <input [(ngModel)]="user.firstName" name="firstName" class="w-full border rounded px-3 py-2" placeholder="First Name" required />
+
+    <!-- Middle Name -->
+    <input [(ngModel)]="user.middleName" name="middleName" class="w-full border rounded px-3 py-2" placeholder="Middle Name" />
+
+    <!-- Last Name -->
+    <input [(ngModel)]="user.lastName" name="lastName" class="w-full border rounded px-3 py-2" placeholder="Last Name" required />
+
+    <!-- Email -->
+    <input [(ngModel)]="user.email" name="email" type="email" class="w-full border rounded px-3 py-2" placeholder="Email" required />
+
+    <!-- Username -->
+    <input [(ngModel)]="user.username" name="username" class="w-full border rounded px-3 py-2" placeholder="Username" required />
+
+    <!-- Password -->
+    <input [(ngModel)]="user.passwordHash" name="password" type="password" class="w-full border rounded px-3 py-2" placeholder="Password" required />
+
+    <!-- Role -->
+    <select [(ngModel)]="user.role" name="role" class="w-full border rounded px-3 py-2" required>
+      <option value="Admin">Admin</option>
+      <option value="Editor">Editor</option>
+      <option value="Viewer">Viewer</option>
+      <option value="Manager">Manager</option>
+    </select>
+
+    <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded">Update User</button>
+  </form>
+
+  <!-- Confirmation Dialog -->
+  <app-confirm-dialog
+    *ngIf="showDialog"
+    [message]="'Confirm update to this user?'"
+    (confirm)="onConfirm($event)">
+  </app-confirm-dialog>
+</div>
