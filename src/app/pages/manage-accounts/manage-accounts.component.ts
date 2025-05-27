@@ -1,58 +1,56 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {AuthService, User} from '../../services/auth.service';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { AuthService, User } from '../../services/auth.service';
 
 @Component({
   standalone: true,
   selector: 'app-manage-accounts',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ConfirmDialogComponent],
   templateUrl: './manage-accounts.component.html',
 })
 export class ManageAccountsComponent {
   users: User[] = [];
-  editedUserIndex: number | null = null;
-  newUser: User = this.resetUser();
+  showDialog = false;
+  dialogMessage = '';
+  confirmAction: (() => void) | null = null;
 
-  constructor(private authService: AuthService) {
-    // For demo, access the internal user list (you might want to change this in a real app)
-    this.users = [...(this.authService as any).users]; // Caution: accessing private field
+  constructor(private authService: AuthService, private router: Router) {
+    this.loadUsers();
   }
 
-  resetUser(): User {
-    return {
-      name: '',
-      email: '',
-      username: '',
-      password: '',
-      role: 'Viewer',
+  loadUsers(): void {
+    this.users = this.authService.usersList;
+  }
+
+  navigateToAdd(): void {
+    this.router.navigate(['/accounts/add']);
+  }
+
+  navigateToEdit(userId: number): void {
+    this.router.navigate(['/accounts/edit', userId]);
+  }
+
+  confirmDelete(userId: number): void {
+    const user = this.users.find(u => u.id === userId);
+    if (!user) return;
+
+    const fullName = [user.firstName, user.middleName, user.lastName].filter(Boolean).join(' ');
+    this.dialogMessage = `Are you sure you want to delete "${fullName}"?`;
+
+    this.confirmAction = () => {
+      this.authService.deleteUser(userId);
+      this.loadUsers(); // Refresh user list after deletion
     };
+
+    this.showDialog = true;
   }
 
-  addUser() {
-    this.users.push({ ...this.newUser });
-    this.newUser = this.resetUser();
-  }
-
-  editUser(index: number) {
-    this.editedUserIndex = index;
-    this.newUser = { ...this.users[index] };
-  }
-
-  updateUser() {
-    if (this.editedUserIndex !== null) {
-      this.users[this.editedUserIndex] = { ...this.newUser };
-      this.editedUserIndex = null;
-      this.newUser = this.resetUser();
+  onConfirm(result: boolean): void {
+    if (result && this.confirmAction) {
+      this.confirmAction();
     }
-  }
-
-  deleteUser(index: number) {
-    this.users.splice(index, 1);
-  }
-
-  cancelEdit() {
-    this.editedUserIndex = null;
-    this.newUser = this.resetUser();
+    this.showDialog = false;
   }
 }

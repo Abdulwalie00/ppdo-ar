@@ -1,13 +1,21 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+export type UserRole = 'Admin' | 'Editor' | 'Viewer' | 'Manager';
+
 export interface User {
-  name: string;
+  id: number;
+  firstName: string;
+  middleName: string;
+  lastName: string;
   email: string;
   username: string;
-  password: string;
-  role: string;
+  passwordHash: string;
+  role: 'Admin' | 'Editor' | 'Viewer' | 'Manager';
+  createdAt: Date;
+  updatedAt: Date;
 }
+
 
 @Injectable({
   providedIn: 'root',
@@ -15,34 +23,55 @@ export interface User {
 export class AuthService {
   users: User[] = [
     {
-      name: 'Alice Santos',
+      id: 1,
+      firstName: 'Alice',
+      middleName: 'L.',
+      lastName: 'Santos',
       email: 'alice@example.com',
       username: 'alice',
-      password: 'alice123',
+      passwordHash: 'alice123',
       role: 'Admin',
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
-      name: 'Bob Ramirez',
+      id: 2,
+      firstName: 'Bob',
+      middleName: 'S.',
+      lastName: 'Ramirez',
       email: 'bob@example.com',
       username: 'bob',
-      password: 'bob123',
+      passwordHash: 'bob123',
       role: 'Editor',
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
-      name: 'Charlie Dela Cruz',
-      email: 'charlie@example.com',
-      username: 'charlie',
-      password: 'charlie123',
-      role: 'Viewer',
-    },
-    {
-      name: 'James Bond',
-      email: 'jamesbond@example.com',
-      username: 'admin',
-      password: 'admin123',
+      id: 1,
+      firstName: 'Alice',
+      middleName: 'L.',
+      lastName: 'Santos',
+      email: 'alice@example.com',
+      username: 'alice',
+      passwordHash: 'alice123',
       role: 'Admin',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 3,
+      firstName: 'Jace',
+      middleName: 'C.',
+      lastName: 'Ramz',
+      email: 'bob@example.com',
+      username: 'jace',
+      passwordHash: 'jace123',
+      role: 'Admin',
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   ];
+
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
 
@@ -60,7 +89,7 @@ export class AuthService {
 
   login(username: string, password: string): boolean {
     const user = this.users.find(
-      u => u.username === username && u.password === password
+      u => u.username === username && u.passwordHash === password
     );
 
     if (user) {
@@ -89,25 +118,38 @@ export class AuthService {
     return this.currentUserSubject.value !== null;
   }
 
-  // ✅ MISSING FUNCTIONS BELOW
-
   get usersList(): User[] {
     return this.users;
   }
 
   addUser(user: User): void {
     this.users.push(user);
+    console.log('✅ User added:', user);
   }
 
-  updateUser(index: number, user: User): void {
-    if (index >= 0 && index < this.users.length) {
-      this.users[index] = user;
+  updateUser(id: number, updatedData: Partial<User>): void {
+    const index = this.users.findIndex(user => user.id === id);
+    if (index !== -1) {
+      this.users[index] = {
+        ...this.users[index],
+        ...updatedData,
+        updatedAt: new Date(),
+      };
+      console.log('✅ User updated:', this.users[index]);
+    } else {
+      console.warn(`❌ User with ID ${id} not found. Update failed.`);
     }
   }
 
-  deleteUser(index: number): void {
-    if (index >= 0 && index < this.users.length) {
-      this.users.splice(index, 1);
-    }
+
+  deleteUser(id: number): void {
+    this.users = this.users.filter(user => user.id !== id);
   }
+
+  generateNextId(): number {
+    return this.users.length > 0
+      ? Math.max(...this.users.map(u => u.id)) + 1
+      : 1;
+  }
+
 }

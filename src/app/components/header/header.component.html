@@ -4,20 +4,21 @@
       <h1 class="text-xl font-semibold text-blue-700 font-sans">PPDO-AR</h1>
     </div>
 
-    <!-- Dark Mode Toggle Button -->
-<!--    <button-->
-<!--      (click)="toggleDarkMode()"-->
-<!--      class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"-->
-<!--      [title]="isDarkMode ? 'Light mode' : 'Dark mode'"-->
-<!--    >-->
-<!--      <fa-icon-->
-<!--        [icon]="isDarkMode ? faSun : faMoon"-->
-<!--        class="text-gray-600 dark:text-gray-300"-->
-<!--      ></fa-icon>-->
-<!--    </button>-->
+    <!-- Dark Mode Toggle Button (optional) -->
+    <!--
+    <button
+      (click)="toggleDarkMode()"
+      class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+      [title]="isDarkMode ? 'Light mode' : 'Dark mode'"
+    >
+      <fa-icon
+        [icon]="isDarkMode ? faSun : faMoon"
+        class="text-gray-600 dark:text-gray-300"
+      ></fa-icon>
+    </button>
+    -->
 
     <div class="relative flex items-center">
-
       <span class="pr-4 ml-4 font-semibold text-gray-600 dark:text-gray-300">{{ currentTime }}</span>
 
       <div
@@ -25,13 +26,19 @@
         (click)="toggleMenu()"
       >
         <fa-icon [icon]="faUserCircle" class="text-gray-600 text-2xl"></fa-icon>
-        <span class="text-gray-700">{{ currentUser?.name || 'User' }}</span>
+        <span class="text-gray-700">
+          {{
+            currentUser
+              ? currentUser.firstName + (currentUser.middleName ? ' ' + currentUser.middleName : '') + ' ' + currentUser.lastName
+              : 'User'
+          }}
+        </span>
       </div>
 
       <!-- Dropdown Menu -->
       <div
         *ngIf="menuOpen"
-        class="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10 "
+        class="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10"
         style="top: 85%;"
       >
         <a
@@ -48,8 +55,6 @@
           Logout
         </button>
       </div>
-
     </div>
-
   </div>
 </header>

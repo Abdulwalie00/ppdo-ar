@@ -34,6 +34,8 @@ import {ProfileComponent} from './pages/profile/profile.component';
 import {AuthGuard} from './auth.guard';
 import {NotFoundComponent} from './components/not-found/not-found.component';
 import {ManageAccountsComponent} from './pages/manage-accounts/manage-accounts.component';
+import {AddUserComponent} from './components/add-user/add-user.component';
+import {EditUserComponent} from './components/edit-user/edit-user.component';
 
 export const routes: Routes = [
   {
@@ -89,10 +91,9 @@ export const routes: Routes = [
       { path: 'events', component: EventManagementComponent },
       { path: 'profile', component: ProfileComponent },
 
-      {
-        path: 'accounts',
-        component: ManageAccountsComponent,
-      },
+      { path: 'accounts', component: ManageAccountsComponent },
+      { path: 'accounts/add', component: AddUserComponent },
+      { path: 'accounts/edit/:id', component: EditUserComponent },
     ]
   },
   { path: '**', component: NotFoundComponent }
