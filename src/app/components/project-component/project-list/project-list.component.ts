@@ -119,6 +119,6 @@ export class ProjectListComponent implements OnInit, OnChanges { // Implement On
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/project-dashboard']); // This will navigate to the specific route you want
   }
 }

@@ -7,7 +7,7 @@
 
   <!-- Status Cards -->
   <div class="mb-12">
-    <h2 class="text-xl font-semibold text-gray-800 mb-6">Project Statusss</h2>
+    <h2 class="text-xl font-semibold text-gray-800 mb-6">Project Status</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
       <div
         *ngFor="let status of statusList"
@@ -87,19 +87,19 @@
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
           <tr>
-            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project</th>
-            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timeline</th>
-            <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-2/5">Project</th>
+            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Status</th>
+            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Timeline</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Actions</th>
           </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-100">
           <tr *ngFor="let project of projectsByDivision[divisionName]" class="hover:bg-gray-50 transition-colors">
-            <td class="px-4 py-4 whitespace-nowrap">
+            <td class="px-6 py-4">
               <div class="font-medium text-gray-900">{{ project.title }}</div>
               <div class="text-xs text-gray-500">{{ project.location }}</div>
             </td>
-            <td class="px-4 py-4 whitespace-nowrap">
+            <td class="px-4 py-4">
                 <span class="px-2.5 py-1 inline-flex text-xs font-medium rounded-full"
                       [class.bg-blue-100]="project.status === 'planned'"
                       [class.text-blue-800]="project.status === 'planned'"
@@ -113,10 +113,10 @@
                   {{ project.status | titlecase }}
                 </span>
             </td>
-            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+            <td class="px-4 py-4 text-sm text-gray-500">
               {{ project.startDate | date:'shortDate' }} – {{ project.endDate | date:'shortDate' }}
             </td>
-            <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <td class="px-6 py-4 text-right text-sm font-medium">
               <a [routerLink]="['/project-detail', project.id]" class="text-blue-600 hover:text-blue-800">View →</a>
             </td>
           </tr>
@@ -126,4 +126,3 @@
     </div>
   </div>
 </div>
-
