@@ -68,18 +68,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
       isExpanded: false,
       children: [
         {
-          title: 'PTCAO', link: '/pgo/ptcao',
+          title: 'PTCAO', link: '/project-division/PTCAO',
           icon: faCircle
         },
         //PGO Pages
-        { title: 'PDD', icon: faCircle, link: '/pgo/pdd' },
-        { title: 'ICTO', icon: faCircle, link: '/pgo/icto' },
-        { title: 'RYDO', icon: faCircle, link: '/pgo/rydo' },
-        { title: 'PWO', icon: faCircle, link: '/pgo/pwo' },
-        { title: 'PLPP', icon: faCircle, link: '/pgo/plpp' },
-        { title: 'PTLDC', icon: faCircle, link: '/pgo/ptldc' },
-        { title: 'LEDIPO', icon: faCircle, link: '/pgo/ledipo' },
-        { title: 'GAD', icon: faCircle, link: '/pgo/gad' },
+        { title: 'PDD', icon: faCircle, link: '/project-division/PDD' },
+        { title: 'ICTO', icon: faCircle, link: '/project-division/ICTO' },
+        { title: 'RYDO', icon: faCircle, link: '/project-division/RYDO' },
+        { title: 'PWO', icon: faCircle, link: '/project-division/PWO' },
+        { title: 'PLPP', icon: faCircle, link: '/project-division/PLPP' },
+        { title: 'PTLDC', icon: faCircle, link: '/project-division/PTLDC' },
+        { title: 'LEDIPO', icon: faCircle, link: '/project-division/LEDIPO' },
+        { title: 'GAD', icon: faCircle, link: '/project-division/GAD' },
       ]
     },
     {
@@ -92,14 +92,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
       icon: faDatabase,
       isExpanded: false,
       children: [
-        { title: 'PEO', icon: faCircle, link: '/implementing/peo' },
-        { title: 'PIO', icon: faCircle, link: '/implementing/pio' },
-        { title: 'PCO', icon: faCircle, link: '/implementing/pco' },
-        { title: 'OPAG', icon: faCircle, link: '/implementing/opag' },
-        { title: 'PENRO', icon: faCircle, link: '/implementing/penro' },
-        { title: 'PSWDO', icon: faCircle, link: '/implementing/pswdo' },
-        { title: 'PHO', icon: faCircle, link: '/implementing/pho' },
-        { title: 'PVO', icon: faCircle, link: '/implementing/pvo' },
+        { title: 'PEO', icon: faCircle, link: '/project-division/PEO' },
+        { title: 'PIO', icon: faCircle, link: '/project-division/PIO' },
+        { title: 'PCO', icon: faCircle, link: '/project-division/PCO' },
+        { title: 'OPAG', icon: faCircle, link: '/project-division/OPAG' },
+        { title: 'PENRO', icon: faCircle, link: '/project-division/PENRO' },
+        { title: 'PSWDO', icon: faCircle, link: '/project-division/PSWDO' },
+        { title: 'PHO', icon: faCircle, link: '/project-division/PHO' },
+        { title: 'PVO', icon: faCircle, link: '/project-division/PVO' },
       ]
     },
     {
@@ -107,14 +107,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
       icon: faDatabase,
       isExpanded: false,
       children: [
-        { title: 'PPDO', icon: faFileAlt, link: '/administration-support/ppdo' },
-        { title: 'PHRMO', icon: faDatabase, link: '/administration-support/phrmo' },
-        { title: 'PGSO', icon: faFileAlt, link: '/administration-support/pgso' },
-        { title: 'PTO', icon: faDatabase, link: '/administration-support/pto' },
-        { title: 'PACCO', icon: faFileAlt, link: '/administration-support/pacco' },
-        { title: 'PBO', icon: faDatabase, link: '/administration-support/pbo' },
-        { title: 'PLSO', icon: faFileAlt, link: '/administration-support/plso' },
-        { title: 'PSF', icon: faDatabase, link: '/administration-support/psf' },
+        { title: 'PPDO', icon: faFileAlt, link: '/project-division/PPDO' },
+        { title: 'PHRMO', icon: faDatabase, link: '/project-division/PHRMO' },
+        { title: 'PGSO', icon: faFileAlt, link: '/project-division/PGSO' },
+        { title: 'PTO', icon: faDatabase, link: '/project-division/PTO' },
+        { title: 'PACCO', icon: faFileAlt, link: '/project-division/PACCO' },
+        { title: 'PBO', icon: faDatabase, link: '/project-division/PBO' },
+        { title: 'PLSO', icon: faFileAlt, link: '/project-division/PLSO' },
+        { title: 'PSF', icon: faDatabase, link: '/project-division/PSF' },
       ]
     },
     {

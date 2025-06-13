@@ -1,0 +1,45 @@
+<div class="p-6 bg-white rounded-lg shadow-md">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold text-gray-800">Project List</h2>
+    <button
+      *ngIf="showAddButton"
+      (click)="goToAddProject()"
+      class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg flex items-center"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+      </svg>
+      Add Project
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div
+      *ngFor="let project of projects"
+      class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition duration-200"
+      (click)="viewProjectDetails(project.id)"
+    >
+      <h3 class="text-xl font-semibold text-blue-700 mb-2">{{ project.title }}</h3>
+      <p class="text-sm text-gray-600 mb-1">
+        Division: <span class="font-medium">{{ project.division.name }}</span>
+      </p>
+      <div class="flex items-center text-sm text-gray-600">
+        Status:
+        <span
+          class="ml-2 px-2 py-1 rounded-full text-xs font-semibold"
+          [ngClass]="{
+            'bg-blue-200 text-blue-800': project.status === 'planned',
+            'bg-yellow-200 text-yellow-800': project.status === 'ongoing',
+            'bg-green-200 text-green-800': project.status === 'completed',
+            'bg-red-200 text-red-800': project.status === 'cancelled'
+          }"
+        >
+          {{ project.status | titlecase }}
+        </span>
+      </div>
+    </div>
+    <div *ngIf="!projects || projects.length === 0" class="col-span-full text-center text-gray-500 py-8">
+      No projects found.
+    </div>
+  </div>
+</div>

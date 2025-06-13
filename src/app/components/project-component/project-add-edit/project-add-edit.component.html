@@ -1,0 +1,198 @@
+<div class="p-6 bg-white rounded-lg shadow-md">
+  <h2 class="text-3xl font-bold text-gray-800 mb-6">{{ isEditMode ? 'Edit Project' : 'Add New Project' }}</h2>
+
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <div>
+      <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Project Title</label>
+      <input
+        type="text"
+        id="title"
+        formControlName="title"
+        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        [ngClass]="{'border-red-500': projectForm.get('title')?.invalid && projectForm.get('title')?.touched}"
+      />
+      <div *ngIf="projectForm.get('title')?.invalid && projectForm.get('title')?.touched" class="text-red-500 text-xs mt-1">
+        Project title is required.
+      </div>
+    </div>
+
+    <div>
+      <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        rows="4"
+        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        [ngClass]="{'border-red-500': projectForm.get('description')?.invalid && projectForm.get('description')?.touched}"
+      ></textarea>
+      <div *ngIf="projectForm.get('description')?.invalid && projectForm.get('description')?.touched" class="text-red-500 text-xs mt-1">
+        Description is required.
+      </div>
+    </div>
+
+    <div>
+      <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+      <input
+        type="text"
+        id="location"
+        formControlName="location"
+        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        [ngClass]="{'border-red-500': projectForm.get('location')?.invalid && projectForm.get('location')?.touched}"
+      />
+      <div *ngIf="projectForm.get('location')?.invalid && projectForm.get('location')?.touched" class="text-red-500 text-xs mt-1">
+        Location is required.
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+        <input
+          type="date"
+          id="startDate"
+          formControlName="startDate"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          [ngClass]="{'border-red-500': projectForm.get('startDate')?.invalid && projectForm.get('startDate')?.touched}"
+        />
+        <div *ngIf="projectForm.get('startDate')?.invalid && projectForm.get('startDate')?.touched" class="text-red-500 text-xs mt-1">
+          Start Date is required.
+        </div>
+      </div>
+
+      <div>
+        <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+        <input
+          type="date"
+          id="endDate"
+          formControlName="endDate"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          [ngClass]="{'border-red-500': projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched}"
+        />
+        <div *ngIf="projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched" class="text-red-500 text-xs mt-1">
+          End Date is required.
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="budget" class="block text-sm font-medium text-gray-700 mb-1">Budget</label>
+        <input
+          type="number"
+          id="budget"
+          formControlName="budget"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          [ngClass]="{'border-red-500': projectForm.get('budget')?.invalid && projectForm.get('budget')?.touched}"
+        />
+        <div *ngIf="projectForm.get('budget')?.invalid && projectForm.get('budget')?.touched" class="text-red-500 text-xs mt-1">
+          Budget is required and must be a positive number.
+        </div>
+      </div>
+
+      <div>
+        <label for="fundSource" class="block text-sm font-medium text-gray-700 mb-1">Fund Source</label>
+        <input
+          type="text"
+          id="fundSource"
+          formControlName="fundSource"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          [ngClass]="{'border-red-500': projectForm.get('fundSource')?.invalid && projectForm.get('fundSource')?.touched}"
+        />
+        <div *ngIf="projectForm.get('fundSource')?.invalid && projectForm.get('fundSource')?.touched" class="text-red-500 text-xs mt-1">
+          Fund Source is required.
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="division" class="block text-sm font-medium text-gray-700 mb-1">Division</label>
+        <select
+          id="division"
+          formControlName="divisionId"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          [ngClass]="{'border-red-500': projectForm.get('divisionId')?.invalid && projectForm.get('divisionId')?.touched}"
+          [disabled]="!!preselectedDivisionId" >
+          <option value="" disabled>Select a division</option>
+          <option *ngFor="let div of divisions" [value]="div.id">{{ div.name }}</option>
+        </select>
+        <div *ngIf="projectForm.get('divisionId')?.invalid && projectForm.get('divisionId')?.touched" class="text-red-500 text-xs mt-1">
+          Division is required.
+        </div>
+        <p *ngIf="!!preselectedDivisionId" class="text-sm text-gray-500 mt-1">Division pre-selected from current view.</p>
+      </div>
+
+      <div>
+        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+        <select
+          id="status"
+          formControlName="status"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        >
+          <option value="planned">Planned</option>
+          <option value="ongoing">Ongoing</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-200 pt-6">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Project Images</label>
+      <input type="file" multiple (change)="onImageSelected($event)" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+
+      <div *ngIf="selectedImages.length > 0 || currentProjectImages.length > 0" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div *ngFor="let img of selectedImages; let i = index" class="relative group">
+          <img [src]="img.url" class="w-full h-32 object-cover rounded-md shadow-sm" alt="Selected Project Image" />
+          <button
+            type="button"
+            (click)="removeSelectedImage(i)"
+            class="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 text-xs hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            title="Remove image"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
+        <div *ngFor="let img of currentProjectImages" class="relative group">
+          <img [src]="img.imageUrl" class="w-full h-32 object-cover rounded-md shadow-sm" alt="Existing Project Image" />
+          <button
+            type="button"
+            (click)="removeCurrentProjectImage(img.id)"
+            class="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 text-xs hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            title="Remove image"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end space-x-4 mt-8">
+      <button
+        type="button"
+        (click)="onCancel()"
+        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        [disabled]="projectForm.invalid"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+      >
+        {{ isEditMode ? 'Update Project' : 'Add Project' }}
+      </button>
+    </div>
+  </form>
+
+  <app-project-confirmation-dialog
+    [show]="showConfirmationDialog"
+    [message]="dialogMessage"
+    (confirmed)="onConfirmation($event)"
+  ></app-project-confirmation-dialog>
+</div>

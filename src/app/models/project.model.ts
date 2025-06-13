@@ -1,0 +1,32 @@
+// src/app/models/project.model.ts
+export interface Division {
+  id: string;
+  name: string;
+  code: string;
+  dateCreated: Date;
+  dateUpdated: Date;
+}
+
+export interface ProjectImage {
+  id: string;
+  projectId: string;
+  imageUrl: string; // For local images, this will be a Data URL or Blob URL
+  caption?: string;
+  dateUploaded: Date;
+}
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  startDate: Date;
+  endDate: Date;
+  dateCreated: Date;
+  dateUpdated: Date;
+  budget: number;
+  fundSource: string;
+  division: Division;
+  images: ProjectImage[];
+  status: 'planned' | 'ongoing' | 'completed' | 'cancelled';
+}
