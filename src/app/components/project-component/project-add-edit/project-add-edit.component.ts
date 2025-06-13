@@ -186,7 +186,7 @@ export class ProjectAddEditComponent implements OnInit {
         });
       } else {
         this.projectDataService.addProject(project).subscribe(() => {
-          this.router.navigate(['/project-list']);
+          this.router.navigate(['/project-division', project.division.code]);
         });
       }
     }

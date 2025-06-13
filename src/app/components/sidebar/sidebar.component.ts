@@ -85,7 +85,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       title: 'OPVG',
       icon: faUsers,
-      link: '/users'
+      link: '/project-division/OPVG'
     },
     {
       title: 'Implementing',

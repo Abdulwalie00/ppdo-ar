@@ -18,6 +18,7 @@ import {
 import {ProjectAddEditComponent} from './components/project-component/project-add-edit/project-add-edit.component';
 import {ProjectDetailComponent} from './components/project-component/project-detail/project-detail.component';
 import {ProjectListComponent} from './components/project-component/project-list/project-list.component';
+import {ProjectDashboardComponent} from './components/project-component/project-dashboard/project-dashboard.component';
 
 export const routes: Routes = [
   {
@@ -72,6 +73,7 @@ export const routes: Routes = [
       { path: 'project-add', component: ProjectAddEditComponent },
       { path: 'project-edit/:id', component: ProjectAddEditComponent },
       { path: 'project-detail/:id', component: ProjectDetailComponent },
+      { path: 'project-dashboard', component: ProjectDashboardComponent },
       //Other Routes
 
       { path: 'reports', component: ReportsComponent },
