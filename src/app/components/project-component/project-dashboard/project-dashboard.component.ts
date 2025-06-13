@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs'; // For reactive programming, though we'll use subscribe directly for simplicity here
 import { RouterModule } from '@angular/router';
-import {Project} from '../../../models/project.model';
-import {ProjectDataService} from '../../../services/project-data.service'; // For navigation links
+import { Project } from '../../../models/project.model';
+import { ProjectDataService } from '../../../services/project-data.service'; // For navigation links
 
 interface ProjectStatusCounts {
   planned: number;
@@ -13,12 +13,14 @@ interface ProjectStatusCounts {
   total: number;
 }
 
+type ProjectStatusKey = keyof ProjectStatusCounts; // 'planned' | 'ongoing' | 'completed' | 'cancelled' | 'total'
+
 @Component({
   selector: 'app-project-dashboard',
   standalone: true,
   imports: [CommonModule, RouterModule], // Import RouterModule for routerLink
   templateUrl: './project-dashboard.component.html',
-  styleUrl: './project-dashboard.component.css'
+  styleUrls: ['./project-dashboard.component.css']
 })
 export class ProjectDashboardComponent implements OnInit {
   projects: Project[] = [];
@@ -32,6 +34,9 @@ export class ProjectDashboardComponent implements OnInit {
 
   // To display projects grouped by their division
   projectsByDivision: { [divisionName: string]: Project[] } = {};
+
+  // Define the status list explicitly for safe indexing
+  readonly statusList: ProjectStatusKey[] = ['planned', 'ongoing', 'completed', 'cancelled'];
 
   constructor(private projectDataService: ProjectDataService) {}
 

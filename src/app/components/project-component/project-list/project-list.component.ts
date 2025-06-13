@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core'; // Added OnChanges, SimpleChanges
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, Location  } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs'; // Added BehaviorSubject
 import { Project } from '../../../models/project.model';
@@ -30,7 +30,8 @@ export class ProjectListComponent implements OnInit, OnChanges { // Implement On
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private projectDataService: ProjectDataService
+    private projectDataService: ProjectDataService,
+  private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -115,5 +116,9 @@ export class ProjectListComponent implements OnInit, OnChanges { // Implement On
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

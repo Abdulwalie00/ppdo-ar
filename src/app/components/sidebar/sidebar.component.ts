@@ -60,7 +60,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       title: 'Dashboard',
       icon: faHome,
-      link: '/dashboard'
+      link: '/project-dashboard',
     },
     {
       title: 'PGO',
