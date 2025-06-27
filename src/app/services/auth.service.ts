@@ -1,155 +1,76 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import {jwtDecode} from 'jwt-decode';
 
-export type UserRole = 'Admin' | 'Editor' | 'Viewer' | 'Manager';
-
-export interface User {
-  id: number;
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  email: string;
-  username: string;
-  passwordHash: string;
-  role: 'Admin' | 'Editor' | 'Viewer' | 'Manager';
-  createdAt: Date;
-  updatedAt: Date;
-}
-
+const API_URL = 'http://localhost:8080/api/';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
-  users: User[] = [
-    {
-      id: 1,
-      firstName: 'Alice',
-      middleName: 'L.',
-      lastName: 'Santos',
-      email: 'alice@example.com',
-      username: 'alice',
-      passwordHash: 'alice123',
-      role: 'Admin',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 2,
-      firstName: 'Bob',
-      middleName: 'S.',
-      lastName: 'Ramirez',
-      email: 'bob@example.com',
-      username: 'bob',
-      passwordHash: 'bob123',
-      role: 'Editor',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 1,
-      firstName: 'Alice',
-      middleName: 'L.',
-      lastName: 'Santos',
-      email: 'alice@example.com',
-      username: 'alice',
-      passwordHash: 'alice123',
-      role: 'Admin',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 3,
-      firstName: 'Jace',
-      middleName: 'C.',
-      lastName: 'Ramz',
-      email: 'bob@example.com',
-      username: 'jace',
-      passwordHash: 'jace123',
-      role: 'Admin',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
+  private userRolesSubject = new BehaviorSubject<string[]>(this.getRolesFromToken());
 
+  constructor(private http: HttpClient) { }
 
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-
-  constructor() {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        const user: User = JSON.parse(storedUser);
-        this.currentUserSubject.next(user);
-      } catch {
-        localStorage.removeItem('user');
-      }
-    }
-  }
-
-  login(username: string, password: string): boolean {
-    const user = this.users.find(
-      u => u.username === username && u.passwordHash === password
+  login(credentials: { username: string, password: string }): Observable<{ token: string }> {
+    return this.http.post<{ token: string }>(API_URL + 'auth/login', credentials).pipe(
+      tap(response => {
+        localStorage.setItem('authToken', response.token);
+        this.isAuthenticatedSubject.next(true);
+        this.userRolesSubject.next(this.getRolesFromToken()); // Update roles on login
+      })
     );
-
-    if (user) {
-      this.currentUserSubject.next(user);
-      localStorage.setItem('user', JSON.stringify(user));
-      return true;
-    }
-
-    return false;
   }
 
   logout(): void {
-    this.currentUserSubject.next(null);
-    localStorage.removeItem('user');
+    localStorage.removeItem('authToken');
+    this.isAuthenticatedSubject.next(false);
+    this.userRolesSubject.next([]);
   }
 
-  getUser(): Observable<User | null> {
-    return this.currentUserSubject.asObservable();
+  // New methods for role management
+  getRoles(): string[] {
+    return this.getRolesFromToken();
   }
 
-  getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
+  isAdmin(): boolean {
+    return this.getRoles().includes('ROLE_ADMIN');
   }
 
-  isAuthenticated(): boolean {
-    return this.currentUserSubject.value !== null;
+  get isAuthenticated$(): Observable<boolean> {
+    return this.isAuthenticatedSubject.asObservable();
   }
 
-  get usersList(): User[] {
-    return this.users;
+  get userRoles$(): Observable<string[]> {
+    return this.userRolesSubject.asObservable();
   }
 
-  addUser(user: User): void {
-    this.users.push(user);
-    console.log('✅ User added:', user);
+  getToken(): string | null {
+    return localStorage.getItem('authToken');
   }
 
-  updateUser(id: number, updatedData: Partial<User>): void {
-    const index = this.users.findIndex(user => user.id === id);
-    if (index !== -1) {
-      this.users[index] = {
-        ...this.users[index],
-        ...updatedData,
-        updatedAt: new Date(),
-      };
-      console.log('✅ User updated:', this.users[index]);
-    } else {
-      console.warn(`❌ User with ID ${id} not found. Update failed.`);
+  private hasToken(): boolean {
+    return !!this.getToken();
+  }
+
+  private getRolesFromToken(): string[] {
+    const token = this.getToken();
+    if (!token) return [];
+
+    try {
+      const decoded: any = jwtDecode(token);
+      // Handle both string[] and object[] role formats
+      const roles = decoded.roles || [];
+
+      if (roles.length > 0 && typeof roles[0] === 'object') {
+        return roles.map((r: any) => r.authority || r.role);
+      }
+      return roles;
+    } catch (e) {
+      console.error('Error decoding token', e);
+      return [];
     }
   }
-
-
-  deleteUser(id: number): void {
-    this.users = this.users.filter(user => user.id !== id);
-  }
-
-  generateNextId(): number {
-    return this.users.length > 0
-      ? Math.max(...this.users.map(u => u.id)) + 1
-      : 1;
-  }
-
 }

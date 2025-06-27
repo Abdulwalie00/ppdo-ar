@@ -1,9 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBell, faUserCircle, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
-import {AuthService, User} from '../../services/auth.service';
-import {Router, RouterLink} from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
+
+import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service'; // <-- Import UserService
+import { User } from '../../models/user.model'; // <-- Import User model
 
 @Component({
   selector: 'app-header',
@@ -24,33 +29,77 @@ export class HeaderComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
 
   private intervalId: any;
+  private authSubscription!: Subscription; // To manage the subscription
 
-  constructor(private authService: AuthService, private router: Router) {}
+  // Inject both AuthService and UserService
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    // Load saved theme from local storage
-    const savedTheme = localStorage.getItem('theme');
-    this.isDarkMode = savedTheme === 'dark';
+    this.loadTheme();
+    this.startTimeUpdater();
 
-    // Apply or remove dark class on HTML root
-    if (this.isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-
-    // Start time updater
-    this.updateTime();
-    this.intervalId = setInterval(() => this.updateTime(), 1000);
-
-    // Subscribe to user info from auth service
-    this.authService.getUser().subscribe(user => {
-      this.currentUser = user;
+    // Subscribe to the authentication state
+    this.authSubscription = this.authService.isAuthenticated$.subscribe(isAuthenticated => {
+      if (isAuthenticated) {
+        this.fetchCurrentUserProfile();
+      } else {
+        this.currentUser = null;
+      }
     });
   }
 
   ngOnDestroy(): void {
+    // Unsubscribe to prevent memory leaks
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
     clearInterval(this.intervalId);
+  }
+
+  /**
+   * Fetches the current user's profile from the backend using the JWT.
+   */
+  fetchCurrentUserProfile(): void {
+    const token = this.authService.getToken();
+    if (token) {
+      try {
+        // Ensure this matches your actual JWT token structure
+        const decodedToken: any = jwtDecode(token);
+        const username = decodedToken.sub || decodedToken.username;
+
+        if (!username) {
+          throw new Error('Username not found in token');
+        }
+
+        this.userService.getUserByUsername(username).subscribe({
+          next: (user) => {
+            this.currentUser = user;
+          },
+          error: (err) => {
+            console.error('Failed to fetch user:', err);
+            this.logout();
+          }
+        });
+      } catch (error) {
+        console.error('Invalid token:', error);
+        this.logout();
+      }
+    }
+  }
+
+  loadTheme(): void {
+    const savedTheme = localStorage.getItem('theme');
+    this.isDarkMode = savedTheme === 'dark';
+    document.documentElement.classList.toggle('dark', this.isDarkMode);
+  }
+
+  startTimeUpdater(): void {
+    this.updateTime();
+    this.intervalId = setInterval(() => this.updateTime(), 1000);
   }
 
   updateTime(): void {
@@ -66,6 +115,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     document.documentElement.classList.toggle('dark', this.isDarkMode);
     localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
   }
+
+
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;

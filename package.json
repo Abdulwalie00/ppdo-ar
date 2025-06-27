@@ -25,6 +25,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "autoprefixer": "^10.4.21",
+    "jwt-decode": "^4.0.0",
     "postcss": "^8.5.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

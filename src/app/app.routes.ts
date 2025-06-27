@@ -1,9 +1,6 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { SettingsComponent } from './pages/settings/settings.component';
-import {PtcaoComponent} from './pages/pgo/ptcao/ptcao.component';
-import {EventManagementComponent} from './pages/event-management/event-management.component';
 import {LoginComponent} from './components/auth/login/login.component';
 import { MainLayoutComponent } from './components/layout/main-layout/main-layout.component';
 import {ProfileComponent} from './pages/profile/profile.component';
@@ -34,8 +31,8 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     // canActivate: [AuthGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'pgo/ptcao', component: PtcaoComponent },
+      // { path: 'dashboard', component: DashboardComponent },
+      // { path: 'pgo/ptcao', component: PtcaoComponent },
       //PGO Routes
       // { path: 'pgo/ptcao', component: PtcaoComponent },
       // { path: 'pgo/pdd', component: PddComponent },
@@ -78,7 +75,6 @@ export const routes: Routes = [
 
       { path: 'reports', component: ReportsComponent },
       { path: 'settings', component: SettingsComponent },
-      { path: 'events', component: EventManagementComponent },
       { path: 'profile', component: ProfileComponent },
 
       { path: 'accounts', component: ManageAccountsComponent },

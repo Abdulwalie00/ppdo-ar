@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
 import { NgIf } from '@angular/common';
 import {
   trigger,
@@ -9,6 +8,7 @@ import {
   style,
   animate,
 } from '@angular/animations';
+import { AuthService } from '../../../services/auth.service'; // Correctly imported
 
 @Component({
   selector: 'app-login',
@@ -35,26 +35,42 @@ export class LoginComponent {
   loading = false;
   success = false;
 
+  // We inject the AuthService and Router.
   constructor(private authService: AuthService, private router: Router) {}
 
+  /**
+   * This method is called when the user submits the login form.
+   * It uses the AuthService to send the credentials to the backend.
+   */
   login(): void {
     this.error = '';
     this.loading = true;
 
-    // Simulate async login with delay
-    setTimeout(() => {
-      const isAuthenticated = this.authService.login(this.username.trim(), this.password);
+    const credentials = {
+      username: this.username.trim(),
+      password: this.password
+    };
 
-      this.loading = false;
-
-      if (isAuthenticated) {
+    // We call the service's login method and "subscribe" to the response.
+    this.authService.login(credentials).subscribe({
+      // --- Success Case ---
+      // The 'next' block runs if the backend returns a 200 OK response.
+      next: () => {
+        this.loading = false;
         this.success = true;
+        // Navigate to the dashboard after a brief delay.
         setTimeout(() => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/project-dashboard']);
         }, 1000);
-      } else {
-        this.error = 'Invalid username or password';
+      },
+      // --- Error Case ---
+      // The 'error' block runs if the backend returns an error (e.g., 401, 403).
+      error: (err) => {
+        this.loading = false;
+        // Display a user-friendly error message.
+        this.error = 'Invalid username or password. Please try again.';
+        console.error('Login failed', err); // Log the technical error for debugging.
       }
-    }, 1000);
+    });
   }
 }
