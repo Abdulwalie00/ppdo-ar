@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service'; // <-- Import UserService
 import { User, UserRole } from '../../models/user.model'; // <-- Import User model
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import {Division} from '../../models/project.model';
+import {DivisionService} from '../../services/division.service';
 
 @Component({
   standalone: true,
@@ -12,7 +14,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
   imports: [CommonModule, FormsModule, ConfirmDialogComponent],
   templateUrl: './add-user.component.html',
 })
-export class AddUserComponent {
+export class AddUserComponent implements OnInit {
   // Define the user object for the form
   user = {
     firstName: '',
@@ -22,14 +24,32 @@ export class AddUserComponent {
     username: '',
     password: '', // Use a 'password' field, not 'passwordHash'
     role: 'ROLE_VIEWER' as UserRole, // Default to a safe role
+    divisionId: null,
   };
 
+  divisions: Division[] = [];
   showDialog = false;
 
   constructor(
     private userService: UserService, // <-- Inject UserService
+    private divisionService: DivisionService,
     private router: Router
   ) {}
+
+  ngOnInit(): void {
+    this.loadDivisions();
+  }
+
+  loadDivisions(): void {
+    this.divisionService.getDivisions().subscribe({
+      next: (data) => {
+        this.divisions = data;
+      },
+      error: (err) => {
+        console.error('Failed to load divisions', err);
+      }
+    });
+  }
 
   /**
    * Shows the confirmation dialog.

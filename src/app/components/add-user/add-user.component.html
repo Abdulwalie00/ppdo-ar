@@ -1,7 +1,6 @@
 <div class="p-6 max-w-xl mx-auto">
   <h2 class="text-2xl font-bold mb-4">Add User</h2>
   <form (ngSubmit)="submit()" class="space-y-4">
-    <!-- First Name -->
     <input
       [(ngModel)]="user.firstName"
       name="firstName"
@@ -10,7 +9,6 @@
       required
     />
 
-    <!-- Middle Name -->
     <input
       [(ngModel)]="user.middleName"
       name="middleName"
@@ -18,7 +16,6 @@
       class="w-full border rounded px-3 py-2"
     />
 
-    <!-- Last Name -->
     <input
       [(ngModel)]="user.lastName"
       name="lastName"
@@ -27,7 +24,6 @@
       required
     />
 
-    <!-- Email -->
     <input
       [(ngModel)]="user.email"
       name="email"
@@ -37,7 +33,6 @@
       required
     />
 
-    <!-- Username -->
     <input
       [(ngModel)]="user.username"
       name="username"
@@ -46,7 +41,6 @@
       required
     />
 
-    <!-- Password -->
     <input
       [(ngModel)]="user.password"
       name="passwordHash"
@@ -56,7 +50,6 @@
       required
     />
 
-    <!-- Role -->
     <select
       [(ngModel)]="user.role"
       name="role"
@@ -68,6 +61,18 @@
       <option value="Viewer">Viewer</option>
       <option value="Manager">Manager</option>
     </select>
+
+    <select
+      [(ngModel)]="user.divisionId"
+      name="divisionId"
+      class="w-full border rounded px-3 py-2"
+    >
+      <option [ngValue]="null" disabled>Select a Division</option>
+      <option *ngFor="let division of divisions" [value]="division.id">
+        {{ division.name }}
+      </option>
+    </select>
+
 
     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
       Add User

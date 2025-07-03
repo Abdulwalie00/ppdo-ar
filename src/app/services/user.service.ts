@@ -31,8 +31,9 @@ export class UserService {
    * Note: The backend handles password hashing. Send the plain password.
    */
   createUser(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'> & { password?: string }): Observable<User> {
-    return this.http.post<User>(API_URL, user);
+    return this.http.post<User>(API_URL2, user);
   }
+
 
   /**
    * Updates an existing user's data.

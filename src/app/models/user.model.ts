@@ -1,3 +1,5 @@
+import {Division} from './project.model';
+
 export type UserRole = 'ROLE_ADMIN' | 'ROLE_EDITOR' | 'ROLE_VIEWER' | 'ROLE_MANAGER';
 
 export interface User {
@@ -7,6 +9,7 @@ export interface User {
   lastName: string;
   email: string;
   username: string;
+  division?: Division;
   role: UserRole;
   createdAt: Date;
   updatedAt: Date;
