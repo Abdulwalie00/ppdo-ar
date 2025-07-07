@@ -1,10 +1,13 @@
+// src/app/components/project-add-edit/project-add-edit.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
+
 import { ProjectConfirmationDialogComponent } from '../project-confirmation-dialog/project-confirmation-dialog.component';
-import { map } from 'rxjs/operators';
 import { Division, Project, ProjectImage } from '../../../models/project.model';
 import { ProjectDataService } from '../../../services/project-data.service';
 
@@ -20,15 +23,15 @@ export class ProjectAddEditComponent implements OnInit {
   isEditMode: boolean = false;
   projectId: string | null = null;
   divisions: Division[] = [];
-  selectedImages: { file: File, url: string }[] = [];
+
+  // Store newly uploaded image URLs
+  newlyUploadedImages: ProjectImage[] = [];
+  // Store existing images for display
   currentProjectImages: ProjectImage[] = [];
 
   showConfirmationDialog: boolean = false;
   dialogMessage: string = '';
   dialogAction: 'add' | 'update' = 'add';
-
-  preselectedDivisionId: string | null = null;
-
 
   constructor(
     private fb: FormBuilder,
@@ -41,12 +44,18 @@ export class ProjectAddEditComponent implements OnInit {
     this.loadDivisions();
     this.initForm();
 
-    this.route.paramMap.subscribe(params => {
-      this.projectId = params.get('id');
-      this.isEditMode = !!this.projectId;
-
-      if (this.isEditMode && this.projectId) {
-        this.loadProjectForEdit(this.projectId);
+    this.route.paramMap.pipe(
+      switchMap(params => {
+        this.projectId = params.get('id');
+        this.isEditMode = !!this.projectId;
+        if (this.isEditMode && this.projectId) {
+          return this.projectDataService.getProjectById(this.projectId);
+        }
+        return of(null);
+      })
+    ).subscribe(project => {
+      if (project) {
+        this.loadProjectForEdit(project);
       }
     });
   }
@@ -71,44 +80,62 @@ export class ProjectAddEditComponent implements OnInit {
     });
   }
 
-  loadProjectForEdit(id: string): void {
-    this.projectDataService.getProjectById(id).subscribe(project => {
-      if (project) {
-        this.projectForm.patchValue({
-          title: project.title,
-          description: project.description,
-          location: project.location,
-          startDate: new Date(project.startDate).toISOString().substring(0, 10),
-          endDate: new Date(project.endDate).toISOString().substring(0, 10),
-          budget: project.budget,
-          fundSource: project.fundSource,
-          divisionId: project.division.id,
-          status: project.status
-        });
-        this.currentProjectImages = project.images || [];
-      }
+  loadProjectForEdit(project: Project): void {
+    this.projectForm.patchValue({
+      title: project.title,
+      description: project.description,
+      location: project.location,
+      startDate: new Date(project.startDate).toISOString().substring(0, 10),
+      endDate: new Date(project.endDate).toISOString().substring(0, 10),
+      budget: project.budget,
+      fundSource: project.fundSource,
+      divisionId: project.division.id,
+      status: project.status
     });
+    // Keep track of existing images
+    this.currentProjectImages = project.images || [];
   }
 
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      for (let i = 0; i < input.files.length; i++) {
-        const file = input.files[i];
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.selectedImages.push({ file: file, url: reader.result as string });
-        };
-        reader.readAsDataURL(file);
-      }
+    if (!input.files || input.files.length === 0) {
+      return;
     }
+
+    const files = Array.from(input.files);
+    // Create an array of upload observables
+    const uploadObservables = files.map(file =>
+      this.projectDataService.uploadImage(file)
+    );
+
+    // Execute all uploads in parallel
+    forkJoin(uploadObservables).subscribe({
+      next: (urls) => {
+        // Once all uploads are complete, create ProjectImage objects
+        const newImages = urls.map(url => ({
+          id: uuidv4(), // Generate a temporary client-side ID
+          projectId: this.projectId || '',
+          imageUrl: url, // The URL from the server
+          caption: '',
+          dateUploaded: new Date()
+        }));
+        // Add the newly uploaded images to our list
+        this.newlyUploadedImages.push(...newImages);
+      },
+      error: (err) => {
+        console.error('Image upload failed', err);
+        // You can add user-facing error handling here
+      }
+    });
   }
 
-  removeSelectedImage(index: number): void {
-    this.selectedImages.splice(index, 1);
+  // Remove an image that was just uploaded in this session
+  removeNewImage(imageUrl: string): void {
+    this.newlyUploadedImages = this.newlyUploadedImages.filter(img => img.imageUrl !== imageUrl);
   }
 
-  removeCurrentProjectImage(imageId: string): void {
+  // Mark an existing image for removal
+  removeCurrentImage(imageId: string): void {
     this.currentProjectImages = this.currentProjectImages.filter(img => img.id !== imageId);
   }
 
@@ -117,7 +144,6 @@ export class ProjectAddEditComponent implements OnInit {
       this.projectForm.markAllAsTouched();
       return;
     }
-
     this.dialogAction = this.isEditMode ? 'update' : 'add';
     this.dialogMessage = `Are you sure you want to ${this.dialogAction} this project?`;
     this.showConfirmationDialog = true;
@@ -128,43 +154,21 @@ export class ProjectAddEditComponent implements OnInit {
     if (confirmed) {
       const formValue = this.projectForm.getRawValue();
 
-      // Convert newly selected files into ProjectImage objects
-      const newImages: ProjectImage[] = this.selectedImages.map(img => ({
-        id: uuidv4(),
-        projectId: this.projectId || '',
-        imageUrl: img.url, // This is the Data URL
-        caption: '',
-        dateUploaded: new Date(),
-      }));
+      // Combine the remaining existing images with the newly uploaded ones
+      const finalImages = [...this.currentProjectImages, ...this.newlyUploadedImages];
 
-      // In edit mode, combine existing images with new ones. Otherwise, just use new ones.
-      const finalImages = this.isEditMode
-        ? [...this.currentProjectImages, ...newImages]
-        : newImages;
-
-      // Create the DTO for the backend
       const projectData = {
-        title: formValue.title,
-        description: formValue.description,
-        location: formValue.location,
-        startDate: new Date(formValue.startDate),
-        endDate: new Date(formValue.endDate),
-        budget: formValue.budget,
-        fundSource: formValue.fundSource,
-        status: formValue.status,
-        divisionId: formValue.divisionId,
-        images: finalImages // Send the array of image objects
+        ...formValue,
+        images: finalImages
       };
 
-      if (this.isEditMode && this.projectId) {
-        this.projectDataService.updateProject(this.projectId, projectData).subscribe(() => {
-          this.router.navigate(['/project-detail', this.projectId]);
-        });
-      } else {
-        this.projectDataService.addProject(projectData).subscribe(newProject => {
-          this.router.navigate(['/project-detail', newProject.id]);
-        });
-      }
+      const operation = this.isEditMode && this.projectId
+        ? this.projectDataService.updateProject(this.projectId, projectData)
+        : this.projectDataService.addProject(projectData);
+
+      operation.subscribe(project => {
+        this.router.navigate(['/project-detail', project.id]);
+      });
     }
   }
 

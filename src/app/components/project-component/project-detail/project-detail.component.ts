@@ -12,7 +12,7 @@ import { SafeUrlPipe } from '../../../pipes/safe-url.pipe'; // <-- Import the ne
   selector: 'app-project-detail',
   standalone: true,
   // Add SafeUrlPipe to the component's imports
-  imports: [CommonModule, RouterModule, ProjectConfirmationDialogComponent, DatePipe, SafeUrlPipe],
+  imports: [CommonModule, RouterModule, ProjectConfirmationDialogComponent, DatePipe],
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.css']
 })

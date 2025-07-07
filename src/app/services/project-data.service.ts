@@ -30,7 +30,6 @@ export class ProjectDataService {
     return this.http.get<Project>(`${API_URL}/projects/${id}`);
   }
 
-  // Use a DTO-like object for creating/updating to match backend expectations
   addProject(projectData: Omit<Project, 'id' | 'dateCreated' | 'dateUpdated' | 'division'> & { divisionId: string }): Observable<Project> {
     return this.http.post<Project>(`${API_URL}/projects`, projectData);
   }
@@ -47,5 +46,20 @@ export class ProjectDataService {
 
   getDivisions(): Observable<Division[]> {
     return this.http.get<Division[]>(`${API_URL}/divisions`);
+  }
+
+  // --- File Upload Method ---
+
+  /**
+   * Uploads a file to the server.
+   * @param file The file to upload.
+   * @returns An observable with the path to the uploaded file.
+   */
+  uploadImage(file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // The backend is expected to return the URL of the uploaded file as a string
+    return this.http.post(`${API_URL}/files/upload`, formData, { responseType: 'text' });
   }
 }
