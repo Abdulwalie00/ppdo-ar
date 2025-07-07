@@ -21,6 +21,7 @@ import { ProjectDataService } from '../../../services/project-data.service';
 export class ProjectAddEditComponent implements OnInit {
   projectForm!: FormGroup;
   isEditMode: boolean = false;
+  showMoreFields: boolean = false;
   projectId: string | null = null;
   divisions: Division[] = [];
 
@@ -69,8 +70,12 @@ export class ProjectAddEditComponent implements OnInit {
       endDate: ['', Validators.required],
       budget: ['', [Validators.required, Validators.min(0)]],
       fundSource: ['', Validators.required],
+      targetParticipant: ['', Validators.required],
       divisionId: ['', Validators.required],
-      status: ['planned', Validators.required]
+      status: ['planned', Validators.required],
+      percentCompletion: [''],
+      implementationSchedule: [''],
+      dateOfAccomplishment: [''],
     });
   }
 
@@ -88,6 +93,10 @@ export class ProjectAddEditComponent implements OnInit {
       startDate: new Date(project.startDate).toISOString().substring(0, 10),
       endDate: new Date(project.endDate).toISOString().substring(0, 10),
       budget: project.budget,
+      percentCompletion: project.percentCompletion,
+      implementaionSchedule: project.implementationSchedule,
+      dateOfAccomplishment: project.dateOfAccomplishment,
+      targetParticipant: project.targetParticipant,
       fundSource: project.fundSource,
       divisionId: project.division.id,
       status: project.status
@@ -138,6 +147,19 @@ export class ProjectAddEditComponent implements OnInit {
   removeCurrentImage(imageId: string): void {
     this.currentProjectImages = this.currentProjectImages.filter(img => img.id !== imageId);
   }
+
+  onPercentInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = Number(input.value);
+
+    if (value > 100) {
+      value = 100;
+      input.value = '100'; // visually update the input box
+    }
+
+    this.projectForm.get('percentCompletion')?.setValue(value); // keep form control in sync
+  }
+
 
   onSubmit(): void {
     if (this.projectForm.invalid) {

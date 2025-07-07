@@ -24,7 +24,11 @@ export interface Project {
   endDate: Date;
   dateCreated: Date;
   dateUpdated: Date;
+  implementationSchedule: Date;
+  dateOfAccomplishment: Date;
   budget: number;
+  percentCompletion: number;
+  targetParticipant?: String;
   fundSource: string;
   division: Division;
   images: ProjectImage[];
