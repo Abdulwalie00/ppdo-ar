@@ -1,76 +1,51 @@
 // src/app/services/project-data.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { Project, Division, ProjectImage } from '../models/project.model';
-import { v4 as uuidv4 } from 'uuid'; // npm install uuid @types/uuid
-import { divisions } from '../data/divisions';
-import { dummyProjects } from '../data/dummy-projects';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Project, Division } from '../models/project.model';
+
+const API_URL = 'http://localhost:8080/api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectDataService {
-  private projectsSubject = new BehaviorSubject<Project[]>([]);
-  projects$: Observable<Project[]> = this.projectsSubject.asObservable();
 
-  private divisions: Division[] = divisions;
+  constructor(private http: HttpClient) { }
 
-  constructor() {
-    this.loadInitialData();
-  }
+  // --- Project Methods ---
 
-  private loadInitialData(): void {
-    this.projectsSubject.next(dummyProjects);
-  }
-
-  getDivisions(): Division[] {
-    return this.divisions;
-  }
-
-  getProjects(): Observable<Project[]> {
-    return this.projects$;
-  }
-
-  getProjectById(id: string): Observable<Project | undefined> {
-    return of(this.projectsSubject.getValue().find(p => p.id === id));
-  }
-
-  getProjectsByDivision(divisionCode: string): Observable<Project[]> {
-    return of(this.projectsSubject.getValue().filter(p => p.division.code === divisionCode));
-  }
-
-  addProject(project: Project): Observable<Project> {
-    const currentProjects = this.projectsSubject.getValue();
-    const newProject = { ...project, id: uuidv4(), dateCreated: new Date(), dateUpdated: new Date() };
-    this.projectsSubject.next([...currentProjects, newProject]);
-    return of(newProject);
-  }
-
-  updateProject(updatedProject: Project): Observable<Project | undefined> {
-    const currentProjects = this.projectsSubject.getValue();
-    const index = currentProjects.findIndex(p => p.id === updatedProject.id);
-
-    if (index > -1) {
-      const projects = [...currentProjects];
-      projects[index] = { ...updatedProject, dateUpdated: new Date() };
-      this.projectsSubject.next(projects);
-      return of(projects[index]);
+  getProjects(divisionCode?: string, status?: string): Observable<Project[]> {
+    let params = new HttpParams();
+    if (divisionCode) {
+      params = params.set('divisionCode', divisionCode);
     }
-    return of(undefined);
-  }
-
-  deleteProject(id: string): Observable<boolean> {
-    const currentProjects = this.projectsSubject.getValue();
-    const filteredProjects = currentProjects.filter(p => p.id !== id);
-    if (filteredProjects.length !== currentProjects.length) {
-      this.projectsSubject.next(filteredProjects);
-      return of(true);
+    if (status) {
+      params = params.set('status', status);
     }
-    return of(false);
+    return this.http.get<Project[]>(`${API_URL}/projects`, { params });
   }
 
-  // Helper to get division by code
-  getDivisionByCode(code: string): Division | undefined {
-    return this.divisions.find(d => d.code === code);
+  getProjectById(id: string): Observable<Project> {
+    return this.http.get<Project>(`${API_URL}/projects/${id}`);
+  }
+
+  // Use a DTO-like object for creating/updating to match backend expectations
+  addProject(projectData: Omit<Project, 'id' | 'dateCreated' | 'dateUpdated' | 'division'> & { divisionId: string }): Observable<Project> {
+    return this.http.post<Project>(`${API_URL}/projects`, projectData);
+  }
+
+  updateProject(id: string, projectData: Partial<Omit<Project, 'id' | 'dateCreated' | 'dateUpdated' | 'division'> & { divisionId: string }>): Observable<Project> {
+    return this.http.put<Project>(`${API_URL}/projects/${id}`, projectData);
+  }
+
+  deleteProject(id: string): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/projects/${id}`);
+  }
+
+  // --- Division Methods ---
+
+  getDivisions(): Observable<Division[]> {
+    return this.http.get<Division[]>(`${API_URL}/divisions`);
   }
 }

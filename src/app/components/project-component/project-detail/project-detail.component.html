@@ -1,6 +1,5 @@
 <div class="container mx-auto px-6 py-8 bg-gray-50 min-h-screen max-w-screen-2xl">
   <div *ngIf="project$ | async as project; else projectNotFound" class="bg-white rounded-xl shadow-2xl p-8 lg:p-10 w-full">
-    <!-- Header Section with Back Button and Actions -->
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 pb-6 border-b border-gray-200 gap-4">
       <div class="flex items-center space-x-4 w-full lg:w-auto">
         <button (click)="goBack()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 px-4 rounded-lg shadow-sm flex items-center transition duration-200 whitespace-nowrap">
@@ -43,15 +42,12 @@
       </div>
     </div>
 
-    <!-- Project Description -->
     <div class="mb-10">
       <h2 class="text-xl font-semibold text-gray-800 mb-3">Project Description</h2>
       <p class="text-gray-700 text-lg leading-relaxed bg-gray-50 p-6 rounded-lg border border-gray-200">{{ project.description }}</p>
     </div>
 
-    <!-- Main Content Grid -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-10 mb-10">
-      <!-- Key Details Column -->
       <div class="xl:col-span-1 bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
         <h3 class="text-2xl font-semibold text-gray-800 mb-5 pb-3 border-b border-gray-200">Project Details</h3>
         <div class="space-y-4">
@@ -111,9 +107,7 @@
         </div>
       </div>
 
-      <!-- Map and Images Column -->
       <div class="xl:col-span-2 space-y-8">
-        <!-- Map Section -->
         <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
           <h3 class="text-2xl font-semibold text-gray-800 mb-5 pb-3 border-b border-gray-200">Project Location</h3>
           <div class="bg-gray-200 h-96 flex flex-col items-center justify-center rounded-lg text-gray-500 border-2 border-dashed border-gray-300 relative">
@@ -134,7 +128,6 @@
           </div>
         </div>
 
-        <!-- Images Section -->
         <div *ngIf="project.images && project.images.length > 0" class="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
           <div class="flex justify-between items-center mb-5 pb-3 border-b border-gray-200">
             <h3 class="text-2xl font-semibold text-gray-800">Project Gallery</h3>
@@ -169,9 +162,7 @@
       </div>
     </div>
 
-    <!-- Additional Sections (Timeline, Documents, etc.) -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <!-- Timeline Section -->
       <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
         <h3 class="text-2xl font-semibold text-gray-800 mb-5 pb-3 border-b border-gray-200">Project Timeline</h3>
         <div class="relative pl-6">
@@ -206,7 +197,6 @@
         </div>
       </div>
 
-      <!-- Documents Section -->
       <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
         <h3 class="text-2xl font-semibold text-gray-800 mb-5 pb-3 border-b border-gray-200">Project Documents</h3>
         <div class="space-y-4">

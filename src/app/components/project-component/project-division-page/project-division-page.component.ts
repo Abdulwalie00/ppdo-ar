@@ -1,23 +1,23 @@
-// Assuming your ProjectDivisionPageComponent looks something like this:
+// src/app/pages/project-division-page/project-division-page.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, switchMap, of, filter, map } from 'rxjs';
+import { Observable, switchMap, of } from 'rxjs';
 import { ProjectListComponent } from '../project-list/project-list.component';
-import {Project} from '../../../models/project.model';
-import {ProjectDataService} from '../../../services/project-data.service'; // Import ProjectListComponent
+import { Project } from '../../../models/project.model';
+import { ProjectDataService } from '../../../services/project-data.service';
 
 @Component({
   selector: 'app-project-division-page',
   standalone: true,
-  imports: [CommonModule, ProjectListComponent], // Ensure ProjectListComponent is imported
+  imports: [CommonModule, ProjectListComponent],
   templateUrl: './project-division-page.component.html',
   styleUrl: './project-division-page.component.css'
 })
 export class ProjectDivisionPageComponent implements OnInit {
   divisionCode: string | null = null;
-  divisionName: string = '';
-  projects$!: Observable<Project[]>; // Observable holding projects for this division
+  divisionName: string = 'Loading...';
+  projects$!: Observable<Project[]>;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,18 +25,22 @@ export class ProjectDivisionPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // This stream handles fetching the projects based on the division code in the URL
     this.projects$ = this.route.paramMap.pipe(
       switchMap(params => {
         this.divisionCode = params.get('divisionCode');
         if (this.divisionCode) {
-          // Find the division name
-          const division = this.projectDataService.getDivisionByCode(this.divisionCode);
-          this.divisionName = division ? division.name : 'Unknown Division';
-          // Fetch projects for this specific division
-          return this.projectDataService.getProjectsByDivision(this.divisionCode);
+          // Fetch the division's name for the header
+          this.projectDataService.getDivisions().subscribe(divisions => {
+            const currentDivision = divisions.find(d => d.code === this.divisionCode);
+            this.divisionName = currentDivision ? currentDivision.name : 'Unknown Division';
+          });
+          // Fetch the projects for the current division
+          return this.projectDataService.getProjects(this.divisionCode);
         }
-        this.divisionName = 'All Divisions'; // Fallback or if no division code
-        return of([]); // Return empty if no division code
+        // If no division code is found, display a default name and return no projects
+        this.divisionName = 'All Divisions';
+        return of([]);
       })
     );
   }

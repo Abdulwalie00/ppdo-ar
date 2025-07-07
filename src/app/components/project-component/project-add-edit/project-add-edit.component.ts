@@ -1,20 +1,19 @@
-// src/app/components/project-add-edit/project-add-edit.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { v4 as uuidv4 } from 'uuid';
 import { ProjectConfirmationDialogComponent } from '../project-confirmation-dialog/project-confirmation-dialog.component';
-import {map} from 'rxjs/operators';
-import {Division, Project, ProjectImage} from '../../../models/project.model';
-import {ProjectDataService} from '../../../services/project-data.service';
+import { map } from 'rxjs/operators';
+import { Division, Project, ProjectImage } from '../../../models/project.model';
+import { ProjectDataService } from '../../../services/project-data.service';
 
 @Component({
   selector: 'app-project-add-edit',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ProjectConfirmationDialogComponent],
   templateUrl: './project-add-edit.component.html',
-  styleUrl: './project-add-edit.component.css'
+  styleUrls: ['./project-add-edit.component.css']
 })
 export class ProjectAddEditComponent implements OnInit {
   projectForm!: FormGroup;
@@ -24,12 +23,12 @@ export class ProjectAddEditComponent implements OnInit {
   selectedImages: { file: File, url: string }[] = [];
   currentProjectImages: ProjectImage[] = [];
 
-  // Confirmation dialog
   showConfirmationDialog: boolean = false;
   dialogMessage: string = '';
-  dialogAction: 'add' | 'update' | 'delete' | '' = '';
+  dialogAction: 'add' | 'update' = 'add';
 
-  preselectedDivisionId: string | null = null; // New property to store preselected ID
+  preselectedDivisionId: string | null = null;
+
 
   constructor(
     private fb: FormBuilder,
@@ -39,50 +38,21 @@ export class ProjectAddEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.divisions = this.projectDataService.getDivisions();
-    this.projectId = this.route.snapshot.paramMap.get('id');
-    this.isEditMode = !!this.projectId;
+    this.loadDivisions();
+    this.initForm();
 
-    // Check for query parameter for division pre-selection
-    this.route.queryParamMap.pipe(
-      map(params => params.get('division'))
-    ).subscribe(divisionCode => {
-      if (!this.isEditMode && divisionCode) { // Only pre-select if not in edit mode
-        const division = this.projectDataService.getDivisionByCode(divisionCode);
-        if (division) {
-          this.preselectedDivisionId = division.id;
-        }
+    this.route.paramMap.subscribe(params => {
+      this.projectId = params.get('id');
+      this.isEditMode = !!this.projectId;
+
+      if (this.isEditMode && this.projectId) {
+        this.loadProjectForEdit(this.projectId);
       }
-      this.initForm(); // Initialize form after potentially getting preselected division
     });
-
-
-    if (this.isEditMode && this.projectId) {
-      this.projectDataService.getProjectById(this.projectId).subscribe(project => {
-        if (project) {
-          this.projectForm.patchValue({
-            id: project.id,
-            title: project.title,
-            description: project.description,
-            location: project.location,
-            startDate: project.startDate.toISOString().substring(0, 10),
-            endDate: project.endDate.toISOString().substring(0, 10),
-            budget: project.budget,
-            fundSource: project.fundSource,
-            divisionId: project.division.id,
-            status: project.status
-          });
-          this.currentProjectImages = project.images;
-        } else {
-          this.router.navigate(['/project-list']);
-        }
-      });
-    }
   }
 
   initForm(): void {
     this.projectForm = this.fb.group({
-      id: [null],
       title: ['', Validators.required],
       description: ['', Validators.required],
       location: ['', Validators.required],
@@ -90,14 +60,34 @@ export class ProjectAddEditComponent implements OnInit {
       endDate: ['', Validators.required],
       budget: ['', [Validators.required, Validators.min(0)]],
       fundSource: ['', Validators.required],
-      divisionId: [this.preselectedDivisionId || '', Validators.required], // Set default value here
+      divisionId: ['', Validators.required],
       status: ['planned', Validators.required]
     });
+  }
 
-    // Disable division dropdown if preselected
-    if (this.preselectedDivisionId) {
-      this.projectForm.get('divisionId')?.disable();
-    }
+  loadDivisions(): void {
+    this.projectDataService.getDivisions().subscribe(divisions => {
+      this.divisions = divisions;
+    });
+  }
+
+  loadProjectForEdit(id: string): void {
+    this.projectDataService.getProjectById(id).subscribe(project => {
+      if (project) {
+        this.projectForm.patchValue({
+          title: project.title,
+          description: project.description,
+          location: project.location,
+          startDate: new Date(project.startDate).toISOString().substring(0, 10),
+          endDate: new Date(project.endDate).toISOString().substring(0, 10),
+          budget: project.budget,
+          fundSource: project.fundSource,
+          divisionId: project.division.id,
+          status: project.status
+        });
+        this.currentProjectImages = project.images || [];
+      }
+    });
   }
 
   onImageSelected(event: Event): void {
@@ -109,7 +99,7 @@ export class ProjectAddEditComponent implements OnInit {
         reader.onload = () => {
           this.selectedImages.push({ file: file, url: reader.result as string });
         };
-        reader.readAsDataURL(file); // Read as Data URL for local display
+        reader.readAsDataURL(file);
       }
     }
   }
@@ -123,70 +113,56 @@ export class ProjectAddEditComponent implements OnInit {
   }
 
   onSubmit(): void {
-    // If the divisionId field was disabled, its value won't be included in form.value.
-    // So, manually add it back for submission.
-    const formValue = this.projectForm.getRawValue(); // Use getRawValue to get values from disabled fields
-
     if (this.projectForm.invalid) {
       this.projectForm.markAllAsTouched();
       return;
     }
 
-    if (this.isEditMode) {
-      this.dialogMessage = 'Are you sure you want to update this project?';
-      this.dialogAction = 'update';
-    } else {
-      this.dialogMessage = 'Are you sure you want to add this project?';
-      this.dialogAction = 'add';
-    }
+    this.dialogAction = this.isEditMode ? 'update' : 'add';
+    this.dialogMessage = `Are you sure you want to ${this.dialogAction} this project?`;
     this.showConfirmationDialog = true;
   }
 
   onConfirmation(confirmed: boolean): void {
     this.showConfirmationDialog = false;
     if (confirmed) {
-      const formValue = this.projectForm.getRawValue(); // Use getRawValue here too
-      const selectedDivision = this.divisions.find(d => d.id === formValue.divisionId);
+      const formValue = this.projectForm.getRawValue();
 
-      if (!selectedDivision) {
-        console.error('Selected division not found.');
-        return;
-      }
-
-      // Prepare project images from selected local files
+      // Convert newly selected files into ProjectImage objects
       const newImages: ProjectImage[] = this.selectedImages.map(img => ({
         id: uuidv4(),
-        projectId: formValue.id || uuidv4(),
-        imageUrl: img.url,
+        projectId: this.projectId || '',
+        imageUrl: img.url, // This is the Data URL
         caption: '',
-        dateUploaded: new Date()
+        dateUploaded: new Date(),
       }));
 
-      const finalImages = [...this.currentProjectImages, ...newImages];
+      // In edit mode, combine existing images with new ones. Otherwise, just use new ones.
+      const finalImages = this.isEditMode
+        ? [...this.currentProjectImages, ...newImages]
+        : newImages;
 
-      const project: Project = {
-        id: formValue.id || uuidv4(),
+      // Create the DTO for the backend
+      const projectData = {
         title: formValue.title,
         description: formValue.description,
         location: formValue.location,
         startDate: new Date(formValue.startDate),
         endDate: new Date(formValue.endDate),
-        dateCreated: new Date(),
-        dateUpdated: new Date(),
         budget: formValue.budget,
         fundSource: formValue.fundSource,
-        division: selectedDivision,
-        images: finalImages,
-        status: formValue.status
+        status: formValue.status,
+        divisionId: formValue.divisionId,
+        images: finalImages // Send the array of image objects
       };
 
-      if (this.isEditMode) {
-        this.projectDataService.updateProject(project).subscribe(() => {
-          this.router.navigate(['/project-detail', project.id]);
+      if (this.isEditMode && this.projectId) {
+        this.projectDataService.updateProject(this.projectId, projectData).subscribe(() => {
+          this.router.navigate(['/project-detail', this.projectId]);
         });
       } else {
-        this.projectDataService.addProject(project).subscribe(() => {
-          this.router.navigate(['/project-division', project.division.code]);
+        this.projectDataService.addProject(projectData).subscribe(newProject => {
+          this.router.navigate(['/project-detail', newProject.id]);
         });
       }
     }
@@ -196,7 +172,7 @@ export class ProjectAddEditComponent implements OnInit {
     if (this.isEditMode && this.projectId) {
       this.router.navigate(['/project-detail', this.projectId]);
     } else {
-      this.router.navigate(['/project-list']);
+      this.router.navigate(['/project-dashboard']);
     }
   }
 }
