@@ -8,8 +8,10 @@ import { switchMap } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ProjectConfirmationDialogComponent } from '../project-confirmation-dialog/project-confirmation-dialog.component';
-import { Division, Project, ProjectImage } from '../../../models/project.model';
+import {Division, Project, ProjectImage} from '../../../models/project.model';
+import { AuthService } from '../../../services/auth.service'; // Import AuthService
 import { ProjectDataService } from '../../../services/project-data.service';
+import {UserService} from '../../../services/user.service';
 
 @Component({
   selector: 'app-project-add-edit',
@@ -24,10 +26,9 @@ export class ProjectAddEditComponent implements OnInit {
   showMoreFields: boolean = false;
   projectId: string | null = null;
   divisions: Division[] = [];
+  public isAdmin: boolean = false;
 
-  // Store newly uploaded image URLs
   newlyUploadedImages: ProjectImage[] = [];
-  // Store existing images for display
   currentProjectImages: ProjectImage[] = [];
 
   showConfirmationDialog: boolean = false;
@@ -38,25 +39,50 @@ export class ProjectAddEditComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private projectDataService: ProjectDataService
+    private projectDataService: ProjectDataService,
+    private authService: AuthService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
-    this.loadDivisions();
+    this.isAdmin = this.authService.isAdmin();
     this.initForm();
 
     this.route.paramMap.pipe(
       switchMap(params => {
         this.projectId = params.get('id');
         this.isEditMode = !!this.projectId;
+
+        // Handle ADD mode logic
+        if (!this.isEditMode) {
+          if (this.isAdmin) {
+            this.loadDivisions(); // Admin can select any division
+          } else {
+            // Non-admin's division is fetched and set automatically
+            this.projectForm.get('divisionId')?.disable();
+            this.userService.getCurrentUserDivision().subscribe(userDivision => {
+              if (userDivision) {
+                this.projectForm.patchValue({ divisionId: userDivision.id });
+                this.divisions = [userDivision]; // Set divisions array for display
+              }
+            });
+          }
+        }
+
+        // Handle EDIT mode logic: fetch project if ID exists
         if (this.isEditMode && this.projectId) {
           return this.projectDataService.getProjectById(this.projectId);
         }
         return of(null);
       })
     ).subscribe(project => {
-      if (project) {
+      if (project) { // This block only runs in EDIT mode
+        this.loadDivisions(); // Load all divisions to find the project's division
         this.loadProjectForEdit(project);
+        if (!this.isAdmin) {
+          // Non-admin cannot change division of an existing project
+          this.projectForm.get('divisionId')?.disable();
+        }
       }
     });
   }
@@ -101,10 +127,10 @@ export class ProjectAddEditComponent implements OnInit {
       divisionId: project.division.id,
       status: project.status
     });
-    // Keep track of existing images
     this.currentProjectImages = project.images || [];
   }
 
+  // --- Other methods (onImageSelected, removeNewImage, etc.) remain unchanged ---
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) {
@@ -112,38 +138,31 @@ export class ProjectAddEditComponent implements OnInit {
     }
 
     const files = Array.from(input.files);
-    // Create an array of upload observables
     const uploadObservables = files.map(file =>
       this.projectDataService.uploadImage(file)
     );
 
-    // Execute all uploads in parallel
     forkJoin(uploadObservables).subscribe({
       next: (urls) => {
-        // Once all uploads are complete, create ProjectImage objects
         const newImages = urls.map(url => ({
-          id: uuidv4(), // Generate a temporary client-side ID
+          id: uuidv4(),
           projectId: this.projectId || '',
-          imageUrl: url, // The URL from the server
+          imageUrl: url,
           caption: '',
           dateUploaded: new Date()
         }));
-        // Add the newly uploaded images to our list
         this.newlyUploadedImages.push(...newImages);
       },
       error: (err) => {
         console.error('Image upload failed', err);
-        // You can add user-facing error handling here
       }
     });
   }
 
-  // Remove an image that was just uploaded in this session
   removeNewImage(imageUrl: string): void {
     this.newlyUploadedImages = this.newlyUploadedImages.filter(img => img.imageUrl !== imageUrl);
   }
 
-  // Mark an existing image for removal
   removeCurrentImage(imageId: string): void {
     this.currentProjectImages = this.currentProjectImages.filter(img => img.id !== imageId);
   }
@@ -154,10 +173,10 @@ export class ProjectAddEditComponent implements OnInit {
 
     if (value > 100) {
       value = 100;
-      input.value = '100'; // visually update the input box
+      input.value = '100';
     }
 
-    this.projectForm.get('percentCompletion')?.setValue(value); // keep form control in sync
+    this.projectForm.get('percentCompletion')?.setValue(value);
   }
 
 
@@ -174,9 +193,9 @@ export class ProjectAddEditComponent implements OnInit {
   onConfirmation(confirmed: boolean): void {
     this.showConfirmationDialog = false;
     if (confirmed) {
+      // Use getRawValue() to include disabled fields like divisionId for non-admins
       const formValue = this.projectForm.getRawValue();
 
-      // Combine the remaining existing images with the newly uploaded ones
       const finalImages = [...this.currentProjectImages, ...this.newlyUploadedImages];
 
       const projectData = {

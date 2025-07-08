@@ -1,14 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from '../models/user.model'; // Adjust path if needed
+import { User } from '../models/user.model';
+import {Division} from '../models/project.model'; // Adjust path if needed
 
 // Define a simple interface for the Division object
-export interface Division {
-  id: number;
-  name: string;
-  location?: string;
-}
 
 const API_URL = 'http://localhost:8080/api/users/';
 const API_URL2 = 'http://localhost:8080/api/manage-users';

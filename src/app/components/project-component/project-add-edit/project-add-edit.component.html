@@ -122,14 +122,16 @@
           formControlName="divisionId"
           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           [ngClass]="{'border-red-500': projectForm.get('divisionId')?.invalid && projectForm.get('divisionId')?.touched}"
-           >
+        >
           <option value="" disabled>Select a division</option>
           <option *ngFor="let div of divisions" [value]="div.id">{{ div.name }}</option>
         </select>
         <div *ngIf="projectForm.get('divisionId')?.invalid && projectForm.get('divisionId')?.touched" class="text-red-500 text-xs mt-1">
           Division is required.
         </div>
-        <p  class="text-sm text-gray-500 mt-1">Division pre-selected from current view.</p>
+        <p *ngIf="!isAdmin && !isEditMode" class="text-sm text-gray-500 mt-1">
+          Your division has been automatically selected.
+        </p>
       </div>
 
       <div>
