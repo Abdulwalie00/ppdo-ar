@@ -39,6 +39,19 @@ export class AuthService {
     return this.getRoles().includes('ROLE_ADMIN');
   }
 
+  getUsername(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.sub; // 'sub' is standard for subject (username) in JWT
+    } catch (e) {
+      console.error('Error decoding token', e);
+      return null;
+    }
+  }
+
   get isAuthenticated$(): Observable<boolean> {
     return this.isAuthenticatedSubject.asObservable();
   }

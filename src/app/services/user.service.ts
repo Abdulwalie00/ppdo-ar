@@ -3,6 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model'; // Adjust path if needed
 
+// Define a simple interface for the Division object
+export interface Division {
+  id: number;
+  name: string;
+  location?: string;
+}
+
 const API_URL = 'http://localhost:8080/api/users/';
 const API_URL2 = 'http://localhost:8080/api/manage-users';
 @Injectable({
@@ -53,4 +60,10 @@ export class UserService {
     return this.http.get<User>(API_URL + 'username/' + username);
   }
 
+  /**
+   * Fetches the division of the currently authenticated user.
+   */
+  getCurrentUserDivision(): Observable<Division> {
+    return this.http.get<Division>(API_URL + 'me/division');
+  }
 }

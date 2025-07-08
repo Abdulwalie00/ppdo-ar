@@ -3,20 +3,13 @@ import { CommonModule } from '@angular/common';
 import {Router, RouterModule} from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
-  faHome,
-  faChartBar,
-  faCog,
-  faChevronRight,
-  faChevronDown,
-  faFileAlt,
-  faDatabase,
-  faUsers,
-  faCircle,
-  faCaretRight,
-  faCaretLeft,
-  faCaretDown
+  faHome, faChartBar, faCog, faChevronRight, faChevronDown, faFileAlt,
+  faDatabase, faUsers, faCircle, faCaretRight, faCaretLeft, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import {AuthService} from '../../services/auth.service';
 
 interface MenuItem {
   title: string;
@@ -39,23 +32,31 @@ interface MenuItem {
       transition('closed <=> open', animate('300ms ease-in-out'))
     ]),
     trigger('sidebarSlide', [
-      state('expanded', style({ width: '17rem' })), // 68 * 0.25rem = 17rem
-      state('collapsed', style({ width: '3.5rem' })), // 14 * 0.25rem = 3.5rem
+      state('expanded', style({ width: '17rem' })),
+      state('collapsed', style({ width: '3.5rem' })),
       transition('expanded <=> collapsed', animate('300ms ease-in-out')),
     ]),
   ]
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-
+  isAdmin$: Observable<boolean>;
   isCollapsed = signal(false);
   currentMenuTopPosition: number = 1;
   private globalClickUnlistener: (() => void) | undefined = undefined;
 
-
-  constructor(private router: Router, private renderer: Renderer2, private el: ElementRef) {
+  constructor(
+    private router: Router,
+    private renderer: Renderer2,
+    private el: ElementRef,
+    private authService: AuthService
+  ) {
+    this.isAdmin$ = this.authService.userRoles$.pipe(
+      map(roles => roles.includes('ROLE_ADMIN'))
+    );
     this.collapseSubmenuOnNavigate();
   }
 
+  // The rest of your component logic remains the same...
   menuItems = signal<MenuItem[]>([
     {
       title: 'Dashboard',
@@ -129,7 +130,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
   ]);
 
-  // FontAwesome icons
   faChevronRight = faChevronRight;
   faChevronDown = faChevronDown;
   faCaretRight = faCaretRight;
@@ -212,5 +212,4 @@ export class SidebarComponent implements OnInit, OnDestroy {
     const buttonRect = clickedButton.getBoundingClientRect();
     this.currentMenuTopPosition = buttonRect.top - 1;
   }
-
 }
