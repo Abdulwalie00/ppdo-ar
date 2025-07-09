@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Project, Division } from '../models/project.model';
+import {Project, Division, ProjectCategory, ProjectCategoryDto} from '../models/project.model';
 
 const API_URL = 'http://localhost:8080/api';
 
@@ -48,18 +48,34 @@ export class ProjectDataService {
     return this.http.get<Division[]>(`${API_URL}/divisions`);
   }
 
+  // --- Project Category Methods ---
+
+  getProjectCategories(divisionId?: string): Observable<ProjectCategory[]> {
+    let params = new HttpParams();
+    if (divisionId) {
+      params = params.set('divisionId', divisionId);
+    }
+    return this.http.get<ProjectCategory[]>(`${API_URL}/project-categories`, { params });
+  }
+
+  addProjectCategory(categoryData: ProjectCategoryDto): Observable<ProjectCategory> {
+    return this.http.post<ProjectCategory>(`${API_URL}/project-categories`, categoryData);
+  }
+
+  updateProjectCategory(id: string, categoryData: ProjectCategoryDto): Observable<ProjectCategory> {
+    return this.http.put<ProjectCategory>(`${API_URL}/project-categories/${id}`, categoryData);
+  }
+
+  deleteProjectCategory(id: string): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/project-categories/${id}`);
+  }
+
+
   // --- File Upload Method ---
 
-  /**
-   * Uploads a file to the server.
-   * @param file The file to upload.
-   * @returns An observable with the path to the uploaded file.
-   */
   uploadImage(file: File): Observable<string> {
     const formData = new FormData();
     formData.append('file', file);
-
-    // The backend is expected to return the URL of the uploaded file as a string
     return this.http.post(`${API_URL}/files/upload`, formData, { responseType: 'text' });
   }
 }

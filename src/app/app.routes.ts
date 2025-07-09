@@ -16,6 +16,9 @@ import {ProjectAddEditComponent} from './components/project-component/project-ad
 import {ProjectDetailComponent} from './components/project-component/project-detail/project-detail.component';
 import {ProjectListComponent} from './components/project-component/project-list/project-list.component';
 import {ProjectDashboardComponent} from './components/project-component/project-dashboard/project-dashboard.component';
+import {
+  ProjectCategoryListComponent
+} from './components/project-component/project-category-list/project-category-list.component';
 
 export const routes: Routes = [
   {
@@ -71,6 +74,11 @@ export const routes: Routes = [
       { path: 'project-edit/:id', component: ProjectAddEditComponent },
       { path: 'project-detail/:id', component: ProjectDetailComponent },
       { path: 'project-dashboard', component: ProjectDashboardComponent },
+      {
+        path: 'project-categories',
+        component: ProjectCategoryListComponent
+        // canActivate: [AuthGuard] // Add your authentication guard here if you have one
+      },
       //Other Routes
 
       { path: 'reports', component: ReportsComponent },

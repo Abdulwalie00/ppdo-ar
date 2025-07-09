@@ -15,6 +15,19 @@ export interface ProjectImage {
   dateUploaded: Date;
 }
 
+export interface ProjectCategory {
+  id: string;
+  name: string;
+  code: string;
+  division: Division;
+}
+
+export interface ProjectCategoryDto {
+  name: string;
+  code: string;
+}
+
+
 export interface Project {
   id: string;
   title: string;
@@ -31,6 +44,7 @@ export interface Project {
   targetParticipant?: String;
   fundSource: string;
   division: Division;
+  projectCategory?: ProjectCategory;
   images: ProjectImage[];
   status: 'planned' | 'ongoing' | 'completed' | 'cancelled';
 }

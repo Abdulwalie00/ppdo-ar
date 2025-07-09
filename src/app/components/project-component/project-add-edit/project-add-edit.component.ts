@@ -8,15 +8,22 @@ import { switchMap } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ProjectConfirmationDialogComponent } from '../project-confirmation-dialog/project-confirmation-dialog.component';
-import {Division, Project, ProjectImage} from '../../../models/project.model';
-import { AuthService } from '../../../services/auth.service'; // Import AuthService
+import {Division, Project, ProjectCategory, ProjectImage} from '../../../models/project.model';
+import { AuthService } from '../../../services/auth.service';
 import { ProjectDataService } from '../../../services/project-data.service';
 import {UserService} from '../../../services/user.service';
+// Import the dialog component
+import {ProjectCategoryAddDialogComponent} from "../project-category-add-dialog/project-category-add-dialog.component";
 
 @Component({
   selector: 'app-project-add-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ProjectConfirmationDialogComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ProjectConfirmationDialogComponent,
+    ProjectCategoryAddDialogComponent // Import the dialog
+  ],
   templateUrl: './project-add-edit.component.html',
   styleUrls: ['./project-add-edit.component.css']
 })
@@ -26,6 +33,7 @@ export class ProjectAddEditComponent implements OnInit {
   showMoreFields: boolean = false;
   projectId: string | null = null;
   divisions: Division[] = [];
+  projectCategories: ProjectCategory[] = [];
   public isAdmin: boolean = false;
 
   newlyUploadedImages: ProjectImage[] = [];
@@ -34,6 +42,9 @@ export class ProjectAddEditComponent implements OnInit {
   showConfirmationDialog: boolean = false;
   dialogMessage: string = '';
   dialogAction: 'add' | 'update' = 'add';
+
+  // Dialog control
+  showAddCategoryDialog = false;
 
   constructor(
     private fb: FormBuilder,
@@ -53,36 +64,33 @@ export class ProjectAddEditComponent implements OnInit {
         this.projectId = params.get('id');
         this.isEditMode = !!this.projectId;
 
-        // Handle ADD mode logic
-        if (!this.isEditMode) {
-          if (this.isAdmin) {
-            this.loadDivisions(); // Admin can select any division
-          } else {
-            // Non-admin's division is fetched and set automatically
-            this.projectForm.get('divisionId')?.disable();
-            this.userService.getCurrentUserDivision().subscribe(userDivision => {
-              if (userDivision) {
-                this.projectForm.patchValue({ divisionId: userDivision.id });
-                this.divisions = [userDivision]; // Set divisions array for display
-              }
-            });
-          }
-        }
-
-        // Handle EDIT mode logic: fetch project if ID exists
         if (this.isEditMode && this.projectId) {
+          // EDIT MODE
           return this.projectDataService.getProjectById(this.projectId);
+        } else {
+          // ADD MODE
+          return of(null); // Continue the stream for add mode
         }
-        return of(null);
       })
     ).subscribe(project => {
-      if (project) { // This block only runs in EDIT mode
-        this.loadDivisions(); // Load all divisions to find the project's division
+      if (this.isEditMode && project) {
+        // EDIT MODE: We have the project data
         this.loadProjectForEdit(project);
-        if (!this.isAdmin) {
-          // Non-admin cannot change division of an existing project
-          this.projectForm.get('divisionId')?.disable();
-        }
+        // Set division for display and disable the field for all users.
+        this.divisions = [project.division];
+        this.projectForm.get('divisionId')?.disable();
+      } else {
+        // ADD MODE: No project data, set up for a new project.
+        // The division field will be fixed to the current user's division.
+        this.userService.getCurrentUserDivision().subscribe(userDivision => {
+          if (userDivision) {
+            this.projectForm.patchValue({ divisionId: userDivision.id });
+            this.loadProjectCategories(userDivision.id);
+            this.divisions = [userDivision];
+            // Disable the division field for all users in add mode.
+            this.projectForm.get('divisionId')?.disable();
+          }
+        });
       }
     });
   }
@@ -98,6 +106,7 @@ export class ProjectAddEditComponent implements OnInit {
       fundSource: ['', Validators.required],
       targetParticipant: ['', Validators.required],
       divisionId: ['', Validators.required],
+      projectCategoryId: [''],
       status: ['planned', Validators.required],
       percentCompletion: [''],
       implementationSchedule: [''],
@@ -106,8 +115,16 @@ export class ProjectAddEditComponent implements OnInit {
   }
 
   loadDivisions(): void {
+    // This is now only called in edit mode if needed, but the field is disabled.
+    // Keeping it for potential future use.
     this.projectDataService.getDivisions().subscribe(divisions => {
       this.divisions = divisions;
+    });
+  }
+
+  loadProjectCategories(divisionId: string): void {
+    this.projectDataService.getProjectCategories(divisionId).subscribe(categories => {
+      this.projectCategories = categories;
     });
   }
 
@@ -120,28 +137,45 @@ export class ProjectAddEditComponent implements OnInit {
       endDate: new Date(project.endDate).toISOString().substring(0, 10),
       budget: project.budget,
       percentCompletion: project.percentCompletion,
-      implementaionSchedule: project.implementationSchedule,
+      implementationSchedule: project.implementationSchedule,
       dateOfAccomplishment: project.dateOfAccomplishment,
       targetParticipant: project.targetParticipant,
       fundSource: project.fundSource,
       divisionId: project.division.id,
+      projectCategoryId: project.projectCategory?.id,
       status: project.status
     });
+    this.loadProjectCategories(project.division.id);
     this.currentProjectImages = project.images || [];
   }
 
-  // --- Other methods (onImageSelected, removeNewImage, etc.) remain unchanged ---
+  onCategoryChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    if (selectElement.value === 'add-new-category') {
+      this.showAddCategoryDialog = true;
+      // Reset the dropdown to its previous value or to the placeholder
+      this.projectForm.get('projectCategoryId')?.setValue('', { emitEvent: false });
+    }
+  }
+
+  handleCategorySaved(newCategory: ProjectCategory): void {
+    // Add new category to the list
+    this.projectCategories.push(newCategory);
+    // Set the form value to the newly added category
+    this.projectForm.get('projectCategoryId')?.setValue(newCategory.id);
+    // Close the dialog
+    this.showAddCategoryDialog = false;
+  }
+
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) {
       return;
     }
-
     const files = Array.from(input.files);
     const uploadObservables = files.map(file =>
       this.projectDataService.uploadImage(file)
     );
-
     forkJoin(uploadObservables).subscribe({
       next: (urls) => {
         const newImages = urls.map(url => ({
@@ -153,9 +187,7 @@ export class ProjectAddEditComponent implements OnInit {
         }));
         this.newlyUploadedImages.push(...newImages);
       },
-      error: (err) => {
-        console.error('Image upload failed', err);
-      }
+      error: (err) => console.error('Image upload failed', err)
     });
   }
 
@@ -170,15 +202,12 @@ export class ProjectAddEditComponent implements OnInit {
   onPercentInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     let value = Number(input.value);
-
     if (value > 100) {
       value = 100;
       input.value = '100';
     }
-
     this.projectForm.get('percentCompletion')?.setValue(value);
   }
-
 
   onSubmit(): void {
     if (this.projectForm.invalid) {
@@ -193,20 +222,13 @@ export class ProjectAddEditComponent implements OnInit {
   onConfirmation(confirmed: boolean): void {
     this.showConfirmationDialog = false;
     if (confirmed) {
-      // Use getRawValue() to include disabled fields like divisionId for non-admins
+      // Use getRawValue() to include the disabled divisionId field
       const formValue = this.projectForm.getRawValue();
-
       const finalImages = [...this.currentProjectImages, ...this.newlyUploadedImages];
-
-      const projectData = {
-        ...formValue,
-        images: finalImages
-      };
-
+      const projectData = { ...formValue, images: finalImages };
       const operation = this.isEditMode && this.projectId
         ? this.projectDataService.updateProject(this.projectId, projectData)
         : this.projectDataService.addProject(projectData);
-
       operation.subscribe(project => {
         this.router.navigate(['/project-detail', project.id]);
       });
