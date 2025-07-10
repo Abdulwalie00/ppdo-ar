@@ -19,6 +19,7 @@ import {ProjectDashboardComponent} from './components/project-component/project-
 import {
   ProjectCategoryListComponent
 } from './components/project-component/project-category-list/project-category-list.component';
+import {ProjectSummaryComponent} from './components/project-component/project-summary/project-summary.component';
 
 export const routes: Routes = [
   {
@@ -74,6 +75,7 @@ export const routes: Routes = [
       { path: 'project-edit/:id', component: ProjectAddEditComponent },
       { path: 'project-detail/:id', component: ProjectDetailComponent },
       { path: 'project-dashboard', component: ProjectDashboardComponent },
+      { path: 'project-summary', component: ProjectSummaryComponent },
       {
         path: 'project-categories',
         component: ProjectCategoryListComponent
