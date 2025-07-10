@@ -1,11 +1,9 @@
 <div class="container mx-auto px-4 sm:px-6 py-8 min-h-screen">
-  <!-- Header -->
   <div class="mb-10 text-center">
     <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">Project Dashboard</h1>
     <p class="text-gray-600 max-w-2xl mx-auto">Overview of all projects across your organization</p>
   </div>
 
-  <!-- Status Cards -->
   <div class="mb-12">
     <h2 class="text-xl font-semibold text-gray-800 mb-6">Project Status</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -16,7 +14,8 @@
         [class.border-yellow-500]="status === 'ongoing'"
         [class.border-green-500]="status === 'completed'"
         [class.border-red-500]="status === 'cancelled'"
-        [routerLink]="['/project-list']" [queryParams]="{ status }"
+        [routerLink]="['/project-list']"
+        [queryParams]="!authService.isAdmin() && userDivisionCode ? { status: status, division: userDivisionCode } : { status: status }"
       >
         <div class="flex items-center justify-between">
           <h3 class="font-medium text-gray-600 capitalize">{{ status }}</h3>
@@ -31,7 +30,6 @@
         </div>
       </div>
 
-      <!-- Total Projects Card -->
       <div class="bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
         <div class="flex items-center justify-between">
           <h3 class="font-medium text-gray-600">Total Projects</h3>
@@ -41,7 +39,6 @@
     </div>
   </div>
 
-  <!-- Projects by Division -->
   <div>
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-semibold text-gray-800">Projects by Division</h2>
@@ -56,7 +53,6 @@
       </button>
     </div>
 
-    <!-- Empty State -->
     <div *ngIf="divisionNames.length === 0" class="bg-white rounded-xl p-8 text-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -71,7 +67,6 @@
       </button>
     </div>
 
-    <!-- Division Sections -->
     <div *ngFor="let divisionName of divisionNames" class="mb-8 bg-white rounded-xl overflow-hidden shadow-sm">
       <div class="p-4 border-b border-gray-100">
         <h3 class="font-semibold text-gray-800 flex items-center gap-2">
@@ -82,7 +77,6 @@
         </h3>
       </div>
 
-      <!-- Project Table -->
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
