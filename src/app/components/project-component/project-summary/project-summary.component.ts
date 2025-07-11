@@ -136,15 +136,17 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
       const categoryName = project.projectCategory?.name || 'N/A';
 
       projectRows += `
+        <tr class="category-row">
+          <td colspan="5"><strong>Category:</strong> ${categoryName}</td>
+        </tr>
         <tr class="main-row">
           <td>${project.title}</td>
+          <td>${project.location}</td>
+          <td>${project.targetParticipant}</td>
           <td>${project.division.name}</td>
           <td>${startDate}</td>
           <td>${endDate}</td>
           <td>${project.status}</td>
-        </tr>
-        <tr class="category-row">
-          <td colspan="5"><strong>Category:</strong> ${categoryName}</td>
         </tr>
       `;
     });
@@ -165,7 +167,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
             th, td { border: 1px solid #000; padding: 6px; text-align: left; }
             th { background-color: #e0e0e0; font-weight: bold; }
             h1, h2 { text-align: center; margin: 0; }
-            h1 { font-size: 16pt; }
+            h1 { font-size: 8pt; }
             h2 { font-size: 14pt; margin-bottom: 10px; }
             .filter-info { margin-bottom: 20px; padding: 10px; border: 1px solid #000; text-align: center; }
             .filter-info p { margin: 4px 0; }
@@ -176,7 +178,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
         </style>
       </head>
       <body>
-        <h1>Project Summary Report</h1>
+        <h2>Project Summary Report</h2>
         <div class="filter-info">
           <h2>Applied Filters</h2>
           <p><strong>Year:</strong> ${year}</p>
@@ -187,6 +189,8 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
           <thead>
             <tr>
               <th>Title</th>
+              <th>Location</th>
+              <th>Target Participants</th>
               <th>Division</th>
               <th>Start Date</th>
               <th>End Date</th>
