@@ -28,7 +28,6 @@ export class ProjectCategoryAddDialogComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.categoryForm = this.fb.group({
       name: ['', Validators.required],
-      code: ['', Validators.required],
     });
   }
 

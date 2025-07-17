@@ -1,14 +1,14 @@
-<div class="p-6 bg-white rounded-lg shadow-md">
-  <h2 class="text-3xl font-bold text-gray-800 mb-6">{{ isEditMode ? 'Edit Project' : 'Add New Project' }}</h2>
+<div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+  <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">{{ isEditMode ? 'Edit Project' : 'Add New Project' }}</h2>
 
   <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="space-y-6">
     <div>
-      <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Project Title</label>
+      <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project Title</label>
       <input
         type="text"
         id="title"
         formControlName="title"
-        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
         [ngClass]="{'border-red-500': projectForm.get('title')?.invalid && projectForm.get('title')?.touched}"
       />
       <div *ngIf="projectForm.get('title')?.invalid && projectForm.get('title')?.touched" class="text-red-500 text-xs mt-1">
@@ -17,12 +17,12 @@
     </div>
 
     <div>
-      <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+      <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
       <textarea
         id="description"
         formControlName="description"
         rows="4"
-        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
         [ngClass]="{'border-red-500': projectForm.get('description')?.invalid && projectForm.get('description')?.touched}"
       ></textarea>
       <div *ngIf="projectForm.get('description')?.invalid && projectForm.get('description')?.touched" class="text-red-500 text-xs mt-1">
@@ -30,25 +30,24 @@
       </div>
     </div>
 
-    <!-- Target Participant and Location in same row -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
-        <label for="targetParticipant" class="block text-sm font-medium text-gray-700 mb-1">Target Participants</label>
+        <label for="targetParticipant" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Target Participants</label>
         <input
           type="text"
           id="targetParticipant"
           formControlName="targetParticipant"
-          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
         />
       </div>
 
       <div>
-        <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+        <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
         <input
           type="text"
           id="location"
           formControlName="location"
-          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           [ngClass]="{'border-red-500': projectForm.get('location')?.invalid && projectForm.get('location')?.touched}"
         />
         <div *ngIf="projectForm.get('location')?.invalid && projectForm.get('location')?.touched" class="text-red-500 text-xs mt-1">
@@ -57,15 +56,14 @@
       </div>
     </div>
 
-    <!-- Rest of the form fields remain unchanged -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
-        <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+        <label for="startDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
         <input
           type="date"
           id="startDate"
           formControlName="startDate"
-          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           [ngClass]="{'border-red-500': projectForm.get('startDate')?.invalid && projectForm.get('startDate')?.touched}"
         />
         <div *ngIf="projectForm.get('startDate')?.invalid && projectForm.get('startDate')?.touched" class="text-red-500 text-xs mt-1">
@@ -74,12 +72,12 @@
       </div>
 
       <div>
-        <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+        <label for="endDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Date</label>
         <input
           type="date"
           id="endDate"
           formControlName="endDate"
-          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           [ngClass]="{'border-red-500': projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched}"
         />
         <div *ngIf="projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched" class="text-red-500 text-xs mt-1">
@@ -90,12 +88,12 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
-        <label for="budget" class="block text-sm font-medium text-gray-700 mb-1">Budget</label>
+        <label for="budget" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Budget</label>
         <input
           type="number"
           id="budget"
           formControlName="budget"
-          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           [ngClass]="{'border-red-500': projectForm.get('budget')?.invalid && projectForm.get('budget')?.touched}"
         />
         <div *ngIf="projectForm.get('budget')?.invalid && projectForm.get('budget')?.touched" class="text-red-500 text-xs mt-1">
@@ -104,12 +102,12 @@
       </div>
 
       <div>
-        <label for="fundSource" class="block text-sm font-medium text-gray-700 mb-1">Fund Source</label>
+        <label for="fundSource" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fund Source</label>
         <input
           type="text"
           id="fundSource"
           formControlName="fundSource"
-          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           [ngClass]="{'border-red-500': projectForm.get('fundSource')?.invalid && projectForm.get('fundSource')?.touched}"
         />
         <div *ngIf="projectForm.get('fundSource')?.invalid && projectForm.get('fundSource')?.touched" class="text-red-500 text-xs mt-1">
@@ -120,11 +118,11 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div>
-        <label for="division" class="block text-sm font-medium text-gray-700 mb-1">Division</label>
+        <label for="division" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Division</label>
         <select
           id="division"
           formControlName="divisionId"
-          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           [ngClass]="{'border-red-500': projectForm.get('divisionId')?.invalid && projectForm.get('divisionId')?.touched}"
         >
           <option value="" disabled>Select a division</option>
@@ -133,19 +131,18 @@
         <div *ngIf="projectForm.get('divisionId')?.invalid && projectForm.get('divisionId')?.touched" class="text-red-500 text-xs mt-1">
           Division is required.
         </div>
-        <p *ngIf="!isAdmin && !isEditMode" class="text-sm text-gray-500 mt-1">
+        <p *ngIf="!isAdmin && !isEditMode" class="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Your division has been automatically selected.
         </p>
       </div>
 
-      <!-- Project Category Dropdown -->
       <div>
-        <label for="projectCategory" class="block text-sm font-medium text-gray-700 mb-1">Project Category</label>
+        <label for="projectCategory" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project Category</label>
         <select
           id="projectCategory"
           formControlName="projectCategoryId"
           (change)="onCategoryChange($event)"
-          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           [disabled]="!projectForm.get('divisionId')?.value"
         >
           <option value="" disabled>Select a category</option>
@@ -157,11 +154,11 @@
       </div>
 
       <div>
-        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+        <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
         <select
           id="status"
           formControlName="status"
-          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
         >
           <option value="planned">Planned</option>
           <option value="ongoing">Ongoing</option>
@@ -171,14 +168,14 @@
       </div>
     </div>
 
-    <div class="border-t border-gray-200 pt-6">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Project Images</label>
+    <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Project Images</label>
       <input
         type="file"
         multiple
         (change)="onImageSelected($event)"
         accept="image/*"
-        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/50 dark:file:text-blue-300 dark:hover:file:bg-blue-800/50" />
 
       <div *ngIf="currentProjectImages.length > 0 || newlyUploadedImages.length > 0" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         <div *ngFor="let img of currentProjectImages" class="relative group">
@@ -203,7 +200,6 @@
       </div>
     </div>
 
-    <!-- Show More Button -->
     <div class="mt-6 text-right">
       <button
         type="button"
@@ -214,34 +210,30 @@
       </button>
     </div>
 
-    <!-- Collapsible Extra Fields -->
     <div *ngIf="showMoreFields" class="mt-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Date of Accomplishment -->
         <div class="flex-1">
-          <label for="dateOfAccomplishment" class="block text-sm font-medium text-gray-700 mb-1">Date of Accomplishment</label>
+          <label for="dateOfAccomplishment" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Accomplishment</label>
           <input
             type="date"
             id="dateOfAccomplishment"
             formControlName="dateOfAccomplishment"
-            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           />
         </div>
 
-        <!-- Implementation Date -->
         <div class="flex-1">
-          <label for="implementationSchedule" class="block text-sm font-medium text-gray-700 mb-1">Implementation Date</label>
+          <label for="implementationSchedule" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Implementation Date</label>
           <input
             type="date"
             id="implementationSchedule"
             formControlName="implementationSchedule"
-            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           />
         </div>
 
-        <!-- Percent of Completion -->
         <div class="flex-1">
-          <label for="percentCompletion" class="block text-sm font-medium text-gray-700 mb-1">Percent of Completion</label>
+          <label for="percentCompletion" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Percent of Completion</label>
           <input
             type="number"
             id="percentCompletion"
@@ -250,7 +242,7 @@
             max="100"
             step="1"
             (input)="onPercentInput($event)"
-            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           />
         </div>
       </div>
@@ -260,7 +252,7 @@
       <button
         type="button"
         (click)="onCancel()"
-        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
       >
         Cancel
       </button>
@@ -280,7 +272,6 @@
     (confirmed)="onConfirmation($event)"
   ></app-project-confirmation-dialog>
 
-  <!-- The dialog component with the corrected event binding -->
   <app-project-category-add-dialog
     [show]="showAddCategoryDialog"
     (closed)="showAddCategoryDialog = false"

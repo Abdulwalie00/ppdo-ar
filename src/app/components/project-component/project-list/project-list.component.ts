@@ -15,11 +15,12 @@ import { ProjectDataService } from '../../../services/project-data.service';
 })
 export class ProjectListComponent implements OnInit, OnChanges {
   @Input() inputProjects: Project[] | null = null;
+  @Input() showAddButton: boolean = true;
+  @Input() currentDivisionCode: string | null = null;
+
   allProjects: Project[] = [];
   filteredProjects: Project[] = [];
   currentFilterStatus: string | null = null;
-  @Input() showAddButton: boolean = true;
-  @Input() currentDivisionCode: string | null = null;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -34,33 +35,20 @@ export class ProjectListComponent implements OnInit, OnChanges {
       takeUntil(this.destroy$)
     ).subscribe(params => {
       this.currentFilterStatus = params.get('status');
-      this.currentDivisionCode = params.get('division');
-      this.loadProjectsAndApplyFilter();
+      this.applyFilter(); // Apply the filter when query params change
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['inputProjects']) {
-      this.loadProjectsAndApplyFilter();
-    }
-  }
-
-  private loadProjectsAndApplyFilter(): void {
-    if (this.inputProjects !== null) {
+    // When the inputProjects change, update the local list and apply the filter
+    if (changes['inputProjects'] && this.inputProjects) {
       this.allProjects = this.inputProjects;
       this.applyFilter();
-    } else {
-      this.projectDataService.getProjects(this.currentDivisionCode ?? undefined).pipe(
-        takeUntil(this.destroy$)
-      ).subscribe(projects => {
-        this.allProjects = projects;
-        this.applyFilter();
-      });
     }
   }
 
   applyFilter(): void {
-    let projectsToFilter = [...this.allProjects];
+    let projectsToFilter = this.allProjects ? [...this.allProjects] : [];
 
     if (this.currentFilterStatus) {
       projectsToFilter = projectsToFilter.filter(project =>
@@ -93,7 +81,6 @@ export class ProjectListComponent implements OnInit, OnChanges {
   }
 
   resetFilter(): void {
-    this.currentFilterStatus = null;
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { status: null },

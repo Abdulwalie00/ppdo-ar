@@ -2,12 +2,12 @@
   <div class="flex min-h-screen">
     <aside
       [@sidebarSlide]="isCollapsed() ? 'collapsed' : 'expanded'"
-      class="bg-white text-black transition-all duration-300 overflow-hidden"
+      class="bg-white dark:bg-gray-900 text-black dark:text-white transition-all duration-300 overflow-hidden"
     >
       <div class="py-2.5 p-2 justify-between flex items-center">
         <h1 *ngIf="!isCollapsed()" class="text-xl font-bold">PPDO-AR</h1>
         <div [ngClass]="{ 'justify-center': isCollapsed(), 'justify-end': !isCollapsed() }" class="flex items-center p-0 m-0 gap-0">
-          <button (click)="toggleSidebar()" class="text-black hover:bg-blue-300 p-0.5 px-4 rounded-lg">
+          <button (click)="toggleSidebar()" class="text-black dark:text-white hover:bg-blue-300 dark:hover:bg-blue-600 p-0.5 px-4 rounded-lg">
             <fa-icon [icon]="isCollapsed() ? faCaretRight : faCaretLeft"></fa-icon>
           </button>
         </div>
@@ -20,7 +20,7 @@
             <div *ngIf="!item.children">
               <a [routerLink]="item.link" routerLinkActive="bg-blue-500 text-white"
                  [ngClass]="{ 'justify-center': isCollapsed(), 'justify-start': !isCollapsed() }"
-                 class="flex items-center p-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
+                 class="flex items-center p-3 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-colors">
                 <fa-icon [icon]="item.icon" [ngClass]="{ 'mx-auto': isCollapsed(), 'mr-3': !isCollapsed() }"></fa-icon>
                 <span *ngIf="!isCollapsed()">{{ item.title }}</span>
               </a>
@@ -29,7 +29,7 @@
             <div *ngIf="item.children" class="relative">
               <button (click)="handleMenuClick(item, $event)"
                       [ngClass]="{ 'justify-center': isCollapsed(), 'justify-between': !isCollapsed() }"
-                      class="w-full flex items-center p-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
+                      class="w-full flex items-center p-3 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-colors">
                 <div class="flex items-center" [ngClass]="{ 'justify-center w-full': isCollapsed() }">
                   <fa-icon [icon]="item.icon" [ngClass]="{ 'mx-auto': isCollapsed(), 'mr-3': !isCollapsed() }"></fa-icon>
                   <span *ngIf="!isCollapsed()">{{ item.title }}</span>
@@ -45,7 +45,7 @@
                 <li *ngFor="let child of item.children">
                   <a (click)="handleSubmenuClick(); $event.stopPropagation()"
                      [routerLink]="child.link" routerLinkActive="bg-blue-500 text-white"
-                     class="flex items-center p-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
+                     class="flex items-center p-2 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-colors">
                     <fa-icon [icon]="child.icon" class="mr-3 text-sm"></fa-icon>
                     <span>{{ child.title }}</span>
                   </a>
@@ -53,10 +53,10 @@
               </ul>
 
               <ul *ngIf="isCollapsed() && item.isExpanded"
-                  class="absolute left-full top-0 w-48 bg-white border border-gray-300 rounded-lg shadow-lg mt-1 z-50">
+                  class="absolute left-full top-0 w-48 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg mt-1 z-50">
                 <li *ngFor="let child of item.children">
                   <a [routerLink]="child.link" routerLinkActive="bg-blue-500 text-white"
-                     class="flex items-center p-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
+                     class="flex items-center p-2 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-colors">
                     <fa-icon [icon]="child.icon" class="mr-3 text-sm"></fa-icon>
                     <span>{{ child.title }}</span>
                   </a>
