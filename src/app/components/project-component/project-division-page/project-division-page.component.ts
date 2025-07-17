@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { Project } from '../../../models/project.model';
+import { Subject, of } from 'rxjs';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Division, Project } from '../../../models/project.model';
 import { ProjectDataService } from '../../../services/project-data.service';
 import { DivisionService } from '../../../services/division.service';
 import { ProjectListComponent } from '../project-list/project-list.component';
@@ -16,7 +16,7 @@ import { ProjectListComponent } from '../project-list/project-list.component';
 })
 export class ProjectDivisionPageComponent implements OnInit, OnDestroy {
   divisionCode: string | null = null;
-  division: any = null;
+  division: Division | null = null;
   projects: Project[] = [];
   private destroy$ = new Subject<void>();
 
@@ -31,17 +31,19 @@ export class ProjectDivisionPageComponent implements OnInit, OnDestroy {
       switchMap(params => {
         this.divisionCode = params.get('divisionCode');
         if (this.divisionCode) {
-          this.division = this.divisionService.getDivisionByCode(this.divisionCode);
-          // Fetch projects for the new division code
-          return this.projectDataService.getProjects(this.divisionCode);
+          // Fetch and assign the division object
+          return this.divisionService.getDivisionByCode(this.divisionCode).pipe(
+            tap(division => this.division = division), // Assign the division object
+            switchMap(() => this.projectDataService.getProjects(this.divisionCode!))
+          );
         } else {
-          // If no division code, return an empty array
-          return [];
+          this.division = null;
+          return of([]); // Return an empty array if no division code
         }
       }),
       takeUntil(this.destroy$)
-    ).subscribe(data => {
-      this.projects = data;
+    ).subscribe(projects => {
+      this.projects = projects;
     });
   }
 
