@@ -1,62 +1,110 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
-import { jwtDecode } from 'jwt-decode'; // <-- Import jwt-decode
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule], // <-- Add CommonModule for ngIf
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css'
+  styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
   user: User | null = null;
-  users: User[] = [];
+  profileForm: FormGroup;
+  editMode = false;
+  successMessage: string | null = null;
+  initials: string = '';
+  avatarColor: string = '#000000';
+
   constructor(
+    private fb: FormBuilder,
     private authService: AuthService,
     private userService: UserService
-  ) {}
+  ) {
+    this.profileForm = this.fb.group({
+      firstName: [''],
+      lastName: [''],
+      email: [''],
+      username: ['']
+    });
+  }
 
   ngOnInit() {
     const token = this.authService.getToken();
     if (token) {
       try {
         const decodedToken: { sub: string } = jwtDecode(token);
-        const username = decodedToken.sub; // 'sub' is the standard claim for subject (username)
+        const username = decodedToken.sub;
 
         this.userService.getUserByUsername(username).subscribe({
           next: (userData) => {
             this.user = userData;
+            this.profileForm.patchValue(userData);
+            this.createAvatar();
           },
           error: (err) => {
             console.error('Failed to fetch user profile', err);
-            // Optionally handle error, e.g., log out the user
             this.authService.logout();
           }
         });
-
-
-
-          this.userService.getUsers().subscribe({
-            next: (data) => {
-              this.users = data;
-            },
-            error: (err) => {
-              console.error('Failed to load users', err);
-              if (err.status === 403) {
-                alert('You need ADMIN privileges to access this page');
-              }
-            }
-          });
-
-
       } catch (error) {
         console.error('Invalid token:', error);
         this.authService.logout();
       }
+    }
+  }
+
+  createAvatar() {
+    if (this.user) {
+      this.initials = (this.user.firstName.charAt(0) + this.user.lastName.charAt(0)).toUpperCase();
+      this.avatarColor = this.generateColor(this.user.username);
+    }
+  }
+
+  generateColor(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    let color = '#';
+    for (let i = 0; i < 3; i++) {
+      const value = (hash >> (i * 8)) & 0xFF;
+      color += ('00' + value.toString(16)).substr(-2);
+    }
+    return color;
+  }
+
+  toggleEdit() {
+    this.editMode = !this.editMode;
+    if (!this.editMode && this.user) {
+      this.profileForm.patchValue(this.user);
+    }
+  }
+
+  onSubmit() {
+    if (this.profileForm.valid && this.user) {
+      const updatedUser = { ...this.user, ...this.profileForm.value };
+      this.userService.updateUser(this.user.id, updatedUser).subscribe({
+        next: (response) => {
+          this.user = response;
+          this.profileForm.patchValue(response);
+          this.createAvatar(); // Re-create avatar on update
+          this.editMode = false;
+          this.successMessage = 'Profile updated successfully!';
+          setTimeout(() => {
+            this.successMessage = null;
+            window.location.reload();
+          }, 1000);
+        },
+        error: (err) => {
+          console.error('Failed to update user', err);
+        }
+      });
     }
   }
 }

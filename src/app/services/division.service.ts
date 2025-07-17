@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {Division} from '../models/project.model';
+import {environment} from '../environment/environment';
 
-const API_URL = 'http://localhost:8080/api/divisions';
 
 @Injectable({
   providedIn: 'root'
@@ -13,22 +13,22 @@ export class DivisionService {
   constructor(private http: HttpClient) { }
 
   getDivisions(): Observable<Division[]> {
-    return this.http.get<Division[]>(API_URL);
+    return this.http.get<Division[]>(`${environment.apiUrl}divisions`);
   }
 
   getDivisionById(id: string): Observable<Division> {
-    return this.http.get<Division>(`${API_URL}/${id}`);
+    return this.http.get<Division>(`${environment.apiUrl}divisions/${id}`);
   }
 
   createDivision(division: Omit<Division, 'id' | 'dateCreated' | 'dateUpdated'>): Observable<Division> {
-    return this.http.post<Division>(API_URL, division);
+    return this.http.post<Division>(`${environment.apiUrl}divisions`, division);
   }
 
   updateDivision(id: string, updatedData: Partial<Division>): Observable<Division> {
-    return this.http.put<Division>(`${API_URL}/${id}`, updatedData);
+    return this.http.put<Division>(`${environment.apiUrl}divisions/${id}`, updatedData);
   }
 
   deleteDivision(id: string): Observable<void> {
-    return this.http.delete<void>(`${API_URL}/${id}`);
+    return this.http.delete<void>(`${environment.apiUrl}divisions/${id}`);
   }
 }

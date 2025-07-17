@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {Project, Division, ProjectCategory, ProjectCategoryDto} from '../models/project.model';
+import {environment} from '../environment/environment';
 
-const API_URL = 'http://localhost:8080/api';
 
 @Injectable({
   providedIn: 'root'
@@ -23,29 +23,29 @@ export class ProjectDataService {
     if (status) {
       params = params.set('status', status);
     }
-    return this.http.get<Project[]>(`${API_URL}/projects`, { params });
+    return this.http.get<Project[]>(`${environment.apiUrl}projects`, { params });
   }
 
   getProjectById(id: string): Observable<Project> {
-    return this.http.get<Project>(`${API_URL}/projects/${id}`);
+    return this.http.get<Project>(`${environment.apiUrl}projects/${id}`);
   }
 
   addProject(projectData: Omit<Project, 'id' | 'dateCreated' | 'dateUpdated' | 'division'> & { divisionId: string }): Observable<Project> {
-    return this.http.post<Project>(`${API_URL}/projects`, projectData);
+    return this.http.post<Project>(`${environment.apiUrl}projects`, projectData);
   }
 
   updateProject(id: string, projectData: Partial<Omit<Project, 'id' | 'dateCreated' | 'dateUpdated' | 'division'> & { divisionId: string }>): Observable<Project> {
-    return this.http.put<Project>(`${API_URL}/projects/${id}`, projectData);
+    return this.http.put<Project>(`${environment.apiUrl}projects/${id}`, projectData);
   }
 
   deleteProject(id: string): Observable<void> {
-    return this.http.delete<void>(`${API_URL}/projects/${id}`);
+    return this.http.delete<void>(`${environment.apiUrl}projects/${id}`);
   }
 
   // --- Division Methods ---
 
   getDivisions(): Observable<Division[]> {
-    return this.http.get<Division[]>(`${API_URL}/divisions`);
+    return this.http.get<Division[]>(`${environment.apiUrl}/divisions`);
   }
 
   // --- Project Category Methods ---
@@ -55,19 +55,19 @@ export class ProjectDataService {
     if (divisionId) {
       params = params.set('divisionId', divisionId);
     }
-    return this.http.get<ProjectCategory[]>(`${API_URL}/project-categories`, { params });
+    return this.http.get<ProjectCategory[]>(`${environment.apiUrl}project-categories`, { params });
   }
 
   addProjectCategory(categoryData: ProjectCategoryDto): Observable<ProjectCategory> {
-    return this.http.post<ProjectCategory>(`${API_URL}/project-categories`, categoryData);
+    return this.http.post<ProjectCategory>(`${environment.apiUrl}project-categories`, categoryData);
   }
 
   updateProjectCategory(id: string, categoryData: ProjectCategoryDto): Observable<ProjectCategory> {
-    return this.http.put<ProjectCategory>(`${API_URL}/project-categories/${id}`, categoryData);
+    return this.http.put<ProjectCategory>(`${environment.apiUrl}project-categories/${id}`, categoryData);
   }
 
   deleteProjectCategory(id: string): Observable<void> {
-    return this.http.delete<void>(`${API_URL}/project-categories/${id}`);
+    return this.http.delete<void>(`${environment.apiUrl}project-categories/${id}`);
   }
 
 
@@ -76,6 +76,6 @@ export class ProjectDataService {
   uploadImage(file: File): Observable<string> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post(`${API_URL}/files/upload`, formData, { responseType: 'text' });
+    return this.http.post(`${environment.apiUrl}files/upload`, formData, { responseType: 'text' });
   }
 }

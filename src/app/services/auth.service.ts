@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import {jwtDecode} from 'jwt-decode';
+import {environment} from '../environment/environment';
 
-const API_URL = 'http://localhost:8080/api/';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(credentials: { username: string, password: string }): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(API_URL + 'auth/login', credentials).pipe(
+    return this.http.post<{ token: string }>(environment.apiUrl + 'auth/login', credentials).pipe(
       tap(response => {
         localStorage.setItem('authToken', response.token);
         this.isAuthenticatedSubject.next(true);

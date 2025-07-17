@@ -91,7 +91,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/project-dashboard']);
   }
 
   ngOnDestroy(): void {

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
-import {Division} from '../models/project.model'; // Adjust path if needed
+import {Division} from '../models/project.model';
+import {environment} from '../environment/environment'; // Adjust path if needed
 
 // Define a simple interface for the Division object
 
 const API_URL = 'http://localhost:8080/api/users/';
-const API_URL2 = 'http://localhost:8080/api/manage-users';
+const API_URL2 = `${environment.apiUrl}manage-users`;
 @Injectable({
   providedIn: 'root'
 })
@@ -26,7 +27,7 @@ export class UserService {
    * Fetches a single user by their ID.
    */
   getUserById(id: number): Observable<User> {
-    return this.http.get<User>(API_URL + id);
+    return this.http.get<User>(environment.apiUrl + id);
   }
 
   /**
@@ -42,24 +43,24 @@ export class UserService {
    * Updates an existing user's data.
    */
   updateUser(id: number, updatedData: Partial<User>): Observable<User> {
-    return this.http.put<User>(API_URL + id, updatedData);
+    return this.http.put<User>(environment.apiUrl +'users/' + id, updatedData);
   }
 
   /**
    * Deletes a user by their ID.
    */
   deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(API_URL + id);
+    return this.http.delete<void>(environment.apiUrl + id);
   }
 
   getUserByUsername(username: string): Observable<User> {
-    return this.http.get<User>(API_URL + 'username/' + username);
+    return this.http.get<User>(environment.apiUrl + 'users/username/' + username);
   }
 
   /**
    * Fetches the division of the currently authenticated user.
    */
   getCurrentUserDivision(): Observable<Division> {
-    return this.http.get<Division>(API_URL + 'me/division');
+    return this.http.get<Division>(environment.apiUrl + 'users/me/division');
   }
 }
