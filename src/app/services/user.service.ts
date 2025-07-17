@@ -27,7 +27,7 @@ export class UserService {
    * Fetches a single user by their ID.
    */
   getUserById(id: number): Observable<User> {
-    return this.http.get<User>(environment.apiUrl + id);
+    return this.http.get<User>(environment.apiUrl+"users/" + id);
   }
 
   /**
