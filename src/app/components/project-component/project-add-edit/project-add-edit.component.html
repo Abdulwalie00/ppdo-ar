@@ -38,9 +38,12 @@
           id="targetParticipant"
           formControlName="targetParticipant"
           class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          [ngClass]="{'border-red-500': projectForm.get('targetParticipant')?.invalid && projectForm.get('targetParticipant')?.touched}"
         />
+        <div *ngIf="projectForm.get('targetParticipant')?.invalid && projectForm.get('targetParticipant')?.touched" class="text-red-500 text-xs mt-1">
+          Target Participants are required.
+        </div>
       </div>
-
       <div>
         <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
         <input
@@ -70,7 +73,6 @@
           Start Date is required.
         </div>
       </div>
-
       <div>
         <label for="endDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Date</label>
         <input
@@ -100,7 +102,6 @@
           Budget is required and must be a positive number.
         </div>
       </div>
-
       <div>
         <label for="fundSource" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fund Source</label>
         <input
@@ -112,6 +113,35 @@
         />
         <div *ngIf="projectForm.get('fundSource')?.invalid && projectForm.get('fundSource')?.touched" class="text-red-500 text-xs mt-1">
           Fund Source is required.
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="officeInCharge" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Office In Charge</label>
+        <input
+          type="text"
+          id="officeInCharge"
+          formControlName="officeInCharge"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          [ngClass]="{'border-red-500': projectForm.get('officeInCharge')?.invalid && projectForm.get('officeInCharge')?.touched}"
+        />
+        <div *ngIf="projectForm.get('officeInCharge')?.invalid && projectForm.get('officeInCharge')?.touched" class="text-red-500 text-xs mt-1">
+          Office in charge is required.
+        </div>
+      </div>
+      <div>
+        <label for="remarks" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Remarks</label>
+        <input
+          type="text"
+          id="remarks"
+          formControlName="remarks"
+          class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          [ngClass]="{'border-red-500': projectForm.get('remarks')?.invalid && projectForm.get('remarks')?.touched}"
+        />
+        <div *ngIf="projectForm.get('remarks')?.invalid && projectForm.get('remarks')?.touched" class="text-red-500 text-xs mt-1">
+          Remarks are required.
         </div>
       </div>
     </div>
@@ -135,7 +165,6 @@
           Your division has been automatically selected.
         </p>
       </div>
-
       <div>
         <label for="projectCategory" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project Category</label>
         <select
@@ -145,14 +174,13 @@
           class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           [disabled]="!projectForm.get('divisionId')?.value"
         >
-          <option value="" disabled>Select a category</option>
+          <option value="">Select a category (optional)</option>
           <option *ngFor="let cat of projectCategories" [value]="cat.id">{{ cat.name }}</option>
           <option value="add-new-category" class="text-blue-600 font-bold border-t-2 mt-2 pt-2">
             + Add New Category
           </option>
         </select>
       </div>
-
       <div>
         <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
         <select
@@ -175,7 +203,8 @@
         multiple
         (change)="onImageSelected($event)"
         accept="image/*"
-        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/50 dark:file:text-blue-300 dark:hover:file:bg-blue-800/50" />
+        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/50 dark:file:text-blue-300 dark:hover:file:bg-blue-800/50"
+      />
 
       <div *ngIf="currentProjectImages.length > 0 || newlyUploadedImages.length > 0" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         <div *ngFor="let img of currentProjectImages" class="relative group">
@@ -185,9 +214,8 @@
             (click)="removeCurrentImage(img.id)"
             class="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 text-xs hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 opacity-0 group-hover:opacity-100 transition-opacity"
             title="Remove image">
-          </button>
+            &#x2715; </button>
         </div>
-
         <div *ngFor="let img of newlyUploadedImages" class="relative group">
           <img [src]="img.imageUrl" class="w-full h-32 object-cover rounded-md shadow-sm" alt="New Project Image" />
           <button
@@ -195,7 +223,7 @@
             (click)="removeNewImage(img.imageUrl)"
             class="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 text-xs hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 opacity-0 group-hover:opacity-100 transition-opacity"
             title="Remove image">
-          </button>
+            &#x2715; </button>
         </div>
       </div>
     </div>
@@ -210,29 +238,9 @@
       </button>
     </div>
 
-    <div *ngIf="showMoreFields" class="mt-6">
+    <div *ngIf="showMoreFields" class="space-y-6 pt-6 border-t border-gray-200 dark:border-gray-700">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="flex-1">
-          <label for="dateOfAccomplishment" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Accomplishment</label>
-          <input
-            type="date"
-            id="dateOfAccomplishment"
-            formControlName="dateOfAccomplishment"
-            class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-          />
-        </div>
-
-        <div class="flex-1">
-          <label for="implementationSchedule" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Implementation Date</label>
-          <input
-            type="date"
-            id="implementationSchedule"
-            formControlName="implementationSchedule"
-            class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-          />
-        </div>
-
-        <div class="flex-1">
+        <div>
           <label for="percentCompletion" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Percent of Completion</label>
           <input
             type="number"
@@ -245,10 +253,28 @@
             class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           />
         </div>
+        <div>
+          <label for="implementationSchedule" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Implementation Date</label>
+          <input
+            type="date"
+            id="implementationSchedule"
+            formControlName="implementationSchedule"
+            class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          />
+        </div>
+        <div>
+          <label for="dateOfAccomplishment" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Accomplishment</label>
+          <input
+            type="date"
+            id="dateOfAccomplishment"
+            formControlName="dateOfAccomplishment"
+            class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          />
+        </div>
       </div>
     </div>
 
-    <div class="flex justify-end space-x-4 mt-8">
+    <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
       <button
         type="button"
         (click)="onCancel()"
@@ -259,7 +285,7 @@
       <button
         type="submit"
         [disabled]="projectForm.invalid"
-        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {{ isEditMode ? 'Update Project' : 'Add Project' }}
       </button>
@@ -273,6 +299,7 @@
   ></app-project-confirmation-dialog>
 
   <app-project-category-add-dialog
+    *ngIf="showAddCategoryDialog"
     [show]="showAddCategoryDialog"
     (closed)="showAddCategoryDialog = false"
     (saved)="handleCategorySaved($event)">

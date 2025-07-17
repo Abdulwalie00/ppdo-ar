@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule, DatePipe, Location } from '@angular/common';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, switchMap } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Project } from '../../../models/project.model';
 import { ProjectDataService } from '../../../services/project-data.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-project-list',
@@ -13,7 +14,7 @@ import { ProjectDataService } from '../../../services/project-data.service';
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.css']
 })
-export class ProjectListComponent implements OnInit, OnChanges {
+export class ProjectListComponent implements OnInit, OnDestroy {
   @Input() inputProjects: Project[] | null = null;
   @Input() showAddButton: boolean = true;
   @Input() currentDivisionCode: string | null = null;
@@ -27,35 +28,42 @@ export class ProjectListComponent implements OnInit, OnChanges {
     private router: Router,
     private route: ActivatedRoute,
     private projectDataService: ProjectDataService,
-    private location: Location
+    public authService: AuthService // Make AuthService public
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParamMap.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(params => {
-      this.currentFilterStatus = params.get('status');
-      this.applyFilter(); // Apply the filter when query params change
-    });
+    // If projects are not passed as input, fetch them from the service
+    if (!this.inputProjects) {
+      this.route.queryParamMap.pipe(
+        switchMap(params => {
+          this.currentFilterStatus = params.get('status');
+          const divisionCode = params.get('division');
+          return this.projectDataService.getProjects(divisionCode ?? undefined, this.currentFilterStatus ?? undefined);
+        }),
+        takeUntil(this.destroy$)
+      ).subscribe(projects => {
+        this.allProjects = projects;
+        this.applyFilter(); // Filter the newly fetched projects
+      });
+    }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // When the inputProjects change, update the local list and apply the filter
-    if (changes['inputProjects'] && this.inputProjects) {
+  ngOnChanges(): void {
+    // When the inputProjects change (if provided), update the list and filter
+    if (this.inputProjects) {
       this.allProjects = this.inputProjects;
       this.applyFilter();
     }
   }
 
   applyFilter(): void {
-    let projectsToFilter = this.allProjects ? [...this.allProjects] : [];
-
     if (this.currentFilterStatus) {
-      projectsToFilter = projectsToFilter.filter(project =>
+      this.filteredProjects = this.allProjects.filter(project =>
         project.status === this.currentFilterStatus
       );
+    } else {
+      this.filteredProjects = this.allProjects;
     }
-    this.filteredProjects = projectsToFilter;
   }
 
   getStatusDisplayName(status: string): string {
@@ -81,19 +89,21 @@ export class ProjectListComponent implements OnInit, OnChanges {
   }
 
   resetFilter(): void {
+    // Preserve the division filter if it exists
+    const division = this.route.snapshot.queryParamMap.get('division');
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { status: null },
-      queryParamsHandling: 'merge'
+      queryParams: { status: null, division: division },
+      queryParamsHandling: 'merge' // keeps other query params
     });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/project-dashboard']);
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  goBack(): void {
-    this.router.navigate(['/project-dashboard']);
   }
 }

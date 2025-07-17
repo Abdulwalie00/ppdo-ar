@@ -41,9 +41,11 @@ export interface Project {
   dateOfAccomplishment: Date;
   budget: number;
   percentCompletion: number;
-  targetParticipant?: String;
+  targetParticipant?: string;
   fundSource: string;
   division: Division;
+  officeInCharge: string;
+  remarks: string;
   projectCategory?: ProjectCategory;
   images: ProjectImage[];
   status: 'planned' | 'ongoing' | 'completed' | 'cancelled';

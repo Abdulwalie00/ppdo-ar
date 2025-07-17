@@ -108,6 +108,8 @@ export class ProjectAddEditComponent implements OnInit {
       divisionId: ['', Validators.required],
       projectCategoryId: [''],
       status: ['planned', Validators.required],
+      remarks: ['', Validators.required],
+      officeInCharge: ['', Validators.required],
       percentCompletion: [''],
       implementationSchedule: [''],
       dateOfAccomplishment: [''],
@@ -143,7 +145,10 @@ export class ProjectAddEditComponent implements OnInit {
       fundSource: project.fundSource,
       divisionId: project.division.id,
       projectCategoryId: project.projectCategory?.id,
-      status: project.status
+      status: project.status,
+      // ✨ FIX: Add these two lines
+      remarks: project.remarks,
+      officeInCharge: project.officeInCharge
     });
     this.loadProjectCategories(project.division.id);
     this.currentProjectImages = project.images || [];
@@ -226,6 +231,10 @@ export class ProjectAddEditComponent implements OnInit {
       const formValue = this.projectForm.getRawValue();
       const finalImages = [...this.currentProjectImages, ...this.newlyUploadedImages];
       const projectData = { ...formValue, images: finalImages };
+
+      // You can log the data to the console to check it before sending
+      console.log('Project Data:', projectData);
+
       const operation = this.isEditMode && this.projectId
         ? this.projectDataService.updateProject(this.projectId, projectData)
         : this.projectDataService.addProject(projectData);

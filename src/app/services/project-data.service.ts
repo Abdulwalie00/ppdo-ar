@@ -45,7 +45,7 @@ export class ProjectDataService {
   // --- Division Methods ---
 
   getDivisions(): Observable<Division[]> {
-    return this.http.get<Division[]>(`${environment.apiUrl}/divisions`);
+    return this.http.get<Division[]>(`${environment.apiUrl}divisions`);
   }
 
   // --- Project Category Methods ---
