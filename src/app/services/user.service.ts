@@ -27,7 +27,7 @@ export class UserService {
    * Fetches a single user by their ID.
    */
   getUserById(id: number): Observable<User> {
-    return this.http.get<User>(environment.apiUrl+"users/" + id);
+    return this.http.get<User>(environment.apiUrl +'users/' + id);
   }
 
   /**
@@ -50,7 +50,7 @@ export class UserService {
    * Deletes a user by their ID.
    */
   deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(environment.apiUrl + id);
+    return this.http.delete<void>(environment.apiUrl +'users/' + id);
   }
 
   getUserByUsername(username: string): Observable<User> {
