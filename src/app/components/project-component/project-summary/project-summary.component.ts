@@ -129,30 +129,50 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
       divisionName = this.userDivisionName || 'N/A';
     }
 
-    let projectRows = '';
-    this.filteredProjects.forEach(project => {
-      const startDate = new Date(project.startDate).toLocaleDateString();
-      const endDate = new Date(project.endDate).toLocaleDateString();
-      const categoryName = project.projectCategory?.name || 'N/A';
+    const projectsByCategory: { [key: string]: Project[] } = {};
 
-      projectRows += `
-        <tr class="category-row">
-          <td colspan="5"><strong>Category:</strong> ${categoryName}</td>
-        </tr>
-        <tr class="main-row">
-          <td>${project.title}</td>
-          <td>${project.location}</td>
-          <td>${project.targetParticipant}</td>
-          <td>${project.division.name}</td>
-          <td>${startDate}</td>
-          <td>${endDate}</td>
-          <td>${project.status}</td>
-        </tr>
-      `;
+    this.filteredProjects.forEach(project => {
+      const categoryName = project.projectCategory?.name || 'Uncategorized';
+      if (!projectsByCategory[categoryName]) {
+        projectsByCategory[categoryName] = [];
+      }
+      projectsByCategory[categoryName].push(project);
     });
 
+    let projectRows = '';
+    for (const categoryName in projectsByCategory) {
+      if (projectsByCategory.hasOwnProperty(categoryName)) {
+        projectRows += `
+          <tr class="category-row">
+            <td colspan="12"><strong>Category:</strong> ${categoryName}</td>
+          </tr>
+        `;
+        projectsByCategory[categoryName].forEach(project => {
+          const startDate = new Date(project.startDate).toLocaleDateString();
+          const endDate = new Date(project.endDate).toLocaleDateString();
+
+          projectRows += `
+                <tr class="main-row">
+                  <td>${project.title}</td>
+                  <td>${project.location}</td>
+                  <td>${project.targetParticipant}</td>
+                  <td>${project.implementationSchedule}</td>
+                  <td>${startDate}</td>
+                  <td>${project.dateOfAccomplishment}</td>
+                  <td>${project.officeInCharge}</td>
+                  <td>${project.budget}</td>
+                  <td>${project.fundSource}</td>
+                  <td>${project.percentCompletion}</td>
+                  <td>${project.budget}</td>
+                  <td>${project.remarks}</td>
+                </tr>
+            `;
+        });
+      }
+    }
+
     if (this.filteredProjects.length === 0) {
-      projectRows = '<tr><td colspan="5" style="text-align: center;">No data available for the selected filters.</td></tr>';
+      projectRows = '<tr><td colspan="12" style="text-align: center;">No data available for the selected filters.</td></tr>';
     }
 
     const printHtml = `
@@ -191,10 +211,15 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
               <th>Title</th>
               <th>Location</th>
               <th>Target Participants</th>
-              <th>Division</th>
+              <th>Implementation Schedule</th>
               <th>Start Date</th>
-              <th>End Date</th>
-              <th>Status</th>
+              <th>Date Accomplished</th>
+              <th>Person/s and or Office in Charge</th>
+              <th>Target Budget (Php)</th>
+              <th>Source of Fund</th>
+              <th>% of Completion</th>
+              <th>Total Cost Incurred to Date</th>
+              <th>Remarks</th>
             </tr>
           </thead>
           <tbody>
