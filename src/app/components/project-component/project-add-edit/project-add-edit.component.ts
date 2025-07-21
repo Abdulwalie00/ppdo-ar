@@ -110,7 +110,7 @@ export class ProjectAddEditComponent implements OnInit {
       status: ['planned', Validators.required],
       remarks: ['', Validators.required],
       officeInCharge: ['', Validators.required],
-      percentCompletion: [''],
+      percentCompletion: [0],
       implementationSchedule: [''],
       dateOfAccomplishment: [''],
     });

@@ -146,9 +146,12 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
     }
   }
 
+  private safePrintValue(value: any): string {
+    return value !== null && value !== undefined ? value.toString() : '';
+  }
+
   printReport(): void {
-    const year = this.selectedYear || 'All';
-    const month = this.selectedMonth || 'All';
+    const month = this.selectedMonth || 'All Months';
     let divisionName = 'All Divisions';
 
     if (this.isAdmin) {
@@ -175,27 +178,26 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
       if (projectsByCategory.hasOwnProperty(categoryName)) {
         projectRows += `
           <tr class="category-row">
-            <td colspan="12"><strong>${categoryName}</strong> </td>
+            <td colspan="12"><strong>${this.safePrintValue(categoryName)}</strong> </td>
           </tr>
         `;
         projectsByCategory[categoryName].forEach(project => {
           const startDate = new Date(project.startDate).toLocaleDateString();
-          const endDate = new Date(project.endDate).toLocaleDateString();
 
           projectRows += `
                 <tr class="main-row">
-                  <td>${project.title}</td>
-                  <td>${project.location}</td>
-                  <td>${project.targetParticipant}</td>
-                  <td>${project.implementationSchedule}</td>
-                  <td>${startDate}</td>
-                  <td>${project.dateOfAccomplishment}</td>
-                  <td>${project.officeInCharge}</td>
-                  <td>${project.budget}</td>
-                  <td>${project.fundSource}</td>
-                  <td>${project.percentCompletion}</td>
-                  <td>${project.budget}</td>
-                  <td>${project.remarks}</td>
+                  <td>${this.safePrintValue(project.title)}</td>
+                  <td>${this.safePrintValue(project.location)}</td>
+                  <td>${this.safePrintValue(project.targetParticipant)}</td>
+                  <td>${this.safePrintValue(project.implementationSchedule)}</td>
+                  <td>${this.safePrintValue(startDate)}</td>
+                  <td>${this.safePrintValue(project.dateOfAccomplishment)}</td>
+                  <td>${this.safePrintValue(project.officeInCharge)}</td>
+                  <td>${this.safePrintValue(project.budget)}</td>
+                  <td>${this.safePrintValue(project.fundSource)}</td>
+                  <td>${this.safePrintValue(project.percentCompletion)}${'%'}</td>
+                  <td>${this.safePrintValue(project.budget)}</td>
+                  <td>${this.safePrintValue(project.remarks)}</td>
                 </tr>
             `;
         });
@@ -214,14 +216,15 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
           @media print {
             @page { size: landscape; }
             body { font-family: Arial, sans-serif; font-size: 10pt; }
+            .header-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            .header-table td { vertical-align: middle; }
+            .logo { width: 80px; height: auto; }
+            .header-text { text-align: center; }
+            .header-text p { margin: 0; line-height: 1.4; }
+            .report-title { font-size: 14pt; font-weight: bold; margin-top: 20px; }
             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
             th, td { border: 1px solid #000; padding: 6px; text-align: left; }
             th { background-color: #e0e0e0; font-weight: bold; }
-            h1, h2 { text-align: center; margin: 0; }
-            h1 { font-size: 8pt; }
-            h2 { font-size: 14pt; margin-bottom: 10px; }
-            .filter-info { margin-bottom: 20px; padding: 10px; border: 1px solid #000; text-align: center; }
-            .filter-info p { margin: 4px 0; }
             .main-row { border-top: 2px solid #000; }
             tbody tr:first-child.main-row { border-top: none; }
             .category-row td { background-color: #f8f8f8; font-style: italic; padding-left: 20px; border-bottom: 2px solid #000; }
@@ -229,13 +232,22 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
         </style>
       </head>
       <body>
-        <h2>Project Summary Report</h2>
-        <div class="filter-info">
-          <h2>Applied Filters</h2>
-          <p><strong>Year:</strong> ${year}</p>
-          <p><strong>Month:</strong> ${month}</p>
-          <p><strong>Division:</strong> ${divisionName}</p>
-        </div>
+        <table class="header-table">
+          <tr>
+            <td style="width: 15%; text-align: center;">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Ph_seal_lanao_del_sur.svg/1200px-Ph_seal_lanao_del_sur.svg.png" alt="Lanao del Sur Logo" class="logo">
+            </td>
+            <td class="header-text">
+              <p>Republic of the Philippines</p>
+              <p>BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO</p>
+              <p>PROVINCE OF LANAO DEL SUR</p>
+              <p>New Caption Complex, Buadi Sacayo, Marawi Street</p>
+              <p class="report-title">MONTHLY ACCOMPLISHMENT REPORT</p>
+              <p>Month of: ${month}</p>
+            </td>
+            <td style="width: 15%;"></td> </tr>
+        </table>
+
         <table>
           <thead>
             <tr>

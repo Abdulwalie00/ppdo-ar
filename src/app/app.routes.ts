@@ -20,6 +20,8 @@ import {
   ProjectCategoryListComponent
 } from './components/project-component/project-category-list/project-category-list.component';
 import {ProjectSummaryComponent} from './components/project-component/project-summary/project-summary.component';
+import {DivisionGuard} from './guards/division.guard';
+import {AdminGuard} from './guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -33,7 +35,7 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
       // { path: 'dashboard', component: DashboardComponent },
       // { path: 'pgo/ptcao', component: PtcaoComponent },
@@ -69,7 +71,11 @@ export const routes: Routes = [
       // { path: 'administration-support/pto', component: PtoComponent },
       //
 
-      { path: 'project-division/:divisionCode', component: ProjectDivisionPageComponent },
+      {
+        path: 'project-division/:divisionCode',
+        component: ProjectDivisionPageComponent,
+        canActivate: [DivisionGuard] // Apply the guard here
+      },
       { path: 'project-list', component: ProjectListComponent }, // Main list view
       { path: 'project-add', component: ProjectAddEditComponent },
       { path: 'project-edit/:id', component: ProjectAddEditComponent },
@@ -84,12 +90,12 @@ export const routes: Routes = [
       //Other Routes
 
       { path: 'reports', component: ReportsComponent },
-      { path: 'settings', component: SettingsComponent },
+      { path: 'settings', component: SettingsComponent, canActivate: [AdminGuard] },
       { path: 'profile', component: ProfileComponent },
 
-      { path: 'accounts', component: ManageAccountsComponent },
-      { path: 'accounts/add', component: AddUserComponent },
-      { path: 'accounts/edit/:id', component: EditUserComponent },
+      { path: 'accounts', component: ManageAccountsComponent, canActivate: [AdminGuard] },
+      { path: 'accounts/add', component: AddUserComponent, canActivate: [AdminGuard] },
+      { path: 'accounts/edit/:id', component: EditUserComponent, canActivate: [AdminGuard] },
     ]
   },
   { path: '**', component: NotFoundComponent },
