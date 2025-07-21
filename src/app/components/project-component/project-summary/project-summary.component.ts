@@ -17,10 +17,20 @@ import {UserService} from '../../../services/user.service';
 export class ProjectSummaryComponent implements OnInit, OnDestroy {
   projects: Project[] = [];
   filteredProjects: Project[] = [];
+  paginatedProjects: Project[] = [];
   divisions: Division[] = [];
+
+  // Filter properties
   selectedDivision: string = '';
   selectedMonth: string = '';
   selectedYear: string = '';
+
+  // Pagination properties
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  itemsPerPageOptions: number[] = [10, 20, 50, 100];
+  totalPages: number = 0;
+
   months: string[] = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -63,7 +73,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
   loadProjectsForAdmin(): void {
     this.projectDataService.getProjects().subscribe(allProjects => {
       this.projects = allProjects;
-      this.filteredProjects = this.projects;
+      this.filterProjects();
       this.populateYears();
     });
   }
@@ -71,12 +81,12 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
   loadProjectsForDivision(divisionId: string | undefined): void {
     if (!divisionId) {
       this.projects = [];
-      this.filteredProjects = [];
+      this.filterProjects();
       return;
     }
     this.projectDataService.getProjects().subscribe(allProjects => {
       this.projects = allProjects.filter(p => p.division.id === divisionId);
-      this.filteredProjects = this.projects;
+      this.filterProjects();
       this.populateYears();
     });
   }
@@ -113,6 +123,27 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
     }
 
     this.filteredProjects = tempProjects;
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  updatePagination(): void {
+    this.totalPages = Math.ceil(this.filteredProjects.length / this.itemsPerPage);
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedProjects = this.filteredProjects.slice(startIndex, endIndex);
+  }
+
+  onItemsPerPageChange(): void {
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePagination();
+    }
   }
 
   printReport(): void {
@@ -144,7 +175,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
       if (projectsByCategory.hasOwnProperty(categoryName)) {
         projectRows += `
           <tr class="category-row">
-            <td colspan="12"><strong>Category:</strong> ${categoryName}</td>
+            <td colspan="12"><strong>${categoryName}</strong> </td>
           </tr>
         `;
         projectsByCategory[categoryName].forEach(project => {

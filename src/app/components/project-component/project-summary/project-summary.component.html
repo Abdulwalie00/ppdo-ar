@@ -9,48 +9,87 @@
     </button>
   </div>
 
-  <div class="flex gap-4 mb-6">
-    <select [(ngModel)]="selectedYear" (ngModelChange)="filterProjects()" class="p-2 border rounded bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-      <option value="">All Years</option>
-      <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-    </select>
-    <select [(ngModel)]="selectedMonth" (ngModelChange)="filterProjects()" class="p-2 border rounded bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-      <option value="">All Months</option>
-      <option *ngFor="let month of months" [value]="month">{{ month }}</option>
-    </select>
-    <select *ngIf="authService.isAdmin()" [(ngModel)]="selectedDivision" (ngModelChange)="filterProjects()" class="p-2 border rounded bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-      <option value="">All Divisions</option>
-      <option *ngFor="let division of divisions" [value]="division.id">{{ division.name }}</option>
-    </select>
+  <div class="flex justify-between items-center mb-6">
+    <div class="flex gap-4">
+      <select [(ngModel)]="selectedYear" (ngModelChange)="filterProjects()" class="p-2 border rounded bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
+        <option value="">All Years</option>
+        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+      </select>
+      <select [(ngModel)]="selectedMonth" (ngModelChange)="filterProjects()" class="p-2 border rounded bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
+        <option value="">All Months</option>
+        <option *ngFor="let month of months" [value]="month">{{ month }}</option>
+      </select>
+      <select *ngIf="authService.isAdmin()" [(ngModel)]="selectedDivision" (ngModelChange)="filterProjects()" class="p-2 border rounded bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
+        <option value="">All Divisions</option>
+        <option *ngFor="let division of divisions" [value]="division.id">{{ division.name }}</option>
+      </select>
+    </div>
+
+    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+      <span>Show</span>
+      <select [(ngModel)]="itemsPerPage" (ngModelChange)="onItemsPerPageChange()" class="p-2 border rounded bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
+        <option *ngFor="let option of itemsPerPageOptions" [value]="option">{{ option }}</option>
+      </select>
+      <span>entries</span>
+    </div>
   </div>
 
-  <div class="overflow-x-auto border rounded-lg shadow-sm border-gray-200 dark:border-gray-700">
-    <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-300">
-      <thead class="bg-gray-50 dark:bg-gray-700 text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+  <div class="overflow-x-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+    <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-300 table-fixed">
+      <thead class="bg-gray-50 dark:bg-gray-700 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
       <tr>
-        <th class="px-4 py-3">Title</th>
-        <th class="px-4 py-3">Location</th>
-        <th class="px-4 py-3">Category</th>
-        <th class="px-4 py-3">Division</th>
-        <th class="px-4 py-3">Start Date</th>
-        <th class="px-4 py-3">End Date</th>
-        <th class="px-4 py-3">Status</th>
+        <th class="px-6 py-3 font-medium" style="width: 5%;">No.</th>
+        <th class="px-6 py-3 font-medium" style="width: 20%;">Title</th>
+        <th class="px-6 py-3 font-medium" style="width: 20%;">Location</th>
+        <th class="px-6 py-3 font-medium" style="width: 15%;">Category</th>
+        <th class="px-6 py-3 font-medium" style="width: 15%;">Division</th>
+        <th class="px-6 py-3 font-medium" style="width: 10%;">Start Date</th>
+        <th class="px-6 py-3 font-medium" style="width: 10%;">End Date</th>
+        <th class="px-6 py-3 font-medium" style="width: 10%;">Status</th>
       </tr>
       </thead>
       <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-      <tr *ngFor="let project of filteredProjects" class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
-        <td class="px-4 py-3">{{ project.title }}</td>
-        <td class="px-4 py-3">{{ project.location }}</td>
-        <td class="px-4 py-3">{{ project.projectCategory?.name || 'N/A' }}</td>
-        <td class="px-4 py-3">{{ project.division.name }}</td>
-        <td class="px-4 py-3">{{ project.startDate | date:'mediumDate' }}</td>
-        <td class="px-4 py-3">{{ project.endDate | date:'mediumDate' }}</td>
-        <td class="px-4 py-3">{{ project.status }}</td>
+      <tr *ngFor="let project of paginatedProjects; let i = index" class="hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+        <td class="px-6 py-4">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+        <td class="px-6 py-4 break-words">{{ project.title }}</td>
+        <td class="px-6 py-4 break-words">{{ project.location }}</td>
+        <td class="px-6 py-4 break-words">{{ project.projectCategory?.name || 'N/A' }}</td>
+        <td class="px-6 py-4 break-words">{{ project.division.name }}</td>
+        <td class="px-6 py-4">{{ project.startDate | date:'mediumDate' }}</td>
+        <td class="px-6 py-4">{{ project.endDate | date:'mediumDate' }}</td>
+        <td class="px-6 py-4">
+            <span
+              class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+              [ngClass]="{
+                'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300': project.status === 'planned',
+                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300': project.status === 'ongoing',
+                'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300': project.status === 'completed',
+                'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300': project.status === 'cancelled'
+              }"
+            >
+              {{ project.status }}
+            </span>
+        </td>
       </tr>
       <tr *ngIf="filteredProjects.length === 0">
-        <td colspan="7" class="text-center py-4 text-gray-500 dark:text-gray-400">No projects found for the selected filters.</td>
+        <td colspan="8" class="text-center py-4 text-gray-500 dark:text-gray-400">No projects found for the selected filters.</td>
       </tr>
       </tbody>
     </table>
+  </div>
+
+  <div *ngIf="totalPages > 1" class="flex justify-between items-center mt-4 text-sm">
+    <div class="text-gray-600 dark:text-gray-400">
+      Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ currentPage * itemsPerPage > filteredProjects.length ? filteredProjects.length : currentPage * itemsPerPage }} of {{ filteredProjects.length }} entries
+    </div>
+    <div class="flex items-center gap-2">
+      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1" class="px-3 py-1 border rounded bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-50">
+        Previous
+      </button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages" class="px-3 py-1 border rounded bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-50">
+        Next
+      </button>
+    </div>
   </div>
 </div>

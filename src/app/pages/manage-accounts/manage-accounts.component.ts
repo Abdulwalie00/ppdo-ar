@@ -3,19 +3,27 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { UserService } from '../../services/user.service'; // <-- Import UserService
-import { User } from '../../models/user.model'; // <-- Import User model
+import { User } from '../../models/user.model';
+import {FormsModule} from '@angular/forms'; // <-- Import User model
 
 @Component({
   standalone: true,
   selector: 'app-manage-accounts',
-  imports: [CommonModule, ConfirmDialogComponent],
+  imports: [CommonModule, ConfirmDialogComponent, FormsModule],
   templateUrl: './manage-accounts.component.html',
 })
 export class ManageAccountsComponent implements OnInit {
   users: User[] = [];
+  paginatedUsers: User[] = [];
   showDialog = false;
   dialogMessage = '';
   confirmAction: (() => void) | null = null;
+
+  // Pagination properties
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  itemsPerPageOptions: number[] = [10, 20, 50, 100];
+  totalPages: number = 0;
 
   // Inject UserService instead of AuthService
   constructor(private userService: UserService, private router: Router) {}
@@ -32,6 +40,7 @@ export class ManageAccountsComponent implements OnInit {
     this.userService.getUsers().subscribe({
       next: (data) => {
         this.users = data;
+        this.updatePagination();
       },
       error: (err) => {
         console.error('Failed to load users', err);
@@ -40,6 +49,25 @@ export class ManageAccountsComponent implements OnInit {
         }
       }
     });
+  }
+
+  updatePagination(): void {
+    this.totalPages = Math.ceil(this.users.length / this.itemsPerPage);
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedUsers = this.users.slice(startIndex, endIndex);
+  }
+
+  onItemsPerPageChange(): void {
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePagination();
+    }
   }
 
   navigateToAdd(): void {
