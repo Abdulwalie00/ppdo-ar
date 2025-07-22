@@ -1,26 +1,36 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
-import {Division, Project} from '../../../models/project.model';
-import {ProjectDataService} from '../../../services/project-data.service';
-import {DivisionService} from '../../../services/division.service';
-import {AuthService} from '../../../services/auth.service';
-import {UserService} from '../../../services/user.service';
+import { Division, Project } from '../../../models/project.model';
+import { ProjectDataService } from '../../../services/project-data.service';
+import { DivisionService } from '../../../services/division.service';
+import { AuthService } from '../../../services/auth.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-project-summary',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './project-summary.component.html',
 })
 export class ProjectSummaryComponent implements OnInit, OnDestroy {
   projects: Project[] = [];
   filteredProjects: Project[] = [];
   paginatedProjects: Project[] = [];
-  divisions: Division[] = [];
 
-  // Filter properties
+  // Filter options
+  divisions: Division[] = [];
+  statuses: string[] = ['planned', 'ongoing', 'completed', 'cancelled'];
+  months: string[] = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  years: number[] = [];
+
+  // Selected filter values
+  selectedStatus: string = '';
   selectedDivision: string = '';
   selectedMonth: string = '';
   selectedYear: string = '';
@@ -31,11 +41,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
   itemsPerPageOptions: number[] = [10, 20, 50, 100];
   totalPages: number = 0;
 
-  months: string[] = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-  years: number[] = [];
+  // User role and division
   isAdmin: boolean = false;
   userDivisionName: string = ''; // To store division name for print header
   private authSubscription: Subscription | undefined;
@@ -73,7 +79,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
   loadProjectsForAdmin(): void {
     this.projectDataService.getProjects().subscribe(allProjects => {
       this.projects = allProjects;
-      this.filterProjects();
+      this.filterProjects(); // Apply initial filter (which shows all)
       this.populateYears();
     });
   }
@@ -100,38 +106,62 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
   populateYears(): void {
     if (this.projects.length > 0) {
       const projectYears = this.projects.map(p => new Date(p.startDate).getFullYear());
-      this.years = [...new Set(projectYears)].sort();
+      // Use Set to get unique years and then sort them
+      this.years = [...new Set(projectYears)].sort((a, b) => b - a); // Sort descending
     } else {
       this.years = [];
     }
   }
 
   filterProjects(): void {
-    let tempProjects = this.projects;
+    let tempProjects = [...this.projects]; // Start with a fresh copy of all relevant projects
 
+    // Apply Status Filter
+    if (this.selectedStatus) {
+      tempProjects = tempProjects.filter(p => p.status === this.selectedStatus);
+    }
+
+    // Apply Year Filter
     if (this.selectedYear) {
       tempProjects = tempProjects.filter(p => new Date(p.startDate).getFullYear() === parseInt(this.selectedYear, 10));
     }
 
+    // Apply Division Filter (only for Admins)
     if (this.isAdmin && this.selectedDivision) {
       tempProjects = tempProjects.filter(p => p.division.id === this.selectedDivision);
     }
 
+    // Apply Month Filter
     if (this.selectedMonth) {
       const monthIndex = this.months.indexOf(this.selectedMonth);
-      tempProjects = tempProjects.filter(p => new Date(p.startDate).getMonth() === monthIndex);
+      if (monthIndex !== -1) {
+        tempProjects = tempProjects.filter(p => new Date(p.startDate).getMonth() === monthIndex);
+      }
     }
 
     this.filteredProjects = tempProjects;
-    this.currentPage = 1;
+    this.currentPage = 1; // Reset to first page after filtering
     this.updatePagination();
   }
 
+  resetFilters(): void {
+    this.selectedStatus = '';
+    this.selectedDivision = '';
+    this.selectedMonth = '';
+    this.selectedYear = '';
+    this.filterProjects(); // Re-run filter to show all projects
+  }
+
   updatePagination(): void {
-    this.totalPages = Math.ceil(this.filteredProjects.length / this.itemsPerPage);
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedProjects = this.filteredProjects.slice(startIndex, endIndex);
+    if (this.filteredProjects.length > 0) {
+      this.totalPages = Math.ceil(this.filteredProjects.length / this.itemsPerPage);
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      this.paginatedProjects = this.filteredProjects.slice(startIndex, endIndex);
+    } else {
+      this.totalPages = 0;
+      this.paginatedProjects = [];
+    }
   }
 
   onItemsPerPageChange(): void {
@@ -175,10 +205,10 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
 
     let projectRows = '';
     for (const categoryName in projectsByCategory) {
-      if (projectsByCategory.hasOwnProperty(categoryName)) {
+      if (Object.prototype.hasOwnProperty.call(projectsByCategory, categoryName)) {
         projectRows += `
           <tr class="category-row">
-            <td colspan="12"><strong>${this.safePrintValue(categoryName)}</strong> </td>
+            <td colspan="12"><strong>${this.safePrintValue(categoryName)}</strong></td>
           </tr>
         `;
         projectsByCategory[categoryName].forEach(project => {
@@ -241,9 +271,10 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
               <p>Republic of the Philippines</p>
               <p>BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO</p>
               <p>PROVINCE OF LANAO DEL SUR</p>
-              <p>New Caption Complex, Buadi Sacayo, Marawi Street</p>
+              <p>New Capitol Complex, Buadi Sacayo, Marawi City</p>
               <p class="report-title">MONTHLY ACCOMPLISHMENT REPORT</p>
               <p>Month of: ${month}</p>
+              <p>Division: ${divisionName}</p>
             </td>
             <td style="width: 15%;"></td> </tr>
         </table>
