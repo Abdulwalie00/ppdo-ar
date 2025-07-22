@@ -6,12 +6,11 @@ import { ProjectDataService } from '../../../services/project-data.service';
 import { Project } from '../../../models/project.model';
 import { Observable, Subject, of } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
-import { SafeUrlPipe } from '../../../pipes/safe-url.pipe'; // <-- Import the new pipe
+import { SafeUrlPipe } from '../../../pipes/safe-url.pipe';
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  // Add SafeUrlPipe to the component's imports
   imports: [CommonModule, RouterModule, ProjectConfirmationDialogComponent, DatePipe],
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.css']
@@ -23,6 +22,9 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   showConfirmationDialog: boolean = false;
   dialogMessage: string = '';
   dialogAction: 'delete' | '' = '';
+
+  showCarousel = false;
+  currentImageIndex = 0;
 
   private destroy$ = new Subject<void>();
 
@@ -92,6 +94,27 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
   goBack(): void {
     this.router.navigate(['/project-dashboard']);
+  }
+
+  openCarousel(index: number): void {
+    this.currentImageIndex = index;
+    this.showCarousel = true;
+  }
+
+  closeCarousel(): void {
+    this.showCarousel = false;
+  }
+
+  prevImage(): void {
+    if (this.currentProject && this.currentProject.images.length > 0) {
+      this.currentImageIndex = (this.currentImageIndex - 1 + this.currentProject.images.length) % this.currentProject.images.length;
+    }
+  }
+
+  nextImage(): void {
+    if (this.currentProject && this.currentProject.images.length > 0) {
+      this.currentImageIndex = (this.currentImageIndex + 1) % this.currentProject.images.length;
+    }
   }
 
   ngOnDestroy(): void {
