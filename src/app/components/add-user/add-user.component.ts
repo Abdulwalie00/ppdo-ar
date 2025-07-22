@@ -80,4 +80,11 @@ export class AddUserComponent implements OnInit {
       this.showDialog = false;
     }
   }
+
+  /**
+   * Navigates back to the accounts list when the cancel button is clicked.
+   */
+  cancel(): void {
+    this.router.navigate(['/accounts']);
+  }
 }
