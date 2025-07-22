@@ -1,7 +1,7 @@
 // src/app/components/project-add-edit/project-add-edit.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -14,6 +14,16 @@ import { ProjectDataService } from '../../../services/project-data.service';
 import {UserService} from '../../../services/user.service';
 // Import the dialog component
 import {ProjectCategoryAddDialogComponent} from "../project-category-add-dialog/project-category-add-dialog.component";
+
+// Custom validator for the date range
+export function dateRangeValidator(control: AbstractControl): { [key: string]: boolean } | null {
+  const startDate = control.get('startDate')?.value;
+  const endDate = control.get('endDate')?.value;
+  if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+    return { 'dateRange': true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-project-add-edit',
@@ -113,7 +123,7 @@ export class ProjectAddEditComponent implements OnInit {
       percentCompletion: [0],
       implementationSchedule: [''],
       dateOfAccomplishment: [''],
-    });
+    }, { validators: dateRangeValidator });
   }
 
   loadDivisions(): void {

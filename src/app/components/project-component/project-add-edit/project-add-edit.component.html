@@ -80,10 +80,13 @@
           id="endDate"
           formControlName="endDate"
           class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-          [ngClass]="{'border-red-500': projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched}"
+          [ngClass]="{'border-red-500': projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched || projectForm.hasError('dateRange')}"
         />
-        <div *ngIf="projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched" class="text-red-500 text-xs mt-1">
+        <div *ngIf="projectForm.get('endDate')?.hasError('required') && projectForm.get('endDate')?.touched" class="text-red-500 text-xs mt-1">
           End Date is required.
+        </div>
+        <div *ngIf="projectForm.hasError('dateRange') && (projectForm.get('startDate')?.touched || projectForm.get('endDate')?.touched)" class="text-red-500 text-xs mt-1">
+          The start date must be the same as or earlier than the end date.
         </div>
       </div>
     </div>
