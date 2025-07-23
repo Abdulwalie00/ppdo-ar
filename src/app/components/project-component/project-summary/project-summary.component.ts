@@ -44,6 +44,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
   // User role and division
   isAdmin: boolean = false;
   userDivisionName: string = ''; // To store division name for print header
+  userDivisionCode: string = ''; // To store division code for the logo
   private authSubscription: Subscription | undefined;
 
   constructor(
@@ -65,6 +66,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
         this.userService.getUserByUsername(username).subscribe(user => {
           if (user?.division) {
             this.userDivisionName = user.division.name; // Store division name
+            this.userDivisionCode = user.division.code; // Store division code
             this.loadProjectsForDivision(user.division.id);
           }
         });
@@ -183,14 +185,21 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
   printReport(): void {
     const month = this.selectedMonth || 'All Months';
     let divisionName = 'All Divisions';
+    let divisionLogoUrl = '';
 
     if (this.isAdmin) {
       if (this.selectedDivision) {
         const division = this.divisions.find(d => d.id === this.selectedDivision);
         divisionName = division ? division.name : 'All Divisions';
+        if (division) {
+          divisionLogoUrl = `app/assets/logos/${division.code}.png`;
+        }
       }
     } else {
       divisionName = this.userDivisionName || 'N/A';
+      if (this.userDivisionCode) {
+        divisionLogoUrl = `app/assets/logos/${this.userDivisionCode}.png`;
+      }
     }
 
     const projectsByCategory: { [key: string]: Project[] } = {};
@@ -247,8 +256,13 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
             @page { size: landscape; }
             body { font-family: Arial, sans-serif; font-size: 10pt; }
             .header-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            .header-table td { vertical-align: middle; }
-            .logo { width: 80px; height: auto; }
+            .header-table td { vertical-align: middle; padding: 5px; }
+            .logo {
+              width: 100%;
+              height: auto;
+              max-height: 120px; /* Adjust max-height as needed */
+              object-fit: contain;
+            }
             .header-text { text-align: center; }
             .header-text p { margin: 0; line-height: 1.4; }
             .report-title { font-size: 14pt; font-weight: bold; margin-top: 20px; }
@@ -265,7 +279,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
         <table class="header-table">
           <tr>
             <td style="width: 15%; text-align: center;">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Ph_seal_lanao_del_sur.svg/1200px-Ph_seal_lanao_del_sur.svg.png" alt="Lanao del Sur Logo" class="logo">
+              <img src="app/assets/logos/LDS.png" alt="Lanao del Sur Logo" class="logo">
             </td>
             <td class="header-text">
               <p>Republic of the Philippines</p>
@@ -276,7 +290,10 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
               <p>Month of: ${month}</p>
               <p>Division: ${divisionName}</p>
             </td>
-            <td style="width: 15%;"></td> </tr>
+            <td style="width: 15%; text-align: center;">
+              ${divisionLogoUrl ? `<img src="${divisionLogoUrl}" alt="Division Logo" class="logo">` : ''}
+            </td>
+          </tr>
         </table>
 
         <table>

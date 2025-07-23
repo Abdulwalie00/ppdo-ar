@@ -7,8 +7,8 @@ import { Subscription } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 
 import { AuthService } from '../../services/auth.service';
-import { UserService } from '../../services/user.service'; // <-- Import UserService
-import { User } from '../../models/user.model'; // <-- Import User model
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-header',
@@ -28,11 +28,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   initials: string = '';
   avatarColor: string = '#000000';
+  divisionLogoUrl: string | null = null; // New property for the logo
 
   private intervalId: any;
-  private authSubscription!: Subscription; // To manage the subscription
+  private authSubscription!: Subscription;
 
-  // Inject both AuthService and UserService
   constructor(
     private authService: AuthService,
     private userService: UserService,
@@ -43,19 +43,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.loadTheme();
     this.startTimeUpdater();
 
-    // Subscribe to the authentication state
     this.authSubscription = this.authService.isAuthenticated$.subscribe(isAuthenticated => {
       if (isAuthenticated) {
         this.fetchCurrentUserProfile();
       } else {
         this.currentUser = null;
         this.initials = '';
+        this.divisionLogoUrl = null; // Clear logo on logout
       }
     });
   }
 
   ngOnDestroy(): void {
-    // Unsubscribe to prevent memory leaks
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
@@ -76,7 +75,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.userService.getUserByUsername(username).subscribe({
           next: (user) => {
             this.currentUser = user;
-            this.createAvatar(); // Create avatar after fetching user
+            this.createAvatar();
+
+            // Set the division logo URL
+            if (user.division?.code) {
+              this.divisionLogoUrl = `app/assets/logos/${user.division.code}.png`;
+            } else {
+              this.divisionLogoUrl = null; // Or a default logo
+            }
           },
           error: (err) => {
             console.error('Failed to fetch user:', err);

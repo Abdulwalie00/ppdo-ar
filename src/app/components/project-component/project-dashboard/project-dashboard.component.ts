@@ -1,3 +1,4 @@
+// app/components/project-component/project-dashboard/project-dashboard.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -37,6 +38,8 @@ export class ProjectDashboardComponent implements OnInit {
   projectsByDivision: { [divisionName: string]: Project[] } = {};
   readonly statusList: ProjectStatusKey[] = ['planned', 'ongoing', 'completed', 'cancelled'];
   userDivisionCode: string | null = null;
+  divisionLogoUrl: string | null = null;
+  ldsLogoUrl: string = 'app/assets/logos/LDS.png';
 
   constructor(
     private projectDataService: ProjectDataService,
@@ -60,6 +63,13 @@ export class ProjectDashboardComponent implements OnInit {
             return of([]);
           }
           this.userDivisionCode = userDivision.code;
+          if (userDivision.code) {
+            if (userDivision.code === 'ICTO') {
+              this.divisionLogoUrl = 'app/assets/logos/ICTO.png';
+            } else {
+              this.divisionLogoUrl = `app/assets/logos/${userDivision.code}.png`;
+            }
+          }
           return this.projectDataService.getProjects(this.userDivisionCode);
         })
       ).subscribe(filteredProjects => {
