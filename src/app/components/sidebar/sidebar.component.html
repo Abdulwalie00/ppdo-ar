@@ -5,7 +5,7 @@
       class="bg-white dark:bg-gray-900 text-black dark:text-white transition-all duration-300 overflow-hidden"
     >
       <div class="py-2.5 p-2 justify-between flex items-center">
-        <h1 *ngIf="!isCollapsed()" class="text-xl font-bold">PPDO-AR</h1>
+        <h1 *ngIf="!isCollapsed()" class="text-xl font-bold">PGLDS-AR</h1>
         <div [ngClass]="{ 'justify-center': isCollapsed(), 'justify-end': !isCollapsed() }" class="flex items-center p-0 m-0 gap-0">
           <button (click)="toggleSidebar()" class="text-black dark:text-white hover:bg-blue-300 dark:hover:bg-blue-600 p-0.5 px-4 rounded-lg">
             <fa-icon [icon]="isCollapsed() ? faCaretRight : faCaretLeft"></fa-icon>

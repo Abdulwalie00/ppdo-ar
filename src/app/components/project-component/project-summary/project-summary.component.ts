@@ -184,6 +184,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
 
   printReport(): void {
     const month = this.selectedMonth || 'All Months';
+    const year = this.selectedYear || 'All Years';
     let divisionName = 'All Divisions';
     let divisionLogoUrl = '';
 
@@ -256,7 +257,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
             @page { size: landscape; }
             body { font-family: Arial, sans-serif; font-size: 10pt; }
             .header-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            .header-table td { vertical-align: middle; padding: 5px; }
+            .header-table td { vertical-align: middle; padding: 5px; border: 0 }
             .logo {
               width: 100%;
               height: auto;
@@ -271,7 +272,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
             th { background-color: #e0e0e0; font-weight: bold; }
             .main-row { border-top: 2px solid #000; }
             tbody tr:first-child.main-row { border-top: none; }
-            .category-row td { background-color: #f8f8f8; font-style: italic; padding-left: 20px; border-bottom: 2px solid #000; }
+            .category-row td { background-color: rgba(255,219,139,0.78); font-style: italic; padding-left: 20px; border-bottom: 2px solid #000; }
           }
         </style>
       </head>
@@ -287,8 +288,8 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
               <p>PROVINCE OF LANAO DEL SUR</p>
               <p>New Capitol Complex, Buadi Sacayo, Marawi City</p>
               <p class="report-title">MONTHLY ACCOMPLISHMENT REPORT</p>
-              <p>Month of: ${month}</p>
-              <p>Division: ${divisionName}</p>
+              <p>Month of: ${month}, ${year}</p>
+              <p>Office: ${divisionName}</p>
             </td>
             <td style="width: 15%; text-align: center;">
               ${divisionLogoUrl ? `<img src="${divisionLogoUrl}" alt="Division Logo" class="logo">` : ''}
