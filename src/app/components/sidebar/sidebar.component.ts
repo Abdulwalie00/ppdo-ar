@@ -3,8 +3,21 @@ import { CommonModule } from '@angular/common';
 import {Router, RouterModule} from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
-  faHome, faChartBar, faCog, faChevronRight, faChevronDown, faFileAlt,
-  faDatabase, faUsers, faCircle, faCaretRight, faCaretLeft, faCaretDown
+  faHome,
+  faChartBar,
+  faCog,
+  faChevronRight,
+  faChevronDown,
+  faFileAlt,
+  faDatabase,
+  faUsers,
+  faCircle,
+  faCaretRight,
+  faCaretLeft,
+  faCaretDown,
+  faBuilding,
+  faBuildingCircleArrowRight,
+  faBuildingColumns, faBuildingCircleExclamation
 } from '@fortawesome/free-solid-svg-icons';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Observable } from 'rxjs';
@@ -65,7 +78,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
     {
       title: 'PGO',
-      icon: faChartBar,
+      icon: faBuildingColumns,
       isExpanded: false,
       children: [
         {
@@ -85,12 +98,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
     {
       title: 'OPVG',
-      icon: faUsers,
+      icon: faBuildingColumns,
       link: '/project-division/OPVG'
     },
     {
       title: 'Implementing',
-      icon: faDatabase,
+      icon: faBuildingColumns,
       isExpanded: false,
       children: [
         { title: 'PEO', icon: faCircle, link: '/project-division/PEO' },
@@ -105,22 +118,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
     {
       title: 'Administrative Support',
-      icon: faDatabase,
+      icon: faBuildingColumns,
       isExpanded: false,
       children: [
-        { title: 'PPDO', icon: faFileAlt, link: '/project-division/PPDO' },
-        { title: 'PHRMO', icon: faDatabase, link: '/project-division/PHRMO' },
-        { title: 'PGSO', icon: faFileAlt, link: '/project-division/PGSO' },
-        { title: 'PTO', icon: faDatabase, link: '/project-division/PTO' },
-        { title: 'PACCO', icon: faFileAlt, link: '/project-division/PACCO' },
-        { title: 'PBO', icon: faDatabase, link: '/project-division/PBO' },
-        { title: 'PLSO', icon: faFileAlt, link: '/project-division/PLSO' },
-        { title: 'PSF', icon: faDatabase, link: '/project-division/PSF' },
+        { title: 'PPDO', icon: faCircle, link: '/project-division/PPDO' },
+        { title: 'PHRMO', icon: faCircle, link: '/project-division/PHRMO' },
+        { title: 'PGSO', icon: faCircle, link: '/project-division/PGSO' },
+        { title: 'PTO', icon: faCircle, link: '/project-division/PTO' },
+        { title: 'PACCO', icon: faCircle, link: '/project-division/PACCO' },
+        { title: 'PBO', icon: faCircle, link: '/project-division/PBO' },
+        { title: 'PLSO', icon: faCircle, link: '/project-division/PLSO' },
+        { title: 'PSF', icon: faCircle, link: '/project-division/PSF' },
       ]
     },
     {
       title: 'Account Management',
-      icon: faCog,
+      icon: faUsers,
       link: '/accounts'
     },
     {
