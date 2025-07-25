@@ -23,7 +23,7 @@ export class AddUserComponent implements OnInit {
     email: '',
     username: '',
     password: '', // Use a 'password' field, not 'passwordHash'
-    role: 'ROLE_EDITOR' as UserRole, // Default to a safe role
+    role: 'ROLE_USER' as UserRole, // Default to a safe role
     divisionId: null,
   };
 
