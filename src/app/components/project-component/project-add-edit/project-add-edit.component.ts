@@ -1,6 +1,6 @@
 // src/app/components/project-add-edit/project-add-edit.component.ts
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
@@ -62,7 +62,8 @@ export class ProjectAddEditComponent implements OnInit {
     private router: Router,
     private projectDataService: ProjectDataService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -249,7 +250,7 @@ export class ProjectAddEditComponent implements OnInit {
         ? this.projectDataService.updateProject(this.projectId, projectData)
         : this.projectDataService.addProject(projectData);
       operation.subscribe(project => {
-        this.router.navigate(['/project-detail', project.id]);
+        this.location.back()
       });
     }
   }

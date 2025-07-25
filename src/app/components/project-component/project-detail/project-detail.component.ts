@@ -93,7 +93,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/project-dashboard']);
+    this.location.back();
   }
 
   openCarousel(index: number): void {

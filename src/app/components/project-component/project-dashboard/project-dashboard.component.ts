@@ -107,6 +107,15 @@ export class ProjectDashboardComponent implements OnInit {
       }
       this.projectsByDivision[divisionName].push(project);
     });
+
+    // Sort projects within each division by dateCreated in descending order
+    for (const divisionName of Object.keys(this.projectsByDivision)) {
+      this.projectsByDivision[divisionName].sort((a, b) => {
+        const dateA = new Date(a.dateCreated).getTime();
+        const dateB = new Date(b.dateCreated).getTime();
+        return dateB - dateA; // Sort in descending order (latest date first)
+      });
+    }
   }
 
   get divisionNames(): string[] {
