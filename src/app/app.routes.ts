@@ -22,6 +22,8 @@ import {
 import {ProjectSummaryComponent} from './components/project-component/project-summary/project-summary.component';
 import {DivisionGuard} from './guards/division.guard';
 import {AdminGuard} from './guards/admin.guard';
+import {DivisionListComponent} from './pages/division/division-list/division-list.component';
+import {DivisionAddEditComponent} from './pages/division/division-add-edit/division-add-edit.component';
 
 export const routes: Routes = [
   {
@@ -87,10 +89,19 @@ export const routes: Routes = [
         component: ProjectCategoryListComponent
         // canActivate: [AuthGuard] // Add your authentication guard here if you have one
       },
+
+      { path: 'divisions', component: DivisionListComponent, canActivate: [AdminGuard] },
+      { path: 'divisions/add', component: DivisionAddEditComponent, canActivate: [AdminGuard] },
+      { path: 'divisions/edit/:id', component: DivisionAddEditComponent, canActivate: [AdminGuard] },
+
       //Other Routes
 
       { path: 'reports', component: ReportsComponent },
-      { path: 'settings', component: SettingsComponent, canActivate: [AdminGuard] },
+      {
+        path: 'settings',
+        component: SettingsComponent,
+        canActivate: [AdminGuard]
+      },
       { path: 'profile', component: ProfileComponent },
 
       { path: 'accounts', component: ManageAccountsComponent, canActivate: [AdminGuard] },
