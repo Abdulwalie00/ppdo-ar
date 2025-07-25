@@ -86,4 +86,8 @@ export class EditUserComponent implements OnInit {
       this.showDialog = false;
     }
   }
+
+  cancel(): void {
+    this.router.navigate(['/accounts']);
+  }
 }
