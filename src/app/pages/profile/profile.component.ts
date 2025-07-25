@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
@@ -30,8 +30,10 @@ export class ProfileComponent implements OnInit {
       firstName: [''],
       lastName: [''],
       email: [''],
-      username: ['']
-    });
+      username: [''],
+      password: [''],
+      confirmPassword: ['']
+    }, { validator: this.passwordMatchValidator });
   }
 
   ngOnInit() {
@@ -79,21 +81,46 @@ export class ProfileComponent implements OnInit {
     return color;
   }
 
+  passwordMatchValidator(form: FormGroup) {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { mismatch: true };
+  }
+
   toggleEdit() {
     this.editMode = !this.editMode;
     if (!this.editMode && this.user) {
       this.profileForm.patchValue(this.user);
+      this.profileForm.get('password')?.reset('');
+      this.profileForm.get('confirmPassword')?.reset('');
     }
   }
 
   onSubmit() {
+    if (this.profileForm.invalid) {
+      // Form is invalid, likely due to password mismatch
+      console.error('Password mismatch');
+      return;
+    }
     if (this.profileForm.valid && this.user) {
-      const updatedUser = { ...this.user, ...this.profileForm.value };
+      const formValues = this.profileForm.value;
+      const updatedUser: any = {
+        ...this.user,
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        email: formValues.email,
+        username: formValues.username
+      };
+
+      if (formValues.password) {
+        updatedUser.password = formValues.password;
+      }
+
       this.userService.updateUser(this.user.id, updatedUser).subscribe({
         next: (response) => {
           this.user = response;
           this.profileForm.patchValue(response);
-          this.createAvatar(); // Re-create avatar on update
+          this.createAvatar();
           this.editMode = false;
           this.successMessage = 'Profile updated successfully!';
           setTimeout(() => {
