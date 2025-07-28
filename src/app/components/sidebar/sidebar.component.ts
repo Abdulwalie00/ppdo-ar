@@ -1,3 +1,4 @@
+// app/components/sidebar/sidebar.component.ts
 import {Component, ElementRef, OnDestroy, OnInit, Renderer2, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {Router, RouterModule} from '@angular/router';
@@ -169,7 +170,16 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   handleMenuClick(menuItem: MenuItem, event: MouseEvent) {
     if (this.isCollapsed()) {
+      // Close all other submenus first
+      this.menuItems().forEach(item => {
+        if (item !== menuItem && item.isExpanded) {
+          item.isExpanded = false;
+        }
+      });
+
+      // Then toggle the clicked menu item's expansion state
       menuItem.isExpanded = !menuItem.isExpanded;
+
       if (menuItem.isExpanded) {
         this.calculateTopPosition(event);
       }
