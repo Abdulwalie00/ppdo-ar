@@ -31,6 +31,7 @@ interface MenuItem {
   link?: string;
   isExpanded?: boolean;
   children?: MenuItem[];
+  requiredRole?: string;
 }
 
 @Component({
@@ -54,6 +55,7 @@ interface MenuItem {
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   isAdmin$: Observable<boolean>;
+  isSuperAdmin$: Observable<boolean>;
   isCollapsed = signal(false);
   currentMenuTopPosition: number = 1;
   private globalClickUnlistener: (() => void) | undefined = undefined;
@@ -64,13 +66,19 @@ export class SidebarComponent implements OnInit, OnDestroy {
     private el: ElementRef,
     private authService: AuthService
   ) {
+    // 👇 THIS IS THE FIX 👇
+    // Now checks if the user has either ROLE_ADMIN or ROLE_SUPERADMIN
     this.isAdmin$ = this.authService.userRoles$.pipe(
-      map(roles => roles.includes('ROLE_ADMIN'))
+      map(roles => roles.includes('ROLE_ADMIN') || roles.includes('ROLE_SUPERADMIN'))
+    );
+    // This remains the same, to specifically check for the superadmin role
+    this.isSuperAdmin$ = this.authService.userRoles$.pipe(
+      map(roles => roles.includes('ROLE_SUPERADMIN'))
     );
     this.collapseSubmenuOnNavigate();
   }
 
-  // The rest of your component logic remains the same...
+  // ... (The rest of your component code remains the same)
   menuItems = signal<MenuItem[]>([
     {
       title: 'Dashboard',
@@ -135,7 +143,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       title: 'Account Management',
       icon: faUsers,
-      link: '/accounts'
+      link: '/accounts',
+      requiredRole: 'ROLE_SUPERADMIN'
     },
     {
       title: 'Settings',

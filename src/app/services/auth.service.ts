@@ -35,6 +35,10 @@ export class AuthService {
     return this.getRolesFromToken();
   }
 
+  isSuperAdmin(): boolean {
+    return this.getRoles().includes('ROLE_SUPERADMIN');
+  }
+
   isAdmin(): boolean {
     return this.getRoles().includes('ROLE_ADMIN');
   }

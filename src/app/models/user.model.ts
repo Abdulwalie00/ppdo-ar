@@ -1,6 +1,6 @@
 import {Division} from './project.model';
 
-export type UserRole = 'ROLE_ADMIN' | 'ROLE_EDITOR' | 'ROLE_VIEWER' | 'ROLE_MANAGER';
+export type UserRole = 'ROLE_SUPERADMIN' | 'ROLE_ADMIN' | 'ROLE_EDITOR' | 'ROLE_VIEWER' | 'ROLE_MANAGER';
 
 export interface User {
   id: number;

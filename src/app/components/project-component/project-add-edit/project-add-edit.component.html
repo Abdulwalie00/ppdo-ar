@@ -170,7 +170,7 @@
         <div *ngIf="projectForm.get('divisionId')?.invalid && projectForm.get('divisionId')?.touched" class="text-red-500 text-xs mt-1">
           Division is required.
         </div>
-        <p *ngIf="!isAdmin && !isEditMode" class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p *ngIf="!isAdmin && projectForm.get('divisionId')?.disabled" class="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Your division has been automatically selected.
         </p>
       </div>
@@ -181,7 +181,6 @@
           formControlName="projectCategoryId"
           (change)="onCategoryChange($event)"
           class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-          [disabled]="!projectForm.get('divisionId')?.value"
         >
           <option value="">Select a category (optional)</option>
           <option *ngFor="let cat of projectCategories" [value]="cat.id">{{ cat.name }}</option>
