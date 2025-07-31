@@ -1,26 +1,15 @@
-# Stage 1: Build the Angular application
-FROM node:18 as build
-
-# Set the working directory
-WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json
+# Stage 1: Build Angular
+FROM node:18 AS build
+WORKDIR /app
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
-
-# Copy the rest of the application's source code
 COPY . .
+RUN npm run build  # Generates files in `/app/dist/`
 
-# Build the application for production
-RUN npm run build -- --configuration production
-
-# Stage 2: Serve the application from a lightweight Nginx server
+# Stage 2: Serve with Nginx
 FROM nginx:alpine
-
-# Copy the build output from the build stage
-COPY --from=build /usr/src/app/dist/your-angular-app-name /usr/share/nginx/html
-
-# Expose port 80
+# Copy ALL files from /app/dist/ to Nginx's HTML directory
+COPY --from=build /app/dist/ppdo-ar/browser /usr/share/nginx/html
+# Override Nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
