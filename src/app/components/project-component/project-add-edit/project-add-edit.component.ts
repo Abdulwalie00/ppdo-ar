@@ -74,7 +74,14 @@ export class ProjectAddEditComponent implements OnInit {
 
     if (this.isSuperAdmin || this.isAdmin) {
       this.loadDivisions();
-      this.loadAllProjectCategories(); // Admin loads all categories
+      // Listen for division changes to update categories
+      this.projectForm.get('divisionId')?.valueChanges.subscribe(divisionId => {
+        if (divisionId) {
+          this.loadProjectCategories(divisionId);
+        } else {
+          this.projectCategories = [];
+        }
+      });
     }
 
     this.route.paramMap.pipe(
@@ -92,7 +99,7 @@ export class ProjectAddEditComponent implements OnInit {
       if (this.isEditMode && project) {
         this.loadProjectForEdit(project);
       } else { // Add mode for non-admin
-        if (!this.isSuperAdmin || !this.isAdmin) {
+        if (!this.isSuperAdmin && !this.isAdmin) {
           this.userService.getCurrentUserDivision().subscribe(userDivision => {
             if (userDivision) {
               this.divisions = [userDivision];
@@ -147,7 +154,7 @@ export class ProjectAddEditComponent implements OnInit {
 
   loadProjectForEdit(project: Project): void {
     // For non-admins in edit mode, load categories for their division
-    if (!this.isSuperAdmin || !this.isAdmin) {
+    if (!this.isSuperAdmin && !this.isAdmin) {
       this.loadProjectCategories(project.division.id);
     }
 
@@ -171,7 +178,7 @@ export class ProjectAddEditComponent implements OnInit {
     });
     this.currentProjectImages = project.images || [];
 
-    if (!this.isSuperAdmin || !this.isAdmin) {
+    if (!this.isSuperAdmin && !this.isAdmin) {
       this.projectForm.get('divisionId')?.disable();
     }
   }
