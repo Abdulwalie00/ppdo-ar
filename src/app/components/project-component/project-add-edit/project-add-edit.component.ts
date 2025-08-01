@@ -45,6 +45,7 @@ export class ProjectAddEditComponent implements OnInit {
   divisions: Division[] = [];
   projectCategories: ProjectCategory[] = [];
   public isAdmin: boolean = false;
+  public isSuperAdmin: boolean = false;
 
   newlyUploadedImages: ProjectImage[] = [];
   currentProjectImages: ProjectImage[] = [];
@@ -68,9 +69,10 @@ export class ProjectAddEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
+    this.isSuperAdmin = this.authService.isSuperAdmin();
     this.initForm();
 
-    if (this.isAdmin) {
+    if (this.isSuperAdmin || this.isAdmin) {
       this.loadDivisions();
       this.loadAllProjectCategories(); // Admin loads all categories
     }
@@ -90,7 +92,7 @@ export class ProjectAddEditComponent implements OnInit {
       if (this.isEditMode && project) {
         this.loadProjectForEdit(project);
       } else { // Add mode for non-admin
-        if (!this.isAdmin) {
+        if (!this.isSuperAdmin || !this.isAdmin) {
           this.userService.getCurrentUserDivision().subscribe(userDivision => {
             if (userDivision) {
               this.divisions = [userDivision];
@@ -145,7 +147,7 @@ export class ProjectAddEditComponent implements OnInit {
 
   loadProjectForEdit(project: Project): void {
     // For non-admins in edit mode, load categories for their division
-    if (!this.isAdmin) {
+    if (!this.isSuperAdmin || !this.isAdmin) {
       this.loadProjectCategories(project.division.id);
     }
 
@@ -169,7 +171,7 @@ export class ProjectAddEditComponent implements OnInit {
     });
     this.currentProjectImages = project.images || [];
 
-    if (!this.isAdmin) {
+    if (!this.isSuperAdmin || !this.isAdmin) {
       this.projectForm.get('divisionId')?.disable();
     }
   }

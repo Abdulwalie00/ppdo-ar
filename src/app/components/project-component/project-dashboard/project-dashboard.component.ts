@@ -49,8 +49,9 @@ export class ProjectDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const isAdmin = this.authService.isAdmin();
+    const isSuperAdmin = this.authService.isSuperAdmin();
 
-    if (isAdmin) {
+    if (isSuperAdmin || isAdmin) {
       this.projectDataService.getProjects().subscribe(allProjects => {
         this.projects = allProjects;
         this.calculateStatusCounts();
