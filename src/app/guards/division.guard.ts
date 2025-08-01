@@ -30,7 +30,7 @@ export class DivisionGuard implements CanActivate {
       return this.router.createUrlTree(['/project-dashboard']);
     }
 
-    if (this.authService.isAdmin()) {
+    if (this.authService.isAdmin() || this.authService.isSuperAdmin()) {
       return true;
     }
 

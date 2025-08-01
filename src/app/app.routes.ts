@@ -91,9 +91,9 @@ export const routes: Routes = [
         // canActivate: [AuthGuard] // Add your authentication guard here if you have one
       },
 
-      { path: 'divisions', component: DivisionListComponent, canActivate: [AdminGuard] },
-      { path: 'divisions/add', component: DivisionAddEditComponent, canActivate: [AdminGuard] },
-      { path: 'divisions/edit/:id', component: DivisionAddEditComponent, canActivate: [AdminGuard] },
+      { path: 'divisions', component: DivisionListComponent, canActivate: [AdminGuard, SuperAdminGuard] },
+      { path: 'divisions/add', component: DivisionAddEditComponent, canActivate: [AdminGuard, SuperAdminGuard] },
+      { path: 'divisions/edit/:id', component: DivisionAddEditComponent, canActivate: [AdminGuard, SuperAdminGuard] },
 
       //Other Routes
 
@@ -106,8 +106,8 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileComponent },
 
       { path: 'accounts', component: ManageAccountsComponent, canActivate: [SuperAdminGuard] },
-      { path: 'accounts/add', component: AddUserComponent, canActivate: [AdminGuard] },
-      { path: 'accounts/edit/:id', component: EditUserComponent, canActivate: [AdminGuard] },
+      { path: 'accounts/add', component: AddUserComponent, canActivate: [AdminGuard, SuperAdminGuard] },
+      { path: 'accounts/edit/:id', component: EditUserComponent, canActivate: [AdminGuard, SuperAdminGuard] },
     ]
   },
   { path: '**', component: NotFoundComponent },
