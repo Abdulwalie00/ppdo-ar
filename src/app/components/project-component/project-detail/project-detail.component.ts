@@ -1,23 +1,27 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule, DatePipe, Location } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // Import FormsModule
 import { ProjectConfirmationDialogComponent } from '../project-confirmation-dialog/project-confirmation-dialog.component';
 import { ProjectDataService } from '../../../services/project-data.service';
-import { Project } from '../../../models/project.model';
+import { Project, Comment } from '../../../models/project.model'; // Import Comment
 import { Observable, Subject, of } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
-import { SafeUrlPipe } from '../../../pipes/safe-url.pipe';
+import { AuthService } from '../../../services/auth.service'; // Assuming you have an AuthService
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, ProjectConfirmationDialogComponent, DatePipe],
+  imports: [CommonModule, RouterModule, FormsModule, ProjectConfirmationDialogComponent, DatePipe], // Add FormsModule
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.css']
 })
 export class ProjectDetailComponent implements OnInit, OnDestroy {
   project$: Observable<Project | undefined>;
   currentProject: Project | undefined;
+  comments: Comment[] = [];
+  newComment = '';
+  currentUserRole = '';
 
   showConfirmationDialog: boolean = false;
   dialogMessage: string = '';
@@ -32,16 +36,20 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private projectDataService: ProjectDataService,
-    private location: Location
+    private location: Location,
+    private authService: AuthService // Inject AuthService
   ) {
     this.project$ = of(undefined);
   }
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getUserRole(); // Get user role
+
     this.project$ = this.route.paramMap.pipe(
       switchMap(params => {
         const projectId = params.get('id');
         if (projectId) {
+          this.loadComments(projectId);
           return this.projectDataService.getProjectById(projectId);
         }
         return of(undefined);
@@ -54,6 +62,28 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.destroy$)
     );
+  }
+
+  loadComments(projectId: string): void {
+    this.projectDataService.getComments(projectId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(comments => {
+        this.comments = comments.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+      });
+  }
+
+  postComment(): void {
+    if (!this.newComment.trim() || !this.currentProject) {
+      return;
+    }
+    this.projectDataService.addComment(this.currentProject.id, this.newComment)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.newComment = '';
+        if (this.currentProject) {
+          this.loadComments(this.currentProject.id); // Reload comments
+        }
+      });
   }
 
   editProject(): void {
@@ -78,7 +108,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       ).subscribe({
         next: () => {
-          console.log(`Project with ID ${this.currentProject?.id} deleted successfully.`);
           this.router.navigate(['/project-list']);
         },
         error: (err) => {
@@ -86,10 +115,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         }
       });
     }
-  }
-
-  printSummary(): void {
-    window.print();
   }
 
   goBack(): void {

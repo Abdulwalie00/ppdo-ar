@@ -1,4 +1,6 @@
 // src/app/models/project.model.ts
+import {User} from './user.model';
+
 export interface Division {
   id: string;
   name: string;
@@ -25,6 +27,13 @@ export interface ProjectCategory {
 export interface ProjectCategoryDto {
   name: string;
   code: string;
+}
+
+export interface Comment {
+  id: string;
+  content: string;
+  dateCreated: Date;
+  user: User;
 }
 
 

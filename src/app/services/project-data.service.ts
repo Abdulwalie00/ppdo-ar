@@ -2,8 +2,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {Project, Division, ProjectCategory, ProjectCategoryDto} from '../models/project.model';
-import {environment} from '../environment/environment';
+import { Project, Division, ProjectCategory, ProjectCategoryDto, Comment } from '../models/project.model'; // Import Comment
+import { environment } from '../environment/environment';
 
 
 @Injectable({
@@ -30,11 +30,11 @@ export class ProjectDataService {
     return this.http.get<Project>(`${environment.apiUrl}projects/${id}`);
   }
 
-  addProject(projectData: Omit<Project, 'id' | 'dateCreated' | 'dateUpdated' | 'division'> & { divisionId: string }): Observable<Project> {
+  addProject(projectData: Omit<Project, 'id' | 'dateCreated' | 'dateUpdated' | 'division' | 'comments'> & { divisionId: string }): Observable<Project> {
     return this.http.post<Project>(`${environment.apiUrl}projects`, projectData);
   }
 
-  updateProject(id: string, projectData: Partial<Omit<Project, 'id' | 'dateCreated' | 'dateUpdated' | 'division'> & { divisionId: string }>): Observable<Project> {
+  updateProject(id: string, projectData: Partial<Omit<Project, 'id' | 'dateCreated' | 'dateUpdated' | 'division' | 'comments'> & { divisionId: string }>): Observable<Project> {
     return this.http.put<Project>(`${environment.apiUrl}projects/${id}`, projectData);
   }
 
@@ -77,5 +77,15 @@ export class ProjectDataService {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post(`${environment.apiUrl}files/upload`, formData, { responseType: 'text' });
+  }
+
+  // --- Comment Methods ---
+
+  getComments(projectId: string): Observable<Comment[]> {
+    return this.http.get<Comment[]>(`${environment.apiUrl}projects/${projectId}/comments`);
+  }
+
+  addComment(projectId: string, content: string): Observable<Comment> {
+    return this.http.post<Comment>(`${environment.apiUrl}projects/${projectId}/comments`, { content });
   }
 }

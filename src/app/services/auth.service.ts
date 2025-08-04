@@ -30,9 +30,17 @@ export class AuthService {
     this.userRolesSubject.next([]);
   }
 
-  // New methods for role management
   getRoles(): string[] {
     return this.getRolesFromToken();
+  }
+
+  /**
+   * ADD THIS METHOD
+   * Gets the primary role of the user.
+   */
+  getUserRole(): string {
+    const roles = this.getRoles();
+    return roles.length > 0 ? roles[0] : ''; // Return the first role or an empty string
   }
 
   isSuperAdmin(): boolean {
