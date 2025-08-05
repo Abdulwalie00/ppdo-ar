@@ -87,44 +87,70 @@
             </span>
         </div>
 
-        <div class="xl:col-span-2 space-y-8">
-          <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 pb-3 border-b border-gray-200 dark:border-gray-600">Project Discussion</h3>
-            <div class="mb-5">
-          <textarea [(ngModel)]="newComment"
-                    class="w-full p-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 transition"
-                    rows="3"
-                    placeholder="Write a comment..."></textarea>
-              <button (click)="postComment()" [disabled]="!newComment.trim()"
-                      class="mb-2 float-right bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 px-4 text-sm rounded-md shadow-sm transition disabled:bg-gray-400 disabled:cursor-not-allowed">
-                Post
-              </button>
-            </div>
+        <div class="xl:col-span-2">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-2 ">
 
-            <div class="space-y-4 clear-both">
-              <div *ngFor="let comment of comments" class="flex items-start space-x-3">
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center font-bold text-gray-600 dark:text-gray-300 text-base">
-                  {{ comment.user.firstName.charAt(0) }}{{ comment.user.lastName.charAt(0) }}
-                </div>
-                <div class="flex-1">
-                  <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-500">
-                    <div class="flex justify-between items-center mb-1">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              Project Discussion
+            </h3>
+
+            <div #commentSection class="space-y-4 mb-6" style="max-height: 450px; overflow-y: auto;">
+
+              <div *ngFor="let comment of comments" class="p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div class="flex items-start space-x-4">
+                  <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+            <span class="font-semibold text-gray-600 dark:text-gray-300">
+              {{ comment.user.firstName.charAt(0) }}{{ comment.user.lastName.charAt(0) }}
+            </span>
+                  </div>
+
+                  <div class="flex-1">
+                    <div class="flex justify-between items-baseline">
                       <p class="font-semibold text-sm text-gray-900 dark:text-white">
                         {{ comment.user.firstName }} {{ comment.user.lastName }}
-                        <span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">{{ comment.user.division?.code | uppercase  }}</span>
+                        <span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">
+                  {{ comment.user.division?.code | uppercase }}
+                </span>
                       </p>
-                      <span class="text-xs text-gray-500 dark:text-gray-400">{{ comment.dateCreated | date:'short' }}</span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">
+                {{ comment.dateCreated | date:'short' }}
+              </span>
                     </div>
-                    <p class="text-sm text-gray-800 dark:text-gray-300">{{ comment.content }}</p>
+                    <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">
+                      {{ comment.content }}
+                    </p>
                   </div>
                 </div>
               </div>
-              <div *ngIf="comments.length === 0" class="text-center py-6 text-sm text-gray-500 dark:text-gray-400">
-                No comments yet. Be the first to start the discussion!
+
+              <div *ngIf="comments.length === 0" class="text-center py-8">
+                <p class="text-gray-500 dark:text-gray-400">
+                  No comments yet. Be the first to start the discussion!
+                </p>
               </div>
             </div>
+
+            <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <textarea
+        [(ngModel)]="newComment"
+        class="w-full p-3 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+        rows="3"
+        placeholder="Write a comment...">
+      </textarea>
+
+              <div class="flex justify-end mt-2">
+                <button
+                  (click)="postComment()"
+                  [disabled]="!newComment.trim()"
+                  class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 text-sm rounded-md shadow-sm transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                  Post Comment
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
 
     </div>

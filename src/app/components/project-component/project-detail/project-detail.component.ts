@@ -1,6 +1,4 @@
-
-
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +19,9 @@ import {WebsocketService} from '../../../services/websocker.service';
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.css']
 })
-export class ProjectDetailComponent implements OnInit, OnDestroy {
+export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewChecked {
+  @ViewChild('commentSection') private commentSection!: ElementRef;
+
   project$: Observable<Project | undefined>;
   currentProject: Project | undefined;
   comments: Comment[] = [];
@@ -36,6 +36,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   currentImageIndex = 0;
 
   private destroy$ = new Subject<void>();
+  private shouldScrollToBottom = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -44,7 +45,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private location: Location,
     private authService: AuthService,
     private userService: UserService,
-    private websocketService: WebsocketService // Corrected service name
+    private websocketService: WebsocketService
   ) {
     this.project$ = of(undefined);
   }
@@ -56,10 +57,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       switchMap(params => {
         const projectId = params.get('id');
         if (projectId) {
-          // Establish WebSocket connection and start listening
           this.websocketService.connect(projectId);
           this.listenForNewComments();
-          // Load initial data
           this.loadComments(projectId);
           return this.projectDataService.getProjectById(projectId);
         }
@@ -75,17 +74,20 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     );
   }
 
-  /**
-   * Subscribes to the WebSocket service to receive new comments in real-time.
-   */
+  ngAfterViewChecked(): void {
+    if (this.shouldScrollToBottom) {
+      this.scrollToBottom();
+      this.shouldScrollToBottom = false;
+    }
+  }
+
   listenForNewComments(): void {
     this.websocketService.comment$
       .pipe(takeUntil(this.destroy$))
       .subscribe(newComment => {
-        // Check if the comment is not already in the list to avoid duplicates
         if (newComment && !this.comments.some(c => c.id === newComment.id)) {
-          // Add the new comment to the top of the array for immediate visibility
-          this.comments.unshift(newComment);
+          this.comments.push(newComment);
+          this.shouldScrollToBottom = true;
         }
       });
   }
@@ -103,15 +105,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.projectDataService.getComments(projectId)
       .pipe(takeUntil(this.destroy$))
       .subscribe(comments => {
-        // Sort comments by most recent first
-        this.comments = comments.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+        this.comments = comments.sort((a, b) => new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime());
+        this.shouldScrollToBottom = true;
       });
   }
 
-  /**
-   * Posts the comment. The view will be updated automatically by the WebSocket listener
-   * when the server broadcasts the new comment.
-   */
   postComment(): void {
     if (!this.newComment.trim() || !this.currentProject) {
       return;
@@ -121,13 +119,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          // Clear the input field after successful submission.
-          // The new comment will appear via the WebSocket.
           this.newComment = '';
         },
         error: (err) => {
           console.error('Failed to post comment', err);
-          // Optionally, show a user-friendly error message
         }
       });
   }
@@ -135,11 +130,17 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    // It's crucial to disconnect to prevent memory leaks
     this.websocketService.disconnect();
   }
 
-  // --- Other component methods (edit, delete, navigation, etc.) ---
+  scrollToBottom(): void {
+    try {
+      this.commentSection.nativeElement.scrollTop = this.commentSection.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Could not scroll to bottom:', err);
+    }
+  }
+
   editProject(): void {
     if (this.currentProject) {
       this.router.navigate(['/project-edit', this.currentProject.id]);

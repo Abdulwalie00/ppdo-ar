@@ -43,6 +43,7 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
 
   // User role and division
   isAdmin: boolean = false;
+  isSuperAdmin: boolean = false;
   userDivisionName: string = ''; // To store division name for print header
   userDivisionCode: string = ''; // To store division code for the logo
   private authSubscription: Subscription | undefined;
@@ -56,8 +57,9 @@ export class ProjectSummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
+    this.isSuperAdmin = this.authService.isSuperAdmin();
 
-    if (this.isAdmin) {
+    if (this.isSuperAdmin || this.isAdmin) {
       this.loadDivisions();
       this.loadProjectsForAdmin();
     } else {
