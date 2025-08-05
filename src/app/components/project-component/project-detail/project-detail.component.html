@@ -96,32 +96,50 @@
 
             <div #commentSection class="space-y-4 mb-6" style="max-height: 450px; overflow-y: auto;">
 
-              <div *ngFor="let comment of comments" class="p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                <div class="flex items-start space-x-4">
-                  <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-            <span class="font-semibold text-gray-600 dark:text-gray-300">
-              {{ comment.user.firstName.charAt(0) }}{{ comment.user.lastName.charAt(0) }}
-            </span>
-                  </div>
+              <div *ngFor="let comment of comments" class="flex items-start"
+                   [ngClass]="{ 'justify-end': currentUser && comment.user.id === currentUser.id, 'justify-start': !currentUser || comment.user.id !== currentUser.id }">
 
-                  <div class="flex-1">
-                    <div class="flex justify-between items-baseline">
-                      <p class="font-semibold text-sm text-gray-900 dark:text-white">
-                        {{ comment.user.firstName }} {{ comment.user.lastName }}
-                        <span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">
-                  {{ comment.user.division?.code | uppercase }}
-                </span>
-                      </p>
-                      <span class="text-xs text-gray-500 dark:text-gray-400">
-                {{ comment.dateCreated | date:'short' }}
+                <div class="max-w-xl rounded-lg p-4"
+                     [ngClass]="{
+                'bg-blue-600 text-white': currentUser && comment.user.id === currentUser.id,
+                'bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600': !currentUser || comment.user.id !== currentUser.id
+             }">
+
+                  <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center"
+                         [ngClass]="{
+                    'bg-blue-500 text-blue-50': currentUser && comment.user.id === currentUser.id,
+                    'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300': !currentUser || comment.user.id !== currentUser.id
+                 }">
+              <span class="font-semibold">
+                {{ comment.user.firstName.charAt(0) }}{{ comment.user.lastName.charAt(0) }}
               </span>
                     </div>
-                    <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">
-                      {{ comment.content }}
-                    </p>
+
+                    <div class="flex-1">
+                      <div class="flex justify-between items-baseline">
+                        <p class="font-semibold text-sm"
+                           [ngClass]="{ 'text-white': currentUser && comment.user.id === currentUser.id, 'text-gray-900 dark:text-white': !currentUser || comment.user.id !== currentUser.id }">
+                          {{ comment.user.firstName }} {{ comment.user.lastName }}
+                          <span class="ml-2 text-xs font-normal"
+                                [ngClass]="{ 'text-blue-200': currentUser && comment.user.id === currentUser.id, 'text-gray-500 dark:text-gray-400': !currentUser || comment.user.id !== currentUser.id }">
+                    {{ comment.user.division?.code | uppercase }}
+                  </span>
+                        </p>
+                        <span class="text-xs ml-3 flex-shrink-0"
+                              [ngClass]="{ 'text-blue-200': currentUser && comment.user.id === currentUser.id, 'text-gray-500 dark:text-gray-400': !currentUser || comment.user.id !== currentUser.id }">
+                  {{ comment.dateCreated | date:'short' }}
+                </span>
+                      </div>
+                      <p class="mt-1 text-sm"
+                         [ngClass]="{ 'text-blue-50': currentUser && comment.user.id === currentUser.id, 'text-gray-700 dark:text-gray-300': !currentUser || comment.user.id !== currentUser.id }">
+                        {{ comment.content }}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
+
 
               <div *ngIf="comments.length === 0" class="text-center py-8">
                 <p class="text-gray-500 dark:text-gray-400">
