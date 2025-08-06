@@ -79,7 +79,7 @@ export const routes: Routes = [
         component: ProjectDivisionPageComponent,
         canActivate: [DivisionGuard] // Apply the guard here
       },
-      { path: 'project-list', component: ProjectListComponent, canActivate: [AdminGuard, SuperAdminGuard]}, // Main list view
+      { path: 'project-list', component: ProjectListComponent, canActivate: [AdminGuard, SuperAdminGuard]},
       { path: 'project-add', component: ProjectAddEditComponent },
       { path: 'project-edit/:id', component: ProjectAddEditComponent },
       { path: 'project-detail/:id', component: ProjectDetailComponent },
