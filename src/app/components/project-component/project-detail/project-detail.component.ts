@@ -1,3 +1,4 @@
+// app/components/project-component/project-detail/project-detail.component.ts
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
@@ -10,12 +11,20 @@ import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user.model';
-import {WebsocketService} from '../../../services/websocker.service';
+import { WebsocketService } from '../../../services/websocker.service';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; // Import icons
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'; // Import FontAwesomeModule
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ProjectConfirmationDialogComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ProjectConfirmationDialogComponent,
+    FontAwesomeModule // Add FontAwesomeModule to imports
+  ],
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.css']
 })
@@ -34,6 +43,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
 
   showCarousel = false;
   currentImageIndex = 0;
+
+  // New properties for budget visibility
+  isBudgetVisible = false;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
 
   private destroy$ = new Subject<void>();
   private shouldScrollToBottom = false;
@@ -186,5 +200,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
     if (this.currentProject && this.currentProject.images.length > 0) {
       this.currentImageIndex = (this.currentImageIndex + 1) % this.currentProject.images.length;
     }
+  }
+
+  // New method to toggle budget visibility
+  toggleBudgetVisibility(): void {
+    this.isBudgetVisible = !this.isBudgetVisible;
   }
 }
