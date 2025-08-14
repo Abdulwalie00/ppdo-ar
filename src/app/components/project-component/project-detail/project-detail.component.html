@@ -284,3 +284,10 @@
 
   </div>
 </div>
+
+
+<app-password-verification-dialog
+  *ngIf="showPasswordDialog"
+  (confirmed)="onPasswordVerified()"
+  (closed)="onPasswordDialogClosed()"
+></app-password-verification-dialog>
