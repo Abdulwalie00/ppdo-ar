@@ -25,6 +25,7 @@ import {AdminGuard} from './guards/admin.guard';
 import {DivisionListComponent} from './pages/division/division-list/division-list.component';
 import {DivisionAddEditComponent} from './pages/division/division-add-edit/division-add-edit.component';
 import {SuperAdminGuard} from './guards/super-admin.guard';
+import {ArchiveProjectsComponent} from '../../../ar-deployment/ar-deployment/ppdo-ar/src/app/components/project-component/project-archive/archive-projects.component';
 
 export const routes: Routes = [
   {
@@ -79,7 +80,7 @@ export const routes: Routes = [
         component: ProjectDivisionPageComponent,
         canActivate: [DivisionGuard] // Apply the guard here
       },
-      { path: 'project-list', component: ProjectListComponent, canActivate: [AdminGuard]},
+      { path: 'project-list', component: ProjectListComponent},
       { path: 'project-add', component: ProjectAddEditComponent },
       { path: 'project-edit/:id', component: ProjectAddEditComponent },
       { path: 'project-detail/:id', component: ProjectDetailComponent },
@@ -104,7 +105,7 @@ export const routes: Routes = [
         canActivate: [AdminGuard]
       },
       { path: 'profile', component: ProfileComponent },
-
+      { path: 'project-archive', component: ArchiveProjectsComponent, canActivate: [SuperAdminGuard] },
       { path: 'accounts', component: ManageAccountsComponent, canActivate: [SuperAdminGuard] },
       { path: 'accounts/add', component: AddUserComponent, canActivate: [AdminGuard, SuperAdminGuard] },
       { path: 'accounts/edit/:id', component: EditUserComponent, canActivate: [AdminGuard, SuperAdminGuard] },
