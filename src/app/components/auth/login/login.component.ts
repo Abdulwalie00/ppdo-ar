@@ -21,7 +21,6 @@ declare var FinisherHeader: any; // Declare the library
   imports: [
     FormsModule,
     NgIf,
-    NgClass,
     FaIconComponent
   ],
   templateUrl: './login.component.html',
