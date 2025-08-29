@@ -38,6 +38,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
   comments: Comment[] = [];
   newComment = '';
   currentUser: User | null = null;
+  isAdmin = false;
 
   showConfirmationDialog = false;
   dialogMessage = '';
@@ -165,6 +166,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
     if (username) {
       this.userService.getUserByUsername(username).pipe(takeUntil(this.destroy$)).subscribe(user => {
         this.currentUser = user;
+        // Assuming the User model has a role property
+        this.isAdmin = this.currentUser?.role === 'ROLE_ADMIN' || this.currentUser?.role === 'ROLE_SUPERADMIN';
       });
     }
   }
