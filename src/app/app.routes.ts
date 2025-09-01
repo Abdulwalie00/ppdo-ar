@@ -26,6 +26,7 @@ import {DivisionListComponent} from './pages/division/division-list/division-lis
 import {DivisionAddEditComponent} from './pages/division/division-add-edit/division-add-edit.component';
 import {SuperAdminGuard} from './guards/super-admin.guard';
 import {ArchiveProjectsComponent} from '../../../ar-deployment/ar-deployment/ppdo-ar/src/app/components/project-component/project-archive/archive-projects.component';
+import {ProjectListGuard} from './guards/project-list.guard';
 
 export const routes: Routes = [
   {
@@ -80,7 +81,7 @@ export const routes: Routes = [
         component: ProjectDivisionPageComponent,
         canActivate: [DivisionGuard] // Apply the guard here
       },
-      { path: 'project-list', component: ProjectListComponent},
+      { path: 'project-list', component: ProjectListComponent, canActivate: [ProjectListGuard]},
       { path: 'project-add', component: ProjectAddEditComponent },
       { path: 'project-edit/:id', component: ProjectAddEditComponent },
       { path: 'project-detail/:id', component: ProjectDetailComponent },
