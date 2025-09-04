@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
-import { of } from 'rxjs';
+import { of, forkJoin } from 'rxjs'; // Import forkJoin here
 import { switchMap } from 'rxjs/operators';
 import { Project } from '../../../models/project.model';
 import { ProjectDataService } from '../../../services/project-data.service';
@@ -42,6 +42,7 @@ export class ProjectDashboardComponent implements OnInit {
   userDivisionCode: string | null = null;
   divisionLogoUrl: string | null = null;
   ldsLogoUrl: string = 'app/assets/logos/LDS.png';
+  private newProjectIds: Set<string> = new Set(); // Add this line
 
   // Properties for the year filter
   years: number[] = [];
@@ -72,8 +73,18 @@ export class ProjectDashboardComponent implements OnInit {
         })
       );
 
-    projectsObservable.subscribe(allProjects => {
-      this.projects = allProjects;
+    // Use forkJoin to get both the main projects and the new projects in one go
+    forkJoin({
+      projects: projectsObservable,
+      newProjects: this.projectDataService.getNewProjects()
+    }).subscribe(({ projects, newProjects }) => {
+      this.newProjectIds = new Set(newProjects.map(p => p.id));
+      const projectsWithNewStatus = projects.map(p => ({
+        ...p,
+        isNew: this.newProjectIds.has(p.id)
+      }));
+
+      this.projects = projectsWithNewStatus;
       this.populateYears();
       this.applyFilters(); // Apply initial filter
     });

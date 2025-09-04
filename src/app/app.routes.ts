@@ -27,6 +27,7 @@ import {DivisionAddEditComponent} from './pages/division/division-add-edit/divis
 import {SuperAdminGuard} from './guards/super-admin.guard';
 import {ArchiveProjectsComponent} from '../../../ar-deployment/ar-deployment/ppdo-ar/src/app/components/project-component/project-archive/archive-projects.component';
 import {ProjectListGuard} from './guards/project-list.guard';
+import { NotificationPageComponent } from './components/notification-page/notification-page.component';
 
 export const routes: Routes = [
   {
@@ -98,7 +99,10 @@ export const routes: Routes = [
       { path: 'divisions/edit/:id', component: DivisionAddEditComponent, canActivate: [AdminGuard, SuperAdminGuard] },
 
       //Other Routes
-
+      {
+        path: 'notifications', // Add this route for the new page
+        component: NotificationPageComponent,
+      },
       { path: 'reports', component: ReportsComponent },
       {
         path: 'settings',

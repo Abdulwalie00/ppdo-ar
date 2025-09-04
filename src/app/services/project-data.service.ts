@@ -96,5 +96,8 @@ export class ProjectDataService {
     return this.http.post<Comment>(`${environment.apiUrl}projects/${projectId}/comments`, { content });
   }
 
-
+  // --- New method to get projects with an unread badge ---
+  getNewProjects(): Observable<Project[]> {
+    return this.http.get<Project[]>(`${environment.apiUrl}projects/new`);
+  }
 }

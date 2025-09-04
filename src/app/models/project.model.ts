@@ -61,4 +61,5 @@ export interface Project {
   status: 'planned' | 'ongoing' | 'completed' | 'cancelled';
   aipYear?: number;
   typeOfProject?: string;
+  isNew?: boolean;
 }
