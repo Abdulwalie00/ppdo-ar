@@ -62,4 +62,5 @@ export interface Project {
   aipYear?: number;
   typeOfProject?: string;
   isNew?: boolean;
+  narrativeReport?: string;
 }
